@@ -130,7 +130,9 @@ function escapeXml(value) {
     .replace(/'/g, "&apos;");
 }
 
-app.listen(PORT, () => {
-  console.log(`Instacertify landing pages running on http://localhost:${PORT}`);
-  console.log(`Admin: http://localhost:${PORT}/admin`);
+const HOST = process.env.HOST || "0.0.0.0";
+
+app.listen(PORT, HOST, () => {
+  console.log(`Instacertify landing pages running on http://${HOST}:${PORT}`);
+  console.log(`Admin: http://${HOST}:${PORT}/admin`);
 });

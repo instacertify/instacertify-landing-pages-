@@ -30,6 +30,10 @@ npm run seed           # optional sample pages
 npm start
 ```
 
+## Deploy on Hostinger
+
+This is an Express app. Use Hostinger **Node.js Web App** (Business/Cloud) with entry file `server/index.js`. Full steps: [`docs/HOSTINGER-DEPLOY.md`](docs/HOSTINGER-DEPLOY.md).
+
 - Public home: http://localhost:3000
 - Admin: http://localhost:3000/admin
 - Default admin password: value of `ADMIN_PASSWORD` in `.env` (default `change-me`)
