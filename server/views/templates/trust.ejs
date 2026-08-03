@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brand: #0d5c45;
+      --ink: #13231d;
+      --muted: #40564c;
+      --paper: #f4f8f6;
+      --sand: #d8e7df;
+      --gold: #b8862f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Source Sans 3", sans-serif;
+      background: var(--paper);
+    }
+    .preview-banner {
+      background: #1c2b25;
+      color: #fff;
+      text-align: center;
+      padding: 0.55rem;
+      font-size: 0.85rem;
+    }
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      align-content: end;
+      padding: clamp(1.5rem, 4vw, 3rem);
+      position: relative;
+      overflow: hidden;
+      color: #f7fbf8;
+      background:
+        linear-gradient(180deg, rgba(8, 28, 22, 0.25) 0%, rgba(8, 28, 22, 0.78) 70%, rgba(8, 28, 22, 0.92) 100%),
+        <% if (page.heroImage) { %>url("<%= page.heroImage %>") center/cover no-repeat,<% } %>
+        radial-gradient(circle at 20% 20%, #1f7a5a, transparent 45%),
+        linear-gradient(135deg, #0b3d2e, #163a2f 55%, #234636);
+      animation: fadeIn 900ms ease both;
+    }
+    .hero-inner { width: min(920px, 100%); }
+    .brand {
+      font-family: Fraunces, Georgia, serif;
+      font-size: clamp(2.8rem, 8vw, 5.5rem);
+      line-height: 0.95;
+      margin: 0 0 1rem;
+      letter-spacing: -0.03em;
+      animation: rise 900ms ease both;
+    }
+    .headline {
+      font-size: clamp(1.25rem, 2.6vw, 1.8rem);
+      font-weight: 600;
+      max-width: 28ch;
+      margin: 0 0 0.75rem;
+      animation: rise 900ms ease 80ms both;
+    }
+    .sub {
+      max-width: 42ch;
+      color: rgba(247, 251, 248, 0.86);
+      margin: 0 0 1.5rem;
+      animation: rise 900ms ease 140ms both;
+    }
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #f3c15b;
+      color: #1b1608;
+      text-decoration: none;
+      font-weight: 700;
+      padding: 0.95rem 1.35rem;
+      border-radius: 0.35rem;
+      animation: rise 900ms ease 200ms both;
+    }
+    .cta:hover { filter: brightness(1.05); }
+    section {
+      width: min(920px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 4.5rem 0;
+    }
+    section h2 {
+      font-family: Fraunces, Georgia, serif;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      margin: 0 0 0.75rem;
+    }
+    section p { color: var(--muted); max-width: 60ch; line-height: 1.65; }
+    .sections { background: linear-gradient(180deg, #eef5f1, var(--paper)); }
+    .section-block + .section-block { margin-top: 3rem; padding-top: 3rem; border-top: 1px solid rgba(13, 92, 69, 0.15); }
+    .body-content { line-height: 1.7; color: var(--muted); }
+    footer {
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0.6; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <%- include('../partials/body-scripts') %>
+  <% if (isPreview) { %><div class="preview-banner">Preview — not indexed</div><% } %>
+  <header class="hero">
+    <div class="hero-inner">
+      <h1 class="brand"><%= page.brandName %></h1>
+      <% if (page.headline) { %><p class="headline"><%= page.headline %></p><% } %>
+      <% if (page.subheadline) { %><p class="sub"><%= page.subheadline %></p><% } %>
+      <% if (page.ctaLabel && page.ctaUrl) { %>
+        <a class="cta" href="<%= page.ctaUrl %>"><%= page.ctaLabel %></a>
+      <% } %>
+    </div>
+  </header>
+
+  <% if (page.sections && page.sections.length) { %>
+  <div class="sections">
+    <section>
+      <% page.sections.forEach(function(block) { %>
+        <div class="section-block">
+          <% if (block.heading) { %><h2><%= block.heading %></h2><% } %>
+          <% if (block.text) { %><p><%= block.text %></p><% } %>
+        </div>
+      <% }) %>
+    </section>
+  </div>
+  <% } %>
+
+  <% if (page.bodyHtml) { %>
+  <section class="body-content"><%- page.bodyHtml %></section>
+  <% } %>
+
+  <footer>© <%= new Date().getFullYear() %> <%= page.brandName %></footer>
+</body>
+</html>

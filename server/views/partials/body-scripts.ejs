@@ -1,0 +1,5 @@
+<% if (settings.google_tag_manager_id) { %>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<%= settings.google_tag_manager_id %>"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<% } %>
+<%- settings.custom_body_scripts || '' %>

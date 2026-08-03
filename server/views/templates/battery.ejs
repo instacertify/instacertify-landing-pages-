@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <% const c = page.content || {}; %>
+  <%- include('../partials/head') %>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: <%= c.themeInk || '#0e1620' %>;
+      --muted: #6b7785;
+      --brand: <%= c.themeBrand || '#00557A' %>;
+      --accent: <%= c.themeAccent || '#F27121' %>;
+      --panel: #ffffff;
+      --line: rgba(14, 22, 32, 0.12);
+      --soft: #eef5f8;
+      --hero: #071018;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", sans-serif;
+      color: var(--ink);
+      background: <%= c.themeBg || '#f3f6f8' %>;
+    }
+    a { color: inherit; text-decoration: none; }
+    .preview-banner {
+      background: #111; color: #fff; text-align: center; padding: 0.5rem; font-size: 0.85rem;
+    }
+    .offer {
+      background: linear-gradient(90deg, var(--brand), #0a6f96 55%, var(--accent));
+      color: #fff;
+      text-align: center;
+      padding: 0.65rem 1rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+    .bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.85rem clamp(1rem, 3vw, 2rem);
+      background: rgba(255,255,255,0.94);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(10px);
+    }
+    .brand-logo { display: block; height: 40px; width: auto; }
+    .bar-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      border: 0; cursor: pointer; font: inherit; font-weight: 700;
+      border-radius: 0.45rem; padding: 0.8rem 1.1rem;
+    }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-soft { background: var(--soft); color: var(--brand); border: 1px solid rgba(0,85,122,0.16); }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.9fr;
+      gap: 1.5rem;
+      padding: clamp(1.4rem, 3vw, 2.4rem);
+      background:
+        linear-gradient(115deg, rgba(7,16,24,0.92) 0%, rgba(0,85,122,0.78) 58%, rgba(242,113,33,0.55) 100%),
+        <% if (page.heroImage) { %>url("<%= page.heroImage %>") center/cover no-repeat,<% } %>
+        #071018;
+      color: #f4f8fb;
+      min-height: min(82vh, 760px);
+      align-items: center;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.22);
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      margin-bottom: 0.9rem;
+      animation: rise 700ms ease both;
+    }
+    .wordmark {
+      font-family: Outfit, sans-serif;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      line-height: 0.95;
+      margin: 0 0 0.85rem;
+      letter-spacing: -0.04em;
+      animation: rise 750ms ease both;
+    }
+    .wordmark .a { color: #7ec8e3; }
+    .wordmark .b { color: #ffb07a; }
+    .headline {
+      font-family: Outfit, sans-serif;
+      font-size: clamp(1.35rem, 3vw, 2.1rem);
+      line-height: 1.15;
+      margin: 0 0 0.8rem;
+      max-width: 20ch;
+      animation: rise 800ms ease 60ms both;
+    }
+    .sub {
+      max-width: 48ch;
+      color: rgba(244,248,251,0.86);
+      margin: 0 0 1.1rem;
+      line-height: 1.55;
+      animation: rise 850ms ease 100ms both;
+    }
+    .trust { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.45rem; }
+    .trust li {
+      padding-left: 1.2rem;
+      position: relative;
+      color: rgba(244,248,251,0.9);
+      animation: rise 900ms ease 140ms both;
+    }
+    .trust li::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0.55rem;
+      width: 0.5rem; height: 0.5rem;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .enquiry {
+      background: var(--panel);
+      color: var(--ink);
+      border-radius: 1rem;
+      padding: 1.2rem;
+      box-shadow: 0 24px 50px rgba(0,0,0,0.28);
+      animation: rise 900ms ease 120ms both;
+    }
+    .enquiry h2 {
+      font-family: Outfit, sans-serif;
+      margin: 0 0 0.3rem;
+      font-size: 1.35rem;
+    }
+    .enquiry .hint { color: var(--muted); margin: 0 0 0.9rem; font-size: 0.92rem; }
+    .field { display: grid; gap: 0.3rem; margin-bottom: 0.65rem; font-size: 0.9rem; font-weight: 600; }
+    .field input, .field select, .field textarea {
+      width: 100%; border: 1px solid var(--line); border-radius: 0.45rem;
+      padding: 0.7rem 0.75rem; font: inherit; font-weight: 400;
+    }
+    .form-trust {
+      display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.7rem;
+    }
+    .form-trust span {
+      background: var(--soft); color: var(--brand);
+      border-radius: 999px; padding: 0.25rem 0.6rem; font-size: 0.78rem; font-weight: 700;
+    }
+    .form-success { display: none; color: #0b6b4a; font-weight: 700; margin-top: 0.7rem; }
+    .form-success.show { display: block; }
+    .expert {
+      margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px solid var(--line);
+      display: grid; gap: 0.2rem; font-size: 0.9rem;
+    }
+    .expert a { color: var(--brand); font-weight: 700; }
+    .pillars {
+      width: min(1180px, calc(100% - 2rem));
+      margin: -2.2rem auto 0;
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.85rem;
+    }
+    .pillar {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 0.9rem;
+      padding: 1.1rem 1rem;
+      box-shadow: 0 14px 30px rgba(14,22,32,0.08);
+      animation: rise 800ms ease both;
+    }
+    .pillar strong {
+      display: block;
+      font-family: Outfit, sans-serif;
+      font-size: 1.4rem;
+      color: var(--brand);
+      margin-bottom: 0.25rem;
+    }
+    .pillar span { color: var(--muted); font-size: 0.92rem; line-height: 1.4; }
+    .stats {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 1.4rem auto 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+    }
+    .stat {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 0.75rem;
+      padding: 0.95rem;
+    }
+    .stat strong {
+      display: block;
+      font-family: Outfit, sans-serif;
+      font-size: 1.35rem;
+      color: var(--accent);
+    }
+    .stat span { color: var(--muted); font-size: 0.88rem; }
+    .nav-wrap {
+      position: sticky;
+      top: 3.55rem;
+      z-index: 30;
+      background: rgba(243,246,248,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+      margin-top: 1.2rem;
+    }
+    .nav {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+      display: flex;
+      gap: 0.35rem;
+      overflow-x: auto;
+      padding: 0.55rem 0;
+    }
+    .nav a {
+      white-space: nowrap;
+      padding: 0.45rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--muted);
+    }
+    .nav a.active, .nav a:hover { background: #fff; color: var(--brand); }
+    .wrap {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 1.4rem auto 2rem;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 1.2rem;
+    }
+    .block {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 0.95rem;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .block h2 {
+      font-family: Outfit, sans-serif;
+      margin: 0 0 0.65rem;
+      font-size: 1.45rem;
+      letter-spacing: -0.02em;
+    }
+    .block h3 {
+      font-family: Outfit, sans-serif;
+      margin: 0 0 0.4rem;
+      font-size: 1.05rem;
+    }
+    .block p { margin: 0 0 0.75rem; color: #324050; line-height: 1.6; }
+    .block-lead { color: var(--muted); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
+    .item {
+      border: 1px solid var(--line);
+      border-radius: 0.75rem;
+      padding: 0.9rem;
+      background: #fbfcfd;
+    }
+    .item ul { margin: 0.4rem 0 0; padding-left: 1.1rem; color: #324050; }
+    .timeline-value {
+      font-family: Outfit, sans-serif;
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 1.15rem;
+      margin: 0 0 0.35rem !important;
+    }
+    .doc-tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.8rem; }
+    .doc-tab {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 999px;
+      padding: 0.4rem 0.75rem;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .doc-tab.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+    .doc-panel { display: none; }
+    .doc-panel.active { display: block; }
+    details {
+      border-top: 1px solid var(--line);
+      padding: 0.75rem 0;
+    }
+    details:first-of-type { border-top: 0; }
+    summary { cursor: pointer; font-weight: 700; }
+    details p { margin: 0.55rem 0 0; }
+    .side { display: grid; gap: 0.8rem; align-content: start; position: sticky; top: 7.2rem; }
+    .side-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 0.9rem;
+      padding: 1rem;
+    }
+    .side-card h3 {
+      font-family: Outfit, sans-serif;
+      margin: 0 0 0.4rem;
+      font-size: 1.05rem;
+    }
+    .side-card p { color: var(--muted); margin: 0 0 0.75rem; line-height: 1.5; font-size: 0.92rem; }
+    .bottom-cta {
+      background: linear-gradient(120deg, var(--brand), #083f5a 60%, #1b2a36);
+      color: #fff;
+      text-align: center;
+      padding: 2.4rem 1.2rem;
+    }
+    .bottom-cta h2 {
+      font-family: Outfit, sans-serif;
+      margin: 0 0 0.5rem;
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+    }
+    .bottom-cta p { margin: 0 0 1rem; color: rgba(255,255,255,0.84); }
+    .site-footer {
+      background: #0b0b0f;
+      color: rgba(255,255,255,0.78);
+      padding: 2rem 1rem 5.5rem;
+    }
+    .site-footer-inner {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 0.85rem;
+    }
+    .site-footer strong { color: #fff; font-family: Outfit, sans-serif; }
+    .site-footer a { color: #fff; text-decoration: underline; }
+    .site-footer p { margin: 0; line-height: 1.6; font-size: 0.92rem; }
+    .policy-note { font-size: 0.85rem; color: rgba(255,255,255,0.55); }
+    .mobile-cta {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 45;
+      padding: 0.65rem 0.85rem;
+      background: rgba(255,255,255,0.96);
+      border-top: 1px solid var(--line);
+      display: none;
+    }
+    .mobile-cta .btn { width: 100%; }
+    .float-wa {
+      position: fixed; right: 1rem; bottom: 4.8rem; z-index: 46;
+      width: 3.1rem; height: 3.1rem; border-radius: 50%;
+      display: grid; place-items: center;
+      background: #25d366; color: #fff; font-weight: 800;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.2);
+    }
+    .scroll-cta {
+      position: fixed; left: 0; right: 0; top: 0; z-index: 48;
+      transform: translateY(-110%);
+      transition: transform 220ms ease;
+      background: #0b1722; color: #fff;
+    }
+    .scroll-cta.visible { transform: translateY(0); }
+    .scroll-cta-inner {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 0.8rem; padding: 0.65rem 0;
+    }
+    .scroll-cta .btn { background: var(--accent); color: #fff; padding: 0.55rem 0.9rem; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 960px) {
+      .hero, .wrap, .pillars, .stats, .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .side { position: static; }
+      .mobile-cta { display: block; }
+      .nav-wrap { top: 3.4rem; }
+    }
+  </style>
+  <% if (c.faqs && c.faqs.length) { %>
+  <script type="application/ld+json">
+  <%- JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": c.faqs.map(function(faq) {
+      return {
+        "@type": "Question",
+        "name": faq.q,
+        "acceptedAnswer": { "@type": "Answer", "text": faq.a }
+      };
+    })
+  }) %>
+  </script>
+  <% } %>
+</head>
+<body>
+  <%- include('../partials/body-scripts') %>
+  <% if (isPreview) { %><div class="preview-banner">Preview — not indexed</div><% } %>
+
+  <% const phone = c.phone || settings.support_phone; %>
+  <% const whatsapp = c.whatsapp || settings.support_whatsapp; %>
+  <% const email = settings.support_email || 'contact@instacertify.com'; %>
+  <% const legalName = settings.legal_name || 'Instacertify Labs Private Limited'; %>
+  <% const logoLight = c.logoLightUrl || '/assets/instacertify-logo-light.svg'; %>
+  <% const logoDark = c.logoDarkUrl || '/assets/instacertify-logo.svg'; %>
+  <% const brandPrefix = c.brandPrefix || 'Insta'; %>
+  <% const brandSuffix = c.brandSuffix || 'certify'; %>
+  <% const nav = []; %>
+  <% if (page.sections && page.sections.length) nav.push({ id: 'overview', label: c.navOverview || 'Overview' }); %>
+  <% if (c.types && c.types.length) nav.push({ id: 'types', label: c.navTypes || 'Solutions' }); %>
+  <% if (c.timelines && c.timelines.length) nav.push({ id: 'timelines', label: c.navTimelines || 'Timelines' }); %>
+  <% if (c.products && c.products.length) nav.push({ id: 'products', label: c.navProducts || 'Products' }); %>
+  <% if (c.benefits && c.benefits.length) nav.push({ id: 'benefits', label: c.navBenefits || 'Benefits' }); %>
+  <% if (c.documents && c.documents.length) nav.push({ id: 'documents', label: c.navDocuments || 'Documents' }); %>
+  <% if ((c.detailProcess && c.detailProcess.length) || (c.process && c.process.length)) nav.push({ id: 'procedure', label: c.navProcedure || 'Procedure' }); %>
+  <% if (c.penalties && c.penalties.length) nav.push({ id: 'penalties', label: c.navRisks || 'Risks' }); %>
+  <% if (c.whyUs && c.whyUs.length) nav.push({ id: 'why', label: c.navWhy || 'Why us' }); %>
+  <% if (c.faqs && c.faqs.length) nav.push({ id: 'faqs', label: c.navFaqs || 'FAQs' }); %>
+  <% const pillars = (c.types && c.types.length) ? c.types.slice(0, 3) : (c.heroStats || []).slice(0, 3); %>
+
+  <% if (c.offerBanner) { %><div class="offer"><%= c.offerBanner %></div><% } %>
+
+  <div class="scroll-cta" id="scroll-cta">
+    <div class="scroll-cta-inner">
+      <span><%= c.scrollCtaText || page.headline || 'Get shipping docs ready' %></span>
+      <a class="btn" href="#lead-form"><%= c.formSubmitLabel || 'Get Free Consultation' %></a>
+    </div>
+  </div>
+
+  <div class="bar">
+    <a href="/" aria-label="<%= page.brandName %> home">
+      <img class="brand-logo" src="<%= logoLight %>" alt="<%= page.brandName %> — certifications made simple" width="200" height="40" />
+    </a>
+    <div class="bar-actions">
+      <% if (phone) { %><a class="btn btn-soft" href="tel:<%= String(phone).replace(/\s/g, '') %>"><%= phone %></a><% } %>
+      <a class="btn btn-accent" href="#lead-form"><%= page.ctaLabel || 'Get Free Consultation' %></a>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div>
+      <% if (c.badgeText) { %><div class="badge"><%= c.badgeText %></div><% } %>
+      <p class="wordmark"><span class="a"><%= brandPrefix %></span><span class="b"><%= brandSuffix %></span></p>
+      <% if (page.headline) { %>
+        <h1 class="headline">
+          <%= page.headline %>
+          <% if (c.headlineHighlight) { %> <span style="color:#ffb07a"><%= c.headlineHighlight %></span><% } %>
+        </h1>
+      <% } %>
+      <% if (page.subheadline) { %><p class="sub"><%= page.subheadline %></p><% } %>
+      <% if (c.ratingText) { %><p class="sub" style="margin-bottom:0.8rem;">★ <%= c.ratingText %></p><% } %>
+      <% if (c.trustPoints && c.trustPoints.length) { %>
+        <ul class="trust">
+          <% c.trustPoints.slice(0, 4).forEach(function(point) { %>
+            <li><%= point %></li>
+          <% }) %>
+        </ul>
+      <% } %>
+    </div>
+
+    <% if (c.formEnabled !== false) { %>
+    <aside class="enquiry" id="lead-form">
+      <h2><%= c.formTitle || 'Enquiry Now' %></h2>
+      <p class="hint"><%= c.formSubtitle || page.title %></p>
+      <form id="service-lead-form">
+        <input type="hidden" name="pageSlug" value="<%= page.slug %>" />
+        <label class="field"><span><%= c.formNameLabel || 'Full name' %></span>
+          <input name="name" required autocomplete="name" placeholder="<%= c.formNamePlaceholder || 'Your Full Name' %>" />
+        </label>
+        <label class="field"><span><%= c.formPhoneLabel || 'Mobile' %></span>
+          <input name="phone" required autocomplete="tel" placeholder="<%= c.formPhonePlaceholder || 'Mobile Number' %>" />
+        </label>
+        <label class="field"><span><%= c.formEmailLabel || 'Email' %></span>
+          <input type="email" name="email" required autocomplete="email" placeholder="<%= c.formEmailPlaceholder || 'Email Address' %>" />
+        </label>
+        <label class="field"><span><%= c.formCityLabel || 'City' %></span>
+          <input name="city" autocomplete="address-level2" placeholder="<%= c.formCityPlaceholder || 'City' %>" />
+        </label>
+        <% if (c.serviceOptions && c.serviceOptions.length) { %>
+          <label class="field"><span><%= c.formServiceLabel || 'Certification type' %></span>
+            <select name="service" required>
+              <option value=""><%= c.formServicePlaceholder || 'Select Certification Type' %></option>
+              <% c.serviceOptions.forEach(function(option) { %>
+                <option value="<%= option %>"><%= option %></option>
+              <% }) %>
+            </select>
+          </label>
+        <% } else { %>
+          <input type="hidden" name="service" value="<%= page.title %>" />
+        <% } %>
+        <label class="field"><span><%= c.formMessageLabel || 'Requirement' %></span>
+          <textarea name="message" rows="3" placeholder="<%= c.formMessagePlaceholder || 'Product / brand / requirement' %>"></textarea>
+        </label>
+        <button class="btn btn-accent" type="submit" style="width:100%;"><%= c.formSubmitLabel || 'Get Free Expert Consultation' %></button>
+      </form>
+      <% if (c.formTrustPoints && c.formTrustPoints.length) { %>
+        <div class="form-trust">
+          <% c.formTrustPoints.forEach(function(point) { %><span><%= point %></span><% }) %>
+        </div>
+      <% } %>
+      <p class="form-success" id="lead-success"><%= c.formSuccessMessage || 'Thanks! Our team will contact you shortly.' %></p>
+      <% if (c.expertName || phone) { %>
+      <div class="expert">
+        <strong><%= c.expertName || 'Talk to an expert' %></strong>
+        <% if (phone) { %><a href="tel:<%= phone %>"><%= phone %></a><% } %>
+        <span><%= c.expertNote || 'We are available 24/7.' %></span>
+      </div>
+      <% } %>
+    </aside>
+    <% } %>
+  </header>
+
+  <% if (pillars && pillars.length) { %>
+  <section class="pillars" aria-label="<%= c.pillarsTitle || 'Complete solution pillars' %>">
+    <% pillars.forEach(function(item) { %>
+      <article class="pillar">
+        <strong><%= item.title || item.value %></strong>
+        <span><%= item.text || item.label %></span>
+      </article>
+    <% }) %>
+  </section>
+  <% } %>
+
+  <% const stats = (c.heroStats && c.heroStats.length) ? c.heroStats : c.whyUs; %>
+  <% if (stats && stats.length) { %>
+  <section class="stats">
+    <% stats.slice(0, 4).forEach(function(item) { %>
+      <div class="stat">
+        <strong><%= item.value %></strong>
+        <span><%= item.label %></span>
+      </div>
+    <% }) %>
+  </section>
+  <% } %>
+
+  <% if (nav.length) { %>
+  <div class="nav-wrap">
+    <nav class="nav" aria-label="Page sections">
+      <% nav.forEach(function(item) { %>
+        <a href="#<%= item.id %>"><%= item.label %></a>
+      <% }) %>
+    </nav>
+  </div>
+  <% } %>
+
+  <div class="wrap">
+    <div>
+      <% if (page.sections && page.sections.length) { %>
+      <section class="block" id="overview">
+        <% page.sections.forEach(function(block, index) { %>
+          <div style="<%= index ? 'margin-top:1.1rem;' : '' %>">
+            <% if (block.heading) { %>
+              <% if (index === 0) { %><h2><%= block.heading %></h2><% } else { %><h3><%= block.heading %></h3><% } %>
+            <% } %>
+            <% if (block.text) { %><p><%= block.text %></p><% } %>
+          </div>
+        <% }) %>
+      </section>
+      <% } %>
+
+      <% if (c.types && c.types.length) { %>
+      <section class="block" id="types">
+        <h2><%= c.typesTitle || 'Complete solution coverage' %></h2>
+        <div class="grid-2">
+          <% c.types.forEach(function(type) { %>
+            <article class="item">
+              <% if (type.title) { %><h3><%= type.title %></h3><% } %>
+              <% if (type.text) { %><p><%= type.text %></p><% } %>
+              <% if (type.items && type.items.length) { %>
+                <ul><% type.items.forEach(function(item) { %><li><%= item %></li><% }) %></ul>
+              <% } %>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% if (c.timelines && c.timelines.length) { %>
+      <section class="block" id="timelines">
+        <h2><%= c.timelinesTitle || 'Typical timelines' %></h2>
+        <div class="grid-2">
+          <% c.timelines.forEach(function(item) { %>
+            <article class="item">
+              <% if (item.title) { %><h3><%= item.title %></h3><% } %>
+              <% if (item.value) { %><p class="timeline-value"><%= item.value %></p><% } %>
+              <% if (item.text) { %><p><%= item.text %></p><% } %>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% if (c.products && c.products.length) { %>
+      <section class="block" id="products">
+        <h2><%= c.productsTitle || 'Product categories' %></h2>
+        <div class="grid-2">
+          <% c.products.forEach(function(item) { %>
+            <article class="item">
+              <% if (item.title) { %><h3><%= item.title %></h3><% } %>
+              <% if (item.text) { %><p><%= item.text %></p><% } %>
+              <% if (item.items && item.items.length) { %>
+                <ul><% item.items.forEach(function(line) { %><li><%= line %></li><% }) %></ul>
+              <% } %>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% if (c.benefits && c.benefits.length) { %>
+      <section class="block" id="benefits">
+        <h2><%= c.benefitsTitle || 'Benefits' %></h2>
+        <div class="grid-2">
+          <% c.benefits.forEach(function(item) { %>
+            <article class="item">
+              <% if (item.title) { %><h3><%= item.title %></h3><% } %>
+              <% if (item.text) { %><p><%= item.text %></p><% } %>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% if (c.documents && c.documents.length) { %>
+      <section class="block" id="documents">
+        <h2><%= c.documentsTitle || 'Documents' %></h2>
+        <div class="doc-tabs">
+          <% c.documents.forEach(function(group, index) { %>
+            <button type="button" class="doc-tab <%= index === 0 ? 'active' : '' %>" data-tab="<%= index %>"><%= group.title || ('Group ' + (index + 1)) %></button>
+          <% }) %>
+        </div>
+        <% c.documents.forEach(function(group, index) { %>
+          <div class="doc-panel <%= index === 0 ? 'active' : '' %>" data-panel="<%= index %>">
+            <ul><% (group.items || []).forEach(function(item) { %><li><%= item %></li><% }) %></ul>
+          </div>
+        <% }) %>
+      </section>
+      <% } %>
+
+      <% const procedure = (c.detailProcess && c.detailProcess.length) ? c.detailProcess : c.process; %>
+      <% if (procedure && procedure.length) { %>
+      <section class="block" id="procedure">
+        <h2><%= c.detailProcessTitle || c.processTitle || 'How it works' %></h2>
+        <div class="grid-2">
+          <% procedure.forEach(function(item) { %>
+            <article class="item">
+              <% if (item.title) { %><h3><%= item.title %></h3><% } %>
+              <% if (item.text) { %><p><%= item.text %></p><% } %>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% if (c.penalties && c.penalties.length) { %>
+      <section class="block" id="penalties">
+        <h2><%= c.penaltiesTitle || 'Risks of incomplete docs' %></h2>
+        <div class="grid-2">
+          <% c.penalties.forEach(function(item) { %>
+            <article class="item">
+              <% if (item.title) { %><h3><%= item.title %></h3><% } %>
+              <% if (item.text) { %><p><%= item.text %></p><% } %>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% const galleryImages = (page.images || []).filter(function(img) { return img.showOnPage && (img.role === 'gallery' || img.role === 'hero'); }); %>
+      <% if (galleryImages.length) { %>
+      <section class="block" id="gallery">
+        <h2><%= c.galleryTitle || 'Gallery' %></h2>
+        <div class="grid-3">
+          <% galleryImages.forEach(function(img) { %>
+            <figure class="item" style="padding:0;overflow:hidden;">
+              <img src="<%= img.url %>" alt="<%= img.alt || page.title %>" style="display:block;width:100%;height:180px;object-fit:cover;" loading="lazy" />
+              <% if (img.alt) { %><figcaption style="padding:0.7rem;color:var(--muted);font-size:0.88rem;"><%= img.alt %></figcaption><% } %>
+            </figure>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% const reviews = (c.reviewPool && c.reviewPool.length) ? c.reviewPool.filter(function(item){ return item.show !== false; }) : (c.testimonials || []); %>
+      <% if (reviews.length) { %>
+      <section class="block" id="testimonials">
+        <h2><%= c.reviewsTitle || c.testimonialsTitle || 'Customer reviews' %></h2>
+        <% if (c.reviewsIntro) { %><p class="block-lead"><%= c.reviewsIntro %></p><% } %>
+        <div class="grid-2">
+          <% reviews.forEach(function(item) { %>
+            <article class="item">
+              <% if (item.image) { %>
+                <img src="<%= item.image %>" alt="<%= item.name || 'Reviewer' %>" style="width:48px;height:48px;border-radius:50%;object-fit:cover;margin-bottom:0.65rem;" loading="lazy" />
+              <% } %>
+              <% if (item.rating) { %>
+                <p style="margin:0 0 0.45rem;color:var(--accent);font-weight:800;letter-spacing:0.08em;"><%= '★'.repeat(item.rating) %><%= '☆'.repeat(Math.max(0, 5 - item.rating)) %></p>
+              <% } %>
+              <% if (item.quote) { %><p>“<%= item.quote %>”</p><% } %>
+              <% if (item.name) { %><h3><%= item.name %></h3><% } %>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% if (c.whyUs && c.whyUs.length) { %>
+      <section class="block" id="why">
+        <h2><%= c.whyTitle || 'Why choose us?' %></h2>
+        <div class="grid-3">
+          <% c.whyUs.forEach(function(item) { %>
+            <article class="item">
+              <% if (item.value) { %><h3><%= item.value %></h3><% } %>
+              <% if (item.label) { %><p><%= item.label %></p><% } %>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% if (c.faqs && c.faqs.length) { %>
+      <section class="block" id="faqs">
+        <h2><%= c.faqsTitle || 'Frequently Asked Questions' %></h2>
+        <p class="block-lead"><%= c.faqsIntro || 'Quick answers about SDS, MSDS, and UN38.3.' %></p>
+        <% c.faqs.forEach(function(faq) { %>
+          <details>
+            <summary><%= faq.q %></summary>
+            <p><%= faq.a %></p>
+          </details>
+        <% }) %>
+      </section>
+      <% } %>
+
+      <% if (page.bodyHtml) { %>
+      <section class="block"><%- page.bodyHtml %></section>
+      <% } %>
+    </div>
+
+    <aside class="side">
+      <div class="side-card">
+        <h3><%= c.sideRailTitle || 'Ship with complete docs' %></h3>
+        <p><%= c.sideRailText || 'Get SDS/MSDS and UN38.3 guidance in one place.' %></p>
+        <a class="btn btn-accent" href="#lead-form"><%= c.formSubmitLabel || 'Get Free Consultation' %></a>
+      </div>
+      <% if (phone || whatsapp) { %>
+      <div class="side-card">
+        <h3><%= c.sideHelpTitle || 'Need help?' %></h3>
+        <p><%= c.sideHelpText || 'Talk to Instacertify for battery shipping documentation support.' %></p>
+        <% if (phone) { %><a class="btn btn-soft" href="tel:<%= phone %>" style="margin-bottom:0.5rem;width:100%;">Call <%= phone %></a><% } %>
+        <% if (whatsapp) { %>
+          <a class="btn btn-accent" href="https://wa.me/<%= String(whatsapp).replace(/\D/g, '') %>" target="_blank" rel="noopener" style="width:100%;">WhatsApp</a>
+        <% } %>
+      </div>
+      <% } %>
+    </aside>
+  </div>
+
+  <section class="bottom-cta">
+    <h2><%= c.bottomCtaText || 'Talk to an expert' %></h2>
+    <p><%= c.bottomCtaSubtitle || 'Complete solution for SDS, MSDS Certificate, and UN38.3 battery shipping.' %></p>
+    <a class="btn btn-accent" href="#lead-form"><%= c.formSubmitLabel || 'Get Free Consultation' %></a>
+  </section>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <img class="brand-logo" src="<%= logoDark %>" alt="<%= page.brandName || 'Instacertify' %>" width="200" height="46" style="height:46px;background:#0b0b0f;border-radius:0.35rem;" />
+      <p><strong><%= legalName %></strong></p>
+      <p>
+        Email: <a href="mailto:<%= email %>"><%= email %></a>
+        <% if (phone) { %> · Phone: <a href="tel:<%= String(phone).replace(/\s/g, '') %>"><%= phone %></a><% } %>
+      </p>
+      <p><%= c.footerBlurb || ('Landing page for ' + page.title + '. Offer and contacts match this page.') %></p>
+      <p class="policy-note">© <%= new Date().getFullYear() %> <%= legalName %>. Contact us for scope, timelines, and commercials. No misleading offers.</p>
+    </div>
+  </footer>
+
+  <div class="mobile-cta">
+    <a class="btn btn-accent" href="#lead-form"><%= c.formSubmitLabel || 'Get Free Consultation' %></a>
+  </div>
+  <% if (whatsapp) { %>
+    <a class="float-wa" href="https://wa.me/<%= String(whatsapp).replace(/\D/g, '') %>" target="_blank" rel="noopener" aria-label="WhatsApp">WA</a>
+  <% } %>
+
+  <script>
+    (function () {
+      const tabs = document.querySelectorAll(".doc-tab");
+      const panels = document.querySelectorAll(".doc-panel");
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const index = tab.dataset.tab;
+          tabs.forEach((t) => t.classList.toggle("active", t === tab));
+          panels.forEach((panel) => {
+            panel.classList.toggle("active", panel.dataset.panel === index);
+          });
+        });
+      });
+
+      const scrollCta = document.getElementById("scroll-cta");
+      const hero = document.querySelector(".hero");
+      function updateScrollCta() {
+        if (!scrollCta || !hero) return;
+        scrollCta.classList.toggle("visible", hero.getBoundingClientRect().bottom < 80);
+      }
+      updateScrollCta();
+      window.addEventListener("scroll", updateScrollCta, { passive: true });
+
+      const navLinks = document.querySelectorAll(".nav a");
+      const sections = Array.from(navLinks)
+        .map((link) => document.querySelector(link.getAttribute("href")))
+        .filter(Boolean);
+      function setActive() {
+        let current = sections[0];
+        sections.forEach((section) => {
+          if (section.getBoundingClientRect().top < 140) current = section;
+        });
+        navLinks.forEach((link) => {
+          link.classList.toggle("active", current && link.getAttribute("href") === `#${current.id}`);
+        });
+      }
+      if (sections.length) {
+        setActive();
+        window.addEventListener("scroll", setActive, { passive: true });
+      }
+
+      const form = document.getElementById("service-lead-form");
+      const success = document.getElementById("lead-success");
+      if (!form) return;
+      function getUtm() {
+        const params = new URLSearchParams(window.location.search);
+        const keys = ["utm_source","utm_medium","utm_campaign","utm_content","utm_term","gclid","gad_source","gad_campaignid","gbraid"];
+        const utm = {};
+        keys.forEach((key) => { const value = params.get(key); if (value) utm[key] = value; });
+        return utm;
+      }
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const data = Object.fromEntries(new FormData(form).entries());
+        data.utm = getUtm();
+        const button = form.querySelector('button[type="submit"]');
+        button.disabled = true;
+        try {
+          const res = await fetch("/api/leads", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+          const payload = await res.json();
+          if (!res.ok) throw new Error(payload.error || "Failed to submit");
+          form.reset();
+          success.classList.add("show");
+        } catch (error) {
+          alert(error.message);
+        } finally {
+          button.disabled = false;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

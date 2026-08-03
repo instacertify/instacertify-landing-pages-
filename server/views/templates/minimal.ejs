@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,650&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1c2430;
+      --muted: #5b6675;
+      --line: rgba(28, 36, 48, 0.12);
+      --accent: #245b8a;
+      --bg: #f7f8fa;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Manrope, sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, #eef2f7 0%, var(--bg) 35%, #ffffff 100%);
+    }
+    .preview-banner {
+      background: var(--ink);
+      color: #fff;
+      text-align: center;
+      padding: 0.5rem;
+      font-size: 0.85rem;
+    }
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      align-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: clamp(1.5rem, 5vw, 4rem);
+      <% if (page.heroImage) { %>
+      background:
+        linear-gradient(90deg, rgba(247,248,250,0.96) 0%, rgba(247,248,250,0.88) 42%, rgba(247,248,250,0.35) 100%),
+        url("<%= page.heroImage %>") right center / cover no-repeat;
+      <% } %>
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(36, 91, 138, 0.12), transparent 35%),
+        linear-gradient(180deg, transparent, rgba(28, 36, 48, 0.04));
+      pointer-events: none;
+      animation: softPulse 6s ease-in-out infinite alternate;
+    }
+    .hero-inner {
+      position: relative;
+      width: min(720px, 100%);
+      animation: fadeUp 800ms ease both;
+    }
+    .brand {
+      font-family: Newsreader, Georgia, serif;
+      font-size: clamp(3rem, 8vw, 5.2rem);
+      line-height: 0.95;
+      margin: 0 0 1.1rem;
+      letter-spacing: -0.03em;
+    }
+    .headline {
+      font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+      font-weight: 700;
+      max-width: 28ch;
+      margin: 0 0 0.75rem;
+    }
+    .sub {
+      color: var(--muted);
+      max-width: 42ch;
+      line-height: 1.6;
+      margin: 0 0 1.6rem;
+    }
+    .cta {
+      display: inline-block;
+      color: #fff;
+      background: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+      padding: 0.9rem 1.25rem;
+      border-radius: 0.25rem;
+      transition: transform 200ms ease;
+    }
+    .cta:hover { transform: translateY(-2px); }
+    section {
+      width: min(720px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 4rem 0;
+      border-top: 1px solid var(--line);
+    }
+    section h2 {
+      font-family: Newsreader, Georgia, serif;
+      font-size: clamp(1.7rem, 3vw, 2.2rem);
+      margin: 0 0 0.7rem;
+    }
+    section p, .body-content { color: var(--muted); line-height: 1.7; }
+    .section-block + .section-block { margin-top: 2.75rem; }
+    footer {
+      width: min(720px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes softPulse {
+      from { opacity: 0.65; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <%- include('../partials/body-scripts') %>
+  <% if (isPreview) { %><div class="preview-banner">Preview — not indexed</div><% } %>
+  <header class="hero">
+    <div class="hero-inner">
+      <h1 class="brand"><%= page.brandName %></h1>
+      <% if (page.headline) { %><p class="headline"><%= page.headline %></p><% } %>
+      <% if (page.subheadline) { %><p class="sub"><%= page.subheadline %></p><% } %>
+      <% if (page.ctaLabel && page.ctaUrl) { %>
+        <a class="cta" href="<%= page.ctaUrl %>"><%= page.ctaLabel %></a>
+      <% } %>
+    </div>
+  </header>
+
+  <% if (page.sections && page.sections.length) { %>
+    <% page.sections.forEach(function(block) { %>
+      <section>
+        <% if (block.heading) { %><h2><%= block.heading %></h2><% } %>
+        <% if (block.text) { %><p><%= block.text %></p><% } %>
+      </section>
+    <% }) %>
+  <% } %>
+
+  <% if (page.bodyHtml) { %>
+  <section class="body-content"><%- page.bodyHtml %></section>
+  <% } %>
+
+  <footer>© <%= new Date().getFullYear() %> <%= page.brandName %></footer>
+</body>
+</html>
