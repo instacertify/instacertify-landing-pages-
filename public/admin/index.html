@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Instacertify Landing Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/styles.css" />
+</head>
+<body>
+  <div id="app">
+    <section id="login-view" class="login-view hidden">
+      <form id="login-form" class="login-panel">
+        <h1>Instacertify</h1>
+        <p>Landing page admin</p>
+        <label>
+          Admin password
+          <input type="password" id="password" autocomplete="current-password" required />
+        </label>
+        <button type="submit">Sign in</button>
+        <p id="login-error" class="error" hidden></p>
+      </form>
+    </section>
+
+    <section id="dashboard" class="dashboard hidden">
+      <aside class="sidebar">
+        <div class="brand-block">
+          <strong>Instacertify</strong>
+          <span>Info pages</span>
+        </div>
+        <nav>
+          <button type="button" data-view="pages" class="nav-btn active">Pages</button>
+          <button type="button" data-view="settings" class="nav-btn">SEO &amp; Tracking</button>
+        </nav>
+        <button type="button" id="logout-btn" class="ghost">Sign out</button>
+      </aside>
+
+      <main>
+        <div id="pages-view">
+          <header class="toolbar">
+            <div>
+              <h2>Landing pages</h2>
+              <p>Create designs for info.instacertify.com</p>
+            </div>
+            <button type="button" id="new-page-btn">New page</button>
+          </header>
+          <div id="pages-list" class="pages-list"></div>
+        </div>
+
+        <div id="editor-view" class="hidden">
+          <header class="toolbar">
+            <div>
+              <h2 id="editor-title">Edit page</h2>
+              <p>Content, design, and page SEO</p>
+            </div>
+            <div class="actions">
+              <button type="button" id="preview-btn" class="ghost">Preview</button>
+              <button type="button" id="back-btn" class="ghost">Back</button>
+              <button type="button" id="save-btn">Save</button>
+            </div>
+          </header>
+
+          <form id="page-form" class="editor-grid">
+            <input type="hidden" id="page-id" />
+
+            <fieldset>
+              <legend>Basics</legend>
+              <label>Title <input id="title" required /></label>
+              <label>Slug <input id="slug" required placeholder="iso-9001-guide" /></label>
+              <label>Status
+                <select id="status">
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                </select>
+              </label>
+              <label>Design
+                <select id="design"></select>
+              </label>
+            </fieldset>
+
+            <fieldset>
+              <legend>Hero content</legend>
+              <label>Brand name <input id="brandName" /></label>
+              <label>Headline <input id="headline" /></label>
+              <label>Supporting sentence <textarea id="subheadline" rows="3"></textarea></label>
+              <label>CTA label <input id="ctaLabel" /></label>
+              <label>CTA URL <input id="ctaUrl" /></label>
+              <label>Hero image URL <input id="heroImage" placeholder="https://..." /></label>
+            </fieldset>
+
+            <fieldset class="full">
+              <legend>Sections</legend>
+              <p class="hint">One purpose per section: heading + short text.</p>
+              <div id="sections-list"></div>
+              <button type="button" id="add-section-btn" class="ghost">Add section</button>
+            </fieldset>
+
+            <fieldset class="full">
+              <legend>Optional HTML body</legend>
+              <textarea id="bodyHtml" rows="6" placeholder="<p>Extra content...</p>"></textarea>
+            </fieldset>
+
+            <fieldset class="full">
+              <legend>Page SEO</legend>
+              <div class="two-col">
+                <label>SEO title <input id="seoTitle" /></label>
+                <label>Robots
+                  <select id="seoRobots">
+                    <option value="index,follow">index,follow</option>
+                    <option value="noindex,follow">noindex,follow</option>
+                    <option value="index,nofollow">index,nofollow</option>
+                    <option value="noindex,nofollow">noindex,nofollow</option>
+                  </select>
+                </label>
+                <label class="full">Meta description <textarea id="seoDescription" rows="3"></textarea></label>
+                <label>Keywords <input id="seoKeywords" placeholder="iso, certification, audit" /></label>
+                <label>Canonical URL <input id="seoCanonical" placeholder="https://info.instacertify.com/slug" /></label>
+                <label>OG image URL <input id="seoOgImage" /></label>
+                <label class="full">Custom head tags/scripts
+                  <textarea id="seoCustomHead" rows="4" placeholder="<meta ...> or <script>...</script>"></textarea>
+                </label>
+              </div>
+            </fieldset>
+          </form>
+          <p id="editor-status" class="status" hidden></p>
+        </div>
+
+        <div id="settings-view" class="hidden">
+          <header class="toolbar">
+            <div>
+              <h2>SEO &amp; tracking</h2>
+              <p>Site-wide Analytics, Tag Manager, and verification links</p>
+            </div>
+            <button type="button" id="save-settings-btn">Save settings</button>
+          </header>
+
+          <form id="settings-form" class="settings-form">
+            <fieldset>
+              <legend>Brand defaults</legend>
+              <label>Site name <input id="site_name" /></label>
+              <label>Default OG image <input id="default_og_image" /></label>
+              <label>Favicon URL <input id="favicon_url" /></label>
+            </fieldset>
+
+            <fieldset>
+              <legend>Google &amp; Meta tracking</legend>
+              <label>Google Analytics ID <input id="google_analytics_id" placeholder="G-XXXXXXXXXX" /></label>
+              <label>Google Tag Manager ID <input id="google_tag_manager_id" placeholder="GTM-XXXXXXX" /></label>
+              <label>Facebook Pixel ID <input id="facebook_pixel_id" placeholder="1234567890" /></label>
+              <label>Google Search Console verification
+                <input id="google_search_console_meta" placeholder="verification token only" />
+              </label>
+            </fieldset>
+
+            <fieldset>
+              <legend>Custom scripts / links</legend>
+              <label>Custom head scripts
+                <textarea id="custom_head_scripts" rows="5" placeholder="Paste GA/GTM alternatives, verification tags, or link tags"></textarea>
+              </label>
+              <label>Custom body scripts
+                <textarea id="custom_body_scripts" rows="5" placeholder="Paste noscript or body-end tracking snippets"></textarea>
+              </label>
+            </fieldset>
+          </form>
+          <p id="settings-status" class="status" hidden></p>
+        </div>
+      </main>
+    </section>
+  </div>
+  <script src="/admin/app.js"></script>
+</body>
+</html>
