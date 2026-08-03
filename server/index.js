@@ -7,6 +7,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const api = require("./routes/api");
 const { getPageBySlug, getSettings, listPages } = require("./db");
+const { resolveTemplate } = require("./designs/registry");
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -95,11 +96,7 @@ app.get("/:slug", (req, res) => {
 
 function renderLanding(res, page, isPreview) {
   const settings = getSettings();
-  const design = ["service", "trust", "bold", "minimal", "signal"].includes(
-    page.design
-  )
-    ? page.design
-    : "trust";
+  const design = resolveTemplate(page.design);
 
   const seoTitle = page.seo.title || page.title;
   const seoDescription = page.seo.description || page.subheadline;

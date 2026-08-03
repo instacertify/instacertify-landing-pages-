@@ -1,15 +1,21 @@
 # Instacertify Landing Pages
 
-Small frontend + backend for publishing SEO landing pages on **info.instacertify.com**.
+Small frontend + backend for publishing SEO/Ads landing pages on **info.instacertify.com**.
+
+## System rule
+
+- **Same backend** for every landing page (pages, `content_json`, leads, SEO, tracking)
+- **Unique design structure** per campaign when requested (new template + registry entry)
+- **Complete edit space** in admin: hero, chrome/theme, content blocks, SEO, advanced JSON
+
+See [`docs/LANDING-PAGE-SYSTEM.md`](docs/LANDING-PAGE-SYSTEM.md).
 
 ## What you get
 
 - Admin UI at `/admin` to create, edit, publish, and delete pages
-- 5 design templates: **Service**, **Trust**, **Bold**, **Minimal**, **Signal**
-- **Service** design for compliance/lead-gen pages with a locked format (offer → hero+form → stats → section nav → content blocks → CTA). See [`docs/SERVICE-FORMAT.md`](docs/SERVICE-FORMAT.md).
+- Design registry: **Battery** (unique SDS/MSDS/UN38.3), **Service**, **Trust**, **Bold**, **Minimal**, **Signal**
 - Lead capture with UTM/gclid storage, admin leads inbox, optional webhook
-- Per-page SEO: title, description, keywords, canonical, robots, OG image, custom head, FAQ schema
-- Site-wide tracking settings: Google Analytics, Google Tag Manager, Facebook Pixel, Search Console verification, custom head/body scripts
+- Per-page SEO + site-wide GA / GTM / Pixel / Search Console / custom scripts
 - Public pages at `/:slug`, previews at `/preview/:slug`
 - `robots.txt` and `sitemap.xml` for published pages
 
@@ -38,33 +44,30 @@ npm start
 ## Admin workflow
 
 1. Sign in at `/admin`
-2. Create a page, choose **Service** for lead-gen/compliance landers (or another design)
-3. Fill hero content, trust points, process, documents, FAQs, and SEO
+2. Create a page and choose a design (unique campaign designs are marked ★)
+3. Edit hero, chrome/theme, lead-gen blocks, advanced JSON, and SEO
 4. Publish when ready
-5. Under **SEO & Tracking**, add GA / GTM / Pixel IDs, support phone/WhatsApp, and optional lead webhook
+5. Under **SEO & Tracking**, add GA / GTM / Pixel IDs and support contacts
 6. Review form submissions under **Leads**
 
-Sample seed pages: `/sds-certificate` (primary Ads LP), `/lmpc-registration`, `/bis-registration`
+Sample seed pages: `/sds-certificate` (Battery design), `/lmpc-registration`, `/bis-registration`
 
 ### Primary Ads page: `/sds-certificate`
-Focus keywords from Google Keyword Stats: **msds cert** (highest volume), SDS certification, MSDS certificate for export/chemicals, plus **UN38.3** for battery shipping. Includes Instacertify logo, teal/orange brand, legal name, phone, and email for Google landing-page contact clarity.
 
-## Service formatting checklist
+Unique **Battery** design. Focus keywords: **msds cert**, SDS certification, MSDS certificate for export/chemicals, plus **UN38.3** for battery shipping. Complete solution positioning with Instacertify contacts for Google landing-page clarity.
 
-When creating a new Service page in admin, fill in this order:
+## Adding another unique landing page
 
-1. Offer banner + badge + headline + subheadline  
-2. Form title/subtitle + service options + trust points  
-3. Hero stats  
-4. Overview sections  
-5. Schemes → timelines → products → benefits → documents → procedure → risks → FAQs  
-6. SEO title/description/keywords  
+1. Register design in `server/designs/registry.js`
+2. Add `server/views/templates/<name>.ejs` using the shared `page.content` fields
+3. Create/seed the page in admin (same backend fields)
 
-Full field map: [`docs/SERVICE-FORMAT.md`](docs/SERVICE-FORMAT.md)
+Service format checklist: [`docs/SERVICE-FORMAT.md`](docs/SERVICE-FORMAT.md)
 
 ## API
 
 - `POST /api/auth/login` `{ "password": "..." }`
+- `GET /api/designs`
 - `GET /api/pages` / `POST /api/pages` / `PUT /api/pages/:id` / `DELETE /api/pages/:id`
 - `GET /api/settings` / `PUT /api/settings`
 - `GET /api/leads` (auth)

@@ -17,44 +17,16 @@ const {
   destroySession,
   isAuthenticated,
 } = require("../auth");
+const { listDesigns } = require("../designs/registry");
 
 const router = express.Router();
-
-const DESIGNS = [
-  {
-    id: "service",
-    name: "Service",
-    description:
-      "Lead-gen layout inspired by compliance landing pages: hero form, process, docs, FAQs.",
-  },
-  {
-    id: "trust",
-    name: "Trust",
-    description: "Warm, credible certification feel with strong brand hero.",
-  },
-  {
-    id: "bold",
-    name: "Bold",
-    description: "High-contrast conversion layout with sharp type.",
-  },
-  {
-    id: "minimal",
-    name: "Minimal",
-    description: "Clean editorial layout focused on clarity.",
-  },
-  {
-    id: "signal",
-    name: "Signal",
-    description: "Modern teal tech aesthetic for product explainers.",
-  },
-];
 
 router.get("/health", (_req, res) => {
   res.json({ ok: true });
 });
 
 router.get("/designs", (_req, res) => {
-  res.json(DESIGNS);
+  res.json(listDesigns());
 });
 
 router.get("/auth/me", (req, res) => {

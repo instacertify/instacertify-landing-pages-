@@ -79,6 +79,7 @@
               <label>Design
                 <select id="design"></select>
               </label>
+              <p id="design-hint" class="hint full">Same shared backend for every page. Each new landing page can use a unique design structure.</p>
             </fieldset>
 
             <fieldset>
@@ -91,6 +92,46 @@
               <label>Hero image URL <input id="heroImage" placeholder="https://..." /></label>
             </fieldset>
 
+            <fieldset class="full" id="chrome-fieldset">
+              <legend>Page chrome &amp; theme (complete edit)</legend>
+              <p class="hint">Edit logos, brand wordmark, colors, side rail, bottom CTA, form labels, and footer for this page.</p>
+              <div class="two-col">
+                <label>Brand prefix <input id="brandPrefix" placeholder="Insta" /></label>
+                <label>Brand suffix <input id="brandSuffix" placeholder="certify" /></label>
+                <label>Logo (light bg) URL <input id="logoLightUrl" /></label>
+                <label>Logo (dark bg) URL <input id="logoDarkUrl" /></label>
+                <label>Theme brand color <input id="themeBrand" placeholder="#00557A" /></label>
+                <label>Theme accent color <input id="themeAccent" placeholder="#F27121" /></label>
+                <label>Theme ink color <input id="themeInk" placeholder="#122033" /></label>
+                <label>Theme background <input id="themeBg" placeholder="#f7faf9" /></label>
+                <label>Side rail title <input id="sideRailTitle" /></label>
+                <label>Side help title <input id="sideHelpTitle" /></label>
+                <label class="full">Side rail text <textarea id="sideRailText" rows="2"></textarea></label>
+                <label class="full">Side help text <textarea id="sideHelpText" rows="2"></textarea></label>
+                <label>Bottom CTA text <input id="bottomCtaTextChrome" /></label>
+                <label>Bottom CTA subtitle <input id="bottomCtaSubtitle" /></label>
+                <label class="full">FAQ intro <input id="faqsIntro" /></label>
+                <label class="full">Footer blurb <textarea id="footerBlurb" rows="2"></textarea></label>
+                <label>Form name label <input id="formNameLabel" /></label>
+                <label>Form phone label <input id="formPhoneLabel" /></label>
+                <label>Form email label <input id="formEmailLabel" /></label>
+                <label>Form city label <input id="formCityLabel" /></label>
+                <label>Form service label <input id="formServiceLabel" /></label>
+                <label>Form message label <input id="formMessageLabel" /></label>
+                <label>Nav overview <input id="navOverview" /></label>
+                <label>Nav types <input id="navTypes" /></label>
+                <label>Nav timelines <input id="navTimelines" /></label>
+                <label>Nav products <input id="navProducts" /></label>
+                <label>Nav benefits <input id="navBenefits" /></label>
+                <label>Nav documents <input id="navDocuments" /></label>
+                <label>Nav procedure <input id="navProcedure" /></label>
+                <label>Nav risks <input id="navRisks" /></label>
+                <label>Nav why us <input id="navWhy" /></label>
+                <label>Nav FAQs <input id="navFaqs" /></label>
+                <label class="full">Pillars title <input id="pillarsTitle" /></label>
+              </div>
+            </fieldset>
+
             <fieldset class="full">
               <legend>Sections</legend>
               <p class="hint">One purpose per section: heading + short text.</p>
@@ -98,9 +139,9 @@
               <button type="button" id="add-section-btn" class="ghost">Add section</button>
             </fieldset>
 
-            <fieldset class="full">
-              <legend>Service / lead-gen content</legend>
-              <p class="hint">Best with the Service design. Inspired by compliance landing pages: form, trust points, process, docs, FAQs.</p>
+            <fieldset class="full" id="leadgen-fieldset">
+              <legend>Lead-gen content blocks</legend>
+              <p class="hint">Shared content model for Service / Battery designs: form, trust points, process, docs, FAQs. Completely editable here.</p>
               <div class="two-col">
                 <label>Top offer banner <input id="offerBanner" placeholder="Limited Offer — Free Expert Consultation" /></label>
                 <label>Badge text <input id="badgeText" placeholder="Includes free support" /></label>
@@ -128,6 +169,7 @@
                 </label>
                 <label class="full"><span><input type="checkbox" id="formEnabled" checked /> Enable lead form</span></label>
                 <label class="full">Bottom CTA text <input id="bottomCtaText" /></label>
+                <p class="hint full">Tip: bottom CTA subtitle, side rail, logos, and colors are under “Page chrome &amp; theme”.</p>
               </div>
 
               <div class="repeater-block">
@@ -250,6 +292,13 @@
             <fieldset class="full">
               <legend>Optional HTML body</legend>
               <textarea id="bodyHtml" rows="6" placeholder="<p>Extra content...</p>"></textarea>
+            </fieldset>
+
+            <fieldset class="full" id="advanced-json-fieldset">
+              <legend>Advanced: complete content JSON</legend>
+              <p class="hint">Full edit space for every content field on this page. On save, this JSON merges into the page content (form fields above win when both set). Use for custom keys or bulk edits.</p>
+              <textarea id="contentJsonRaw" rows="14" spellcheck="false" placeholder="{ }"></textarea>
+              <p id="content-json-status" class="hint" hidden></p>
             </fieldset>
 
             <fieldset class="full">

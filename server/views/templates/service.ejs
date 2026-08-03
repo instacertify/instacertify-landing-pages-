@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <% const c = page.content || {}; %>
   <%- include('../partials/head') %>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --ink: #122033;
+      --ink: <%= c.themeInk || '#122033' %>;
       --muted: #5b6b7c;
-      --brand: #00557A;
+      --brand: <%= c.themeBrand || '#00557A' %>;
       --brand-deep: #003f5c;
-      --accent: #F27121;
+      --accent: <%= c.themeAccent || '#F27121' %>;
       --accent-ink: #3d1d08;
       --soft: #e8f3f8;
       --panel: #ffffff;
@@ -24,7 +25,7 @@
       margin: 0;
       font-family: Manrope, sans-serif;
       color: var(--ink);
-      background: #f7faf9;
+      background: <%= c.themeBg || '#f7faf9' %>;
     }
     a { color: inherit; text-decoration: none; }
     .preview-banner {
@@ -633,22 +634,25 @@
   <%- include('../partials/body-scripts') %>
   <% if (isPreview) { %><div class="preview-banner">Preview — not indexed</div><% } %>
 
-  <% const c = page.content || {}; %>
   <% const phone = c.phone || settings.support_phone; %>
   <% const whatsapp = c.whatsapp || settings.support_whatsapp; %>
   <% const email = settings.support_email || 'contact@instacertify.com'; %>
   <% const legalName = settings.legal_name || 'Instacertify Labs Private Limited'; %>
+  <% const logoLight = c.logoLightUrl || '/assets/instacertify-logo-light.svg'; %>
+  <% const logoDark = c.logoDarkUrl || '/assets/instacertify-logo.svg'; %>
+  <% const brandPrefix = c.brandPrefix || 'Insta'; %>
+  <% const brandSuffix = c.brandSuffix || 'certify'; %>
   <% const nav = []; %>
-  <% if (page.sections && page.sections.length) nav.push({ id: 'overview', label: 'Overview' }); %>
-  <% if (c.types && c.types.length) nav.push({ id: 'types', label: 'Schemes' }); %>
-  <% if (c.timelines && c.timelines.length) nav.push({ id: 'timelines', label: 'Timelines' }); %>
-  <% if (c.products && c.products.length) nav.push({ id: 'products', label: 'Products' }); %>
-  <% if (c.benefits && c.benefits.length) nav.push({ id: 'benefits', label: 'Benefits' }); %>
-  <% if (c.documents && c.documents.length) nav.push({ id: 'documents', label: 'Documents' }); %>
-  <% if ((c.detailProcess && c.detailProcess.length) || (c.process && c.process.length)) nav.push({ id: 'procedure', label: 'Procedure' }); %>
-  <% if (c.penalties && c.penalties.length) nav.push({ id: 'penalties', label: 'Risks' }); %>
-  <% if (c.whyUs && c.whyUs.length) nav.push({ id: 'why', label: 'Why us' }); %>
-  <% if (c.faqs && c.faqs.length) nav.push({ id: 'faqs', label: 'FAQs' }); %>
+  <% if (page.sections && page.sections.length) nav.push({ id: 'overview', label: c.navOverview || 'Overview' }); %>
+  <% if (c.types && c.types.length) nav.push({ id: 'types', label: c.navTypes || 'Schemes' }); %>
+  <% if (c.timelines && c.timelines.length) nav.push({ id: 'timelines', label: c.navTimelines || 'Timelines' }); %>
+  <% if (c.products && c.products.length) nav.push({ id: 'products', label: c.navProducts || 'Products' }); %>
+  <% if (c.benefits && c.benefits.length) nav.push({ id: 'benefits', label: c.navBenefits || 'Benefits' }); %>
+  <% if (c.documents && c.documents.length) nav.push({ id: 'documents', label: c.navDocuments || 'Documents' }); %>
+  <% if ((c.detailProcess && c.detailProcess.length) || (c.process && c.process.length)) nav.push({ id: 'procedure', label: c.navProcedure || 'Procedure' }); %>
+  <% if (c.penalties && c.penalties.length) nav.push({ id: 'penalties', label: c.navRisks || 'Risks' }); %>
+  <% if (c.whyUs && c.whyUs.length) nav.push({ id: 'why', label: c.navWhy || 'Why us' }); %>
+  <% if (c.faqs && c.faqs.length) nav.push({ id: 'faqs', label: c.navFaqs || 'FAQs' }); %>
 
   <% if (c.offerBanner) { %>
   <div class="offer-strip"><%= c.offerBanner %></div>
@@ -663,7 +667,7 @@
 
   <div class="topbar">
     <a href="/" aria-label="<%= page.brandName %> home">
-      <img class="brand-logo" src="/assets/instacertify-logo-light.svg" alt="<%= page.brandName %> — certifications made simple" width="200" height="42" />
+      <img class="brand-logo" src="<%= logoLight %>" alt="<%= page.brandName %> — certifications made simple" width="200" height="42" />
     </a>
     <div class="topbar-actions">
       <% if (phone) { %><a class="btn btn-soft" href="tel:<%= String(phone).replace(/\s/g, '') %>"><%= phone %></a><% } %>
@@ -675,7 +679,7 @@
     <div class="hero-main">
       <div class="hero-copy">
         <% if (c.badgeText) { %><div class="badge"><%= c.badgeText %></div><% } %>
-        <p class="brand"><span style="color:#7ec8e3">Insta</span><span style="color:#ffb07a">certify</span></p>
+        <p class="brand"><span style="color:var(--brand)"><%= brandPrefix %></span><span style="color:var(--accent)"><%= brandSuffix %></span></p>
         <% if (page.headline) { %>
           <h1 class="headline">
             <%= page.headline %>
@@ -700,22 +704,22 @@
       <p class="hint"><%= c.formSubtitle || page.title %></p>
       <form id="service-lead-form">
         <input type="hidden" name="pageSlug" value="<%= page.slug %>" />
-        <label class="field"><span>Full name</span>
-          <input name="name" required autocomplete="name" placeholder="Your Full Name" />
+        <label class="field"><span><%= c.formNameLabel || 'Full name' %></span>
+          <input name="name" required autocomplete="name" placeholder="<%= c.formNamePlaceholder || 'Your Full Name' %>" />
         </label>
-        <label class="field"><span>Mobile</span>
-          <input name="phone" required autocomplete="tel" placeholder="Mobile Number" />
+        <label class="field"><span><%= c.formPhoneLabel || 'Mobile' %></span>
+          <input name="phone" required autocomplete="tel" placeholder="<%= c.formPhonePlaceholder || 'Mobile Number' %>" />
         </label>
-        <label class="field"><span>Email</span>
-          <input type="email" name="email" required autocomplete="email" placeholder="Email Address" />
+        <label class="field"><span><%= c.formEmailLabel || 'Email' %></span>
+          <input type="email" name="email" required autocomplete="email" placeholder="<%= c.formEmailPlaceholder || 'Email Address' %>" />
         </label>
-        <label class="field"><span>City</span>
-          <input name="city" autocomplete="address-level2" placeholder="City" />
+        <label class="field"><span><%= c.formCityLabel || 'City' %></span>
+          <input name="city" autocomplete="address-level2" placeholder="<%= c.formCityPlaceholder || 'City' %>" />
         </label>
         <% if (c.serviceOptions && c.serviceOptions.length) { %>
-          <label class="field"><span>Certification type</span>
+          <label class="field"><span><%= c.formServiceLabel || 'Certification type' %></span>
             <select name="service" required>
-              <option value="">Select Certification Type</option>
+              <option value=""><%= c.formServicePlaceholder || 'Select Certification Type' %></option>
               <% c.serviceOptions.forEach(function(option) { %>
                 <option value="<%= option %>"><%= option %></option>
               <% }) %>
@@ -724,8 +728,8 @@
         <% } else { %>
           <input type="hidden" name="service" value="<%= page.title %>" />
         <% } %>
-        <label class="field"><span>Requirement</span>
-          <textarea name="message" rows="3" placeholder="Product / brand / requirement"></textarea>
+        <label class="field"><span><%= c.formMessageLabel || 'Requirement' %></span>
+          <textarea name="message" rows="3" placeholder="<%= c.formMessagePlaceholder || 'Product / brand / requirement' %>"></textarea>
         </label>
         <button class="btn btn-brand" type="submit"><%= c.formSubmitLabel || 'Get Free Expert Consultation' %></button>
       </form>
@@ -964,7 +968,7 @@
       <% if (c.faqs && c.faqs.length) { %>
       <section class="block" id="faqs">
         <h2><%= c.faqsTitle || 'Frequently Asked Questions' %></h2>
-        <p class="block-lead">Quick answers to common questions about this service.</p>
+        <p class="block-lead"><%= c.faqsIntro || 'Quick answers to common questions about this service.' %></p>
         <% c.faqs.forEach(function(faq) { %>
           <details>
             <summary><%= faq.q %></summary>
@@ -981,14 +985,14 @@
 
     <aside class="side-rail">
       <div class="side-card">
-        <h3>Why wait? Start now!</h3>
-        <p>Get free guidance on the right service, documents, and timeline.</p>
+        <h3><%= c.sideRailTitle || 'Why wait? Start now!' %></h3>
+        <p><%= c.sideRailText || 'Get free guidance on the right service, documents, and timeline.' %></p>
         <a class="btn btn-brand" href="#lead-form"><%= c.formSubmitLabel || 'Get Free Consultation' %></a>
       </div>
       <% if (phone || whatsapp) { %>
       <div class="side-card">
-        <h3>Need help?</h3>
-        <p>Talk to an expert for document checklist and filing support.</p>
+        <h3><%= c.sideHelpTitle || 'Need help?' %></h3>
+        <p><%= c.sideHelpText || 'Talk to an expert for document checklist and filing support.' %></p>
         <% if (phone) { %><a class="btn btn-soft" href="tel:<%= phone %>" style="margin-bottom:0.5rem;">Call <%= phone %></a><% } %>
         <% if (whatsapp) { %>
           <a class="btn btn-brand" href="https://wa.me/<%= String(whatsapp).replace(/\D/g, '') %>" target="_blank" rel="noopener">WhatsApp</a>
@@ -1000,19 +1004,19 @@
 
   <section class="bottom-cta">
     <h2><%= c.bottomCtaText || 'Talk to an expert' %></h2>
-    <p>Get free guidance on the right LMPC pathway, improved documents & timeline.</p>
+    <p><%= c.bottomCtaSubtitle || 'Get free guidance on the right pathway, documents, and timeline.' %></p>
     <a class="btn btn-brand" href="#lead-form"><%= c.formSubmitLabel || 'Get Free Consultation' %></a>
   </section>
 
   <footer class="site-footer">
     <div class="site-footer-inner">
-      <img class="brand-logo" src="/assets/instacertify-logo.svg" alt="Instacertify" width="200" height="46" style="height:46px;background:#0b0b0f;border-radius:0.35rem;" />
+      <img class="brand-logo" src="<%= logoDark %>" alt="<%= page.brandName || 'Instacertify' %>" width="200" height="46" style="height:46px;background:#0b0b0f;border-radius:0.35rem;" />
       <p><strong><%= legalName %></strong></p>
       <p>
         Email: <a href="mailto:<%= email %>"><%= email %></a>
         <% if (phone) { %> · Phone: <a href="tel:<%= String(phone).replace(/\s/g, '') %>"><%= phone %></a><% } %>
       </p>
-      <p>Service page focus: <%= page.title %>. Details shown here match the service offered on this page.</p>
+      <p><%= c.footerBlurb || ('Service page focus: ' + page.title + '. Details shown here match the service offered on this page.') %></p>
       <p class="policy-note">© <%= new Date().getFullYear() %> <%= legalName %>. Contact us before purchase for scope, timelines, and commercials. No placeholder or misleading offers.</p>
     </div>
   </footer>

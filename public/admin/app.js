@@ -124,9 +124,148 @@ function renderDesignOptions() {
   els.design.innerHTML = state.designs
     .map(
       (d) =>
-        `<option value="${d.id}">${d.name} — ${d.description}</option>`
+        `<option value="${d.id}">${d.name}${d.unique ? " ★" : ""} — ${d.description}</option>`
     )
     .join("");
+}
+
+function currentDesignMeta() {
+  return state.designs.find((d) => d.id === els.design.value) || null;
+}
+
+function updateDesignUi() {
+  const design = currentDesignMeta();
+  const hint = document.getElementById("design-hint");
+  if (hint) {
+    if (!design) {
+      hint.textContent =
+        "Same shared backend for every page. Each new landing page can use a unique design structure.";
+    } else {
+      hint.textContent = `${design.description} Family: ${design.family}. ${
+        design.unique
+          ? "Unique structure for this campaign type."
+          : "Reusable shared template."
+      } Backend fields stay the same so you can completely edit content here.`;
+    }
+  }
+  const leadgen = document.getElementById("leadgen-fieldset");
+  const chrome = document.getElementById("chrome-fieldset");
+  const isLeadgen = !design || design.family === "leadgen";
+  if (leadgen) leadgen.classList.toggle("hidden", !isLeadgen);
+  if (chrome) chrome.classList.toggle("hidden", !isLeadgen);
+}
+
+function setChromeFields(content = {}) {
+  const map = {
+    brandPrefix: content.brandPrefix || "Insta",
+    brandSuffix: content.brandSuffix || "certify",
+    logoLightUrl: content.logoLightUrl || "/assets/instacertify-logo-light.svg",
+    logoDarkUrl: content.logoDarkUrl || "/assets/instacertify-logo.svg",
+    themeBrand: content.themeBrand || "#00557A",
+    themeAccent: content.themeAccent || "#F27121",
+    themeInk: content.themeInk || "#122033",
+    themeBg: content.themeBg || "#f7faf9",
+    sideRailTitle: content.sideRailTitle || "",
+    sideRailText: content.sideRailText || "",
+    sideHelpTitle: content.sideHelpTitle || "",
+    sideHelpText: content.sideHelpText || "",
+    bottomCtaTextChrome: content.bottomCtaText || "",
+    bottomCtaSubtitle: content.bottomCtaSubtitle || "",
+    faqsIntro: content.faqsIntro || "",
+    footerBlurb: content.footerBlurb || "",
+    formNameLabel: content.formNameLabel || "Full name",
+    formPhoneLabel: content.formPhoneLabel || "Mobile",
+    formEmailLabel: content.formEmailLabel || "Email",
+    formCityLabel: content.formCityLabel || "City",
+    formServiceLabel: content.formServiceLabel || "Certification type",
+    formMessageLabel: content.formMessageLabel || "Requirement",
+    navOverview: content.navOverview || "Overview",
+    navTypes: content.navTypes || "Schemes",
+    navTimelines: content.navTimelines || "Timelines",
+    navProducts: content.navProducts || "Products",
+    navBenefits: content.navBenefits || "Benefits",
+    navDocuments: content.navDocuments || "Documents",
+    navProcedure: content.navProcedure || "Procedure",
+    navRisks: content.navRisks || "Risks",
+    navWhy: content.navWhy || "Why us",
+    navFaqs: content.navFaqs || "FAQs",
+    pillarsTitle: content.pillarsTitle || "Complete solution pillars",
+  };
+  Object.entries(map).forEach(([id, value]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = value;
+  });
+}
+
+function collectChromeFields() {
+  const val = (id) => document.getElementById(id)?.value.trim() || "";
+  return {
+    brandPrefix: val("brandPrefix"),
+    brandSuffix: val("brandSuffix"),
+    logoLightUrl: val("logoLightUrl"),
+    logoDarkUrl: val("logoDarkUrl"),
+    themeBrand: val("themeBrand"),
+    themeAccent: val("themeAccent"),
+    themeInk: val("themeInk"),
+    themeBg: val("themeBg"),
+    sideRailTitle: val("sideRailTitle"),
+    sideRailText: val("sideRailText"),
+    sideHelpTitle: val("sideHelpTitle"),
+    sideHelpText: val("sideHelpText"),
+    bottomCtaSubtitle: val("bottomCtaSubtitle"),
+    faqsIntro: val("faqsIntro"),
+    footerBlurb: val("footerBlurb"),
+    formNameLabel: val("formNameLabel"),
+    formPhoneLabel: val("formPhoneLabel"),
+    formEmailLabel: val("formEmailLabel"),
+    formCityLabel: val("formCityLabel"),
+    formServiceLabel: val("formServiceLabel"),
+    formMessageLabel: val("formMessageLabel"),
+    navOverview: val("navOverview"),
+    navTypes: val("navTypes"),
+    navTimelines: val("navTimelines"),
+    navProducts: val("navProducts"),
+    navBenefits: val("navBenefits"),
+    navDocuments: val("navDocuments"),
+    navProcedure: val("navProcedure"),
+    navRisks: val("navRisks"),
+    navWhy: val("navWhy"),
+    navFaqs: val("navFaqs"),
+    pillarsTitle: val("pillarsTitle"),
+  };
+}
+
+function syncContentJsonRaw(content) {
+  const el = document.getElementById("contentJsonRaw");
+  if (!el) return;
+  el.value = JSON.stringify(content || {}, null, 2);
+  const status = document.getElementById("content-json-status");
+  if (status) status.hidden = true;
+}
+
+function parseContentJsonRaw() {
+  const el = document.getElementById("contentJsonRaw");
+  const status = document.getElementById("content-json-status");
+  if (!el || !el.value.trim()) return {};
+  try {
+    const parsed = JSON.parse(el.value);
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      throw new Error("Content JSON must be an object");
+    }
+    if (status) {
+      status.hidden = false;
+      status.textContent = "Advanced JSON looks valid.";
+      status.style.color = "var(--accent-ink)";
+    }
+    return parsed;
+  } catch (error) {
+    if (status) {
+      status.hidden = false;
+      status.textContent = error.message;
+      status.style.color = "var(--danger)";
+    }
+    throw new Error(`Advanced content JSON: ${error.message}`);
+  }
 }
 
 function renderPages() {
@@ -525,6 +664,41 @@ function blankPage() {
       faqsTitle: "Frequently Asked Questions",
       faqs: [],
       bottomCtaText: "Talk to an expert",
+      bottomCtaSubtitle:
+        "Get free guidance on the right pathway, documents, and timeline.",
+      brandPrefix: "Insta",
+      brandSuffix: "certify",
+      logoLightUrl: "/assets/instacertify-logo-light.svg",
+      logoDarkUrl: "/assets/instacertify-logo.svg",
+      themeBrand: "#00557A",
+      themeAccent: "#F27121",
+      themeInk: "#122033",
+      themeBg: "#f7faf9",
+      sideRailTitle: "Why wait? Start now!",
+      sideRailText:
+        "Get free guidance on the right service, documents, and timeline.",
+      sideHelpTitle: "Need help?",
+      sideHelpText:
+        "Talk to an expert for document checklist and filing support.",
+      faqsIntro: "Quick answers to common questions about this service.",
+      footerBlurb: "",
+      formNameLabel: "Full name",
+      formPhoneLabel: "Mobile",
+      formEmailLabel: "Email",
+      formCityLabel: "City",
+      formServiceLabel: "Certification type",
+      formMessageLabel: "Requirement",
+      navOverview: "Overview",
+      navTypes: "Schemes",
+      navTimelines: "Timelines",
+      navProducts: "Products",
+      navBenefits: "Benefits",
+      navDocuments: "Documents",
+      navProcedure: "Procedure",
+      navRisks: "Risks",
+      navWhy: "Why us",
+      navFaqs: "FAQs",
+      pillarsTitle: "Complete solution pillars",
     },
     seo: {
       title: "",
@@ -629,6 +803,7 @@ function fillEditor(page) {
     content.formSuccessMessage || "";
   document.getElementById("formEnabled").checked = content.formEnabled !== false;
   document.getElementById("bottomCtaText").value = content.bottomCtaText || "";
+  setChromeFields(content);
   document.getElementById("processTitle").value = content.processTitle || "";
   document.getElementById("licencesTitle").value = content.licencesTitle || "";
   document.getElementById("typesTitle").value = content.typesTitle || "";
@@ -654,6 +829,8 @@ function fillEditor(page) {
   document.getElementById("seoCustomHead").value = page.seo?.customHead || "";
   els.editorStatus.hidden = true;
 
+  updateDesignUi();
+  syncContentJsonRaw(content);
   renderSections();
   renderHeroStats();
   renderProcess();
@@ -671,6 +848,13 @@ function fillEditor(page) {
 }
 
 function collectPagePayload() {
+  const advanced = parseContentJsonRaw();
+  const chrome = collectChromeFields();
+  const formBottomCta = document.getElementById("bottomCtaText").value.trim();
+  const chromeBottomCta = document
+    .getElementById("bottomCtaTextChrome")
+    .value.trim();
+
   return {
     title: document.getElementById("title").value.trim(),
     slug: document.getElementById("slug").value.trim(),
@@ -685,6 +869,8 @@ function collectPagePayload() {
     bodyHtml: document.getElementById("bodyHtml").value,
     sections: state.sections,
     content: {
+      ...advanced,
+      ...chrome,
       phone: document.getElementById("contentPhone").value.trim(),
       whatsapp: document.getElementById("contentWhatsapp").value.trim(),
       headlineHighlight: document
@@ -741,7 +927,7 @@ function collectPagePayload() {
       whyUs: state.whyUs,
       faqsTitle: document.getElementById("faqsTitle").value.trim(),
       faqs: state.faqs,
-      bottomCtaText: document.getElementById("bottomCtaText").value.trim(),
+      bottomCtaText: formBottomCta || chromeBottomCta,
     },
     seo: {
       title: document.getElementById("seoTitle").value.trim(),
@@ -805,6 +991,7 @@ async function bootstrapAuthed() {
   ]);
   state.designs = designs;
   renderDesignOptions();
+  updateDesignUi();
   fillSettings(settings);
   await loadPages();
   showView("pages");
@@ -838,6 +1025,14 @@ els.navButtons.forEach((btn) => {
 els.newPageBtn.addEventListener("click", () => openEditor(null));
 els.backBtn.addEventListener("click", () => showView("pages"));
 els.refreshLeadsBtn.addEventListener("click", () => loadLeads());
+els.design.addEventListener("change", updateDesignUi);
+document.getElementById("contentJsonRaw")?.addEventListener("blur", () => {
+  try {
+    parseContentJsonRaw();
+  } catch {
+    /* status already shown */
+  }
+});
 
 els.addSectionBtn.addEventListener("click", () => {
   state.sections.push({ heading: "", text: "" });
