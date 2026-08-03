@@ -102,19 +102,31 @@
               <legend>Service / lead-gen content</legend>
               <p class="hint">Best with the Service design. Inspired by compliance landing pages: form, trust points, process, docs, FAQs.</p>
               <div class="two-col">
-                <label>Headline highlight <input id="headlineHighlight" placeholder="100% @ Lowest Price Today" /></label>
+                <label>Badge text <input id="badgeText" placeholder="Includes free support" /></label>
+                <label>Rating text <input id="ratingText" placeholder="Rated 4.9 by customers" /></label>
+                <label>Headline highlight <input id="headlineHighlight" placeholder="optional accent text" /></label>
+                <label>Expert name <input id="expertName" placeholder="Talk to Instacertify" /></label>
+                <label>Expert note <input id="expertNote" placeholder="We are available 24/7." /></label>
                 <label>Page phone <input id="contentPhone" placeholder="+91..." /></label>
                 <label>Page WhatsApp <input id="contentWhatsapp" placeholder="91..." /></label>
-                <label>Offer text <input id="offerText" placeholder="Limited festive offer" /></label>
-                <label>Offer price <input id="offerPrice" placeholder="From ₹18,999" /></label>
+                <label>Offer text <input id="offerText" placeholder="Optional promo text" /></label>
+                <label>Offer price <input id="offerPrice" placeholder="Optional price text" /></label>
                 <label class="full">Trust points (one per line)
-                  <textarea id="trustPoints" rows="5" placeholder="10+ years experience&#10;Same-day consultation&#10;Dedicated compliance support"></textarea>
+                  <textarea id="trustPoints" rows="4" placeholder="Document checklist before filing&#10;Dedicated support through stages"></textarea>
                 </label>
                 <label>Form title <input id="formTitle" /></label>
                 <label>Form submit label <input id="formSubmitLabel" /></label>
                 <label class="full">Form success message <input id="formSuccessMessage" /></label>
                 <label class="full"><span><input type="checkbox" id="formEnabled" checked /> Enable lead form</span></label>
                 <label class="full">Bottom CTA text <input id="bottomCtaText" /></label>
+              </div>
+
+              <div class="repeater-block">
+                <div class="repeater-head">
+                  <h3>Hero stats</h3>
+                  <button type="button" id="add-hero-stat-btn" class="ghost">Add stat</button>
+                </div>
+                <div id="hero-stats-list"></div>
               </div>
 
               <div class="repeater-block">
@@ -169,6 +181,15 @@
                 </div>
                 <label>Benefits section title <input id="benefitsTitle" /></label>
                 <div id="benefits-list"></div>
+              </div>
+
+              <div class="repeater-block">
+                <div class="repeater-head">
+                  <h3>Penalties</h3>
+                  <button type="button" id="add-penalty-btn" class="ghost">Add penalty</button>
+                </div>
+                <label>Penalties section title <input id="penaltiesTitle" /></label>
+                <div id="penalties-list"></div>
               </div>
 
               <div class="repeater-block">

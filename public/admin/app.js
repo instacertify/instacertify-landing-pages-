@@ -12,6 +12,8 @@ const state = {
   documents: [],
   detailProcess: [],
   benefits: [],
+  penalties: [],
+  heroStats: [],
   testimonials: [],
   whyUs: [],
   faqs: [],
@@ -379,6 +381,30 @@ function renderBenefits() {
   );
 }
 
+function renderPenalties() {
+  renderNamedList(
+    "penalties-list",
+    state.penalties,
+    [
+      { key: "title", label: "Penalty title" },
+      { key: "text", label: "Penalty text", type: "textarea" },
+    ],
+    renderPenalties
+  );
+}
+
+function renderHeroStats() {
+  renderNamedList(
+    "hero-stats-list",
+    state.heroStats,
+    [
+      { key: "value", label: "Stat value" },
+      { key: "label", label: "Stat label" },
+    ],
+    renderHeroStats
+  );
+}
+
 function renderTestimonials() {
   renderNamedList(
     "testimonials-list",
@@ -434,14 +460,19 @@ function blankPage() {
       phone: "",
       whatsapp: "",
       headlineHighlight: "",
+      badgeText: "Includes free support",
+      ratingText: "",
+      expertName: "",
+      expertNote: "We are available 24/7.",
       trustPoints: [],
+      heroStats: [],
       offerText: "",
       offerPrice: "",
       formEnabled: true,
-      formTitle: "Fill The Form Now!",
-      formSubmitLabel: "Proceed",
+      formTitle: "Enquiry Now",
+      formSubmitLabel: "Get Free Consultation",
       formSuccessMessage: "Thanks! Our team will contact you shortly.",
-      processTitle: "Registration Procedure",
+      processTitle: "How we work",
       process: [],
       licencesTitle: "",
       licences: [],
@@ -453,13 +484,15 @@ function blankPage() {
       detailProcess: [],
       benefitsTitle: "",
       benefits: [],
+      penaltiesTitle: "",
+      penalties: [],
       testimonialsTitle: "Testimonials",
       testimonials: [],
-      whyTitle: "Why Choose Us?",
+      whyTitle: "Why choose us?",
       whyUs: [],
-      faqsTitle: "FAQ'S",
+      faqsTitle: "Frequently Asked Questions",
       faqs: [],
-      bottomCtaText: "Book a Free Consultation",
+      bottomCtaText: "Talk to an expert",
     },
     seo: {
       title: "",
@@ -497,6 +530,12 @@ function fillEditor(page) {
   state.benefits = Array.isArray(content.benefits)
     ? content.benefits.map((s) => ({ ...s }))
     : [];
+  state.penalties = Array.isArray(content.penalties)
+    ? content.penalties.map((s) => ({ ...s }))
+    : [];
+  state.heroStats = Array.isArray(content.heroStats)
+    ? content.heroStats.map((s) => ({ ...s }))
+    : [];
   state.testimonials = Array.isArray(content.testimonials)
     ? content.testimonials.map((s) => ({ ...s }))
     : [];
@@ -523,8 +562,12 @@ function fillEditor(page) {
   document.getElementById("heroImage").value = page.heroImage || "";
   document.getElementById("bodyHtml").value = page.bodyHtml || "";
 
+  document.getElementById("badgeText").value = content.badgeText || "";
+  document.getElementById("ratingText").value = content.ratingText || "";
   document.getElementById("headlineHighlight").value =
     content.headlineHighlight || "";
+  document.getElementById("expertName").value = content.expertName || "";
+  document.getElementById("expertNote").value = content.expertNote || "";
   document.getElementById("contentPhone").value = content.phone || "";
   document.getElementById("contentWhatsapp").value = content.whatsapp || "";
   document.getElementById("offerText").value = content.offerText || "";
@@ -546,6 +589,7 @@ function fillEditor(page) {
   document.getElementById("detailProcessTitle").value =
     content.detailProcessTitle || "";
   document.getElementById("benefitsTitle").value = content.benefitsTitle || "";
+  document.getElementById("penaltiesTitle").value = content.penaltiesTitle || "";
   document.getElementById("testimonialsTitle").value =
     content.testimonialsTitle || "";
   document.getElementById("whyTitle").value = content.whyTitle || "";
@@ -562,12 +606,14 @@ function fillEditor(page) {
   els.editorStatus.hidden = true;
 
   renderSections();
+  renderHeroStats();
   renderProcess();
   renderLicences();
   renderTypes();
   renderDocuments();
   renderDetailProcess();
   renderBenefits();
+  renderPenalties();
   renderTestimonials();
   renderWhyUs();
   renderFaqs();
@@ -593,7 +639,12 @@ function collectPagePayload() {
       headlineHighlight: document
         .getElementById("headlineHighlight")
         .value.trim(),
+      badgeText: document.getElementById("badgeText").value.trim(),
+      ratingText: document.getElementById("ratingText").value.trim(),
+      expertName: document.getElementById("expertName").value.trim(),
+      expertNote: document.getElementById("expertNote").value.trim(),
       trustPoints: linesToArray(document.getElementById("trustPoints").value),
+      heroStats: state.heroStats,
       offerText: document.getElementById("offerText").value.trim(),
       offerPrice: document.getElementById("offerPrice").value.trim(),
       formEnabled: document.getElementById("formEnabled").checked,
@@ -616,6 +667,8 @@ function collectPagePayload() {
       detailProcess: state.detailProcess,
       benefitsTitle: document.getElementById("benefitsTitle").value.trim(),
       benefits: state.benefits,
+      penaltiesTitle: document.getElementById("penaltiesTitle").value.trim(),
+      penalties: state.penalties,
       testimonialsTitle: document
         .getElementById("testimonialsTitle")
         .value.trim(),
@@ -724,6 +777,10 @@ els.addSectionBtn.addEventListener("click", () => {
   state.sections.push({ heading: "", text: "" });
   renderSections();
 });
+document.getElementById("add-hero-stat-btn").addEventListener("click", () => {
+  state.heroStats.push({ value: "", label: "" });
+  renderHeroStats();
+});
 document.getElementById("add-process-btn").addEventListener("click", () => {
   state.process.push({ title: "", text: "" });
   renderProcess();
@@ -749,6 +806,10 @@ document
 document.getElementById("add-benefit-btn").addEventListener("click", () => {
   state.benefits.push({ title: "", text: "" });
   renderBenefits();
+});
+document.getElementById("add-penalty-btn").addEventListener("click", () => {
+  state.penalties.push({ title: "", text: "" });
+  renderPenalties();
 });
 
 document

@@ -6,7 +6,7 @@ Small frontend + backend for publishing SEO landing pages on **info.instacertify
 
 - Admin UI at `/admin` to create, edit, publish, and delete pages
 - 5 design templates: **Service**, **Trust**, **Bold**, **Minimal**, **Signal**
-- **Service** design for compliance/lead-gen pages (inspired by LMPC-style landers): hero + form, trust points, process, docs, benefits, testimonials, FAQs
+- **Service** design for compliance/lead-gen pages (inspired by Corpseed/LegalRaasta-style landers): sticky enquiry form, section nav, stats, docs tabs, procedure, penalties, FAQs
 - Lead capture with UTM/gclid storage, admin leads inbox, optional webhook
 - Per-page SEO: title, description, keywords, canonical, robots, OG image, custom head, FAQ schema
 - Site-wide tracking settings: Google Analytics, Google Tag Manager, Facebook Pixel, Search Console verification, custom head/body scripts
