@@ -404,9 +404,35 @@
       font-family: Sora, sans-serif;
       font-size: clamp(1.35rem, 2.4vw, 1.75rem);
       letter-spacing: -0.03em;
-      margin: 0 0 0.9rem;
+      margin: 0 0 0.55rem;
+    }
+    .block h2::after {
+      content: "";
+      display: block;
+      width: 3rem;
+      height: 3px;
+      margin-top: 0.65rem;
+      border-radius: 999px;
+      background: var(--brand);
+    }
+    .block-lead {
+      color: var(--muted);
+      line-height: 1.65;
+      margin: 0 0 1rem;
+      max-width: 62ch;
     }
     .block p { color: var(--muted); line-height: 1.7; margin: 0; }
+    .field {
+      display: grid;
+      gap: 0.3rem;
+    }
+    .field span {
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--brand-deep);
+    }
     .grid-2,
     .grid-3,
     .grid-4 { display: grid; gap: 0.85rem; }
@@ -609,7 +635,7 @@
     <strong><%= page.brandName %></strong>
     <div class="topbar-actions">
       <% if (phone) { %><a class="btn btn-soft" href="tel:<%= phone %>">Schedule a Call</a><% } %>
-      <a class="btn btn-brand" href="#lead-form"><%= page.ctaLabel || 'Talk to BIS Experts' %></a>
+      <a class="btn btn-brand" href="#lead-form"><%= page.ctaLabel || 'Get Free Consultation' %></a>
     </div>
   </div>
 
@@ -642,21 +668,33 @@
       <p class="hint"><%= c.formSubtitle || page.title %></p>
       <form id="service-lead-form">
         <input type="hidden" name="pageSlug" value="<%= page.slug %>" />
-        <input name="name" required autocomplete="name" placeholder="Your Full Name" />
-        <input name="phone" required autocomplete="tel" placeholder="Mobile Number" />
-        <input type="email" name="email" required autocomplete="email" placeholder="Email Address" />
-        <input name="city" autocomplete="address-level2" placeholder="City" />
+        <label class="field"><span>Full name</span>
+          <input name="name" required autocomplete="name" placeholder="Your Full Name" />
+        </label>
+        <label class="field"><span>Mobile</span>
+          <input name="phone" required autocomplete="tel" placeholder="Mobile Number" />
+        </label>
+        <label class="field"><span>Email</span>
+          <input type="email" name="email" required autocomplete="email" placeholder="Email Address" />
+        </label>
+        <label class="field"><span>City</span>
+          <input name="city" autocomplete="address-level2" placeholder="City" />
+        </label>
         <% if (c.serviceOptions && c.serviceOptions.length) { %>
-          <select name="service" required>
-            <option value="">Select Certification Type</option>
-            <% c.serviceOptions.forEach(function(option) { %>
-              <option value="<%= option %>"><%= option %></option>
-            <% }) %>
-          </select>
+          <label class="field"><span>Certification type</span>
+            <select name="service" required>
+              <option value="">Select Certification Type</option>
+              <% c.serviceOptions.forEach(function(option) { %>
+                <option value="<%= option %>"><%= option %></option>
+              <% }) %>
+            </select>
+          </label>
         <% } else { %>
           <input type="hidden" name="service" value="<%= page.title %>" />
         <% } %>
-        <textarea name="message" rows="3" placeholder="Product / brand / requirement"></textarea>
+        <label class="field"><span>Requirement</span>
+          <textarea name="message" rows="3" placeholder="Product / brand / requirement"></textarea>
+        </label>
         <button class="btn btn-brand" type="submit"><%= c.formSubmitLabel || 'Get Free Expert Consultation' %></button>
       </form>
       <% if (c.formTrustPoints && c.formTrustPoints.length) { %>
@@ -894,7 +932,7 @@
       <% if (c.faqs && c.faqs.length) { %>
       <section class="block" id="faqs">
         <h2><%= c.faqsTitle || 'Frequently Asked Questions' %></h2>
-        <p style="margin-bottom:0.9rem;">Quick answers to common questions about this service.</p>
+        <p class="block-lead">Quick answers to common questions about this service.</p>
         <% c.faqs.forEach(function(faq) { %>
           <details>
             <summary><%= faq.q %></summary>

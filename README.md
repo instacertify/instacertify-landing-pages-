@@ -6,7 +6,7 @@ Small frontend + backend for publishing SEO landing pages on **info.instacertify
 
 - Admin UI at `/admin` to create, edit, publish, and delete pages
 - 5 design templates: **Service**, **Trust**, **Bold**, **Minimal**, **Signal**
-- **Service** design for compliance/lead-gen pages (inspired by Corpseed/LegalRaasta-style landers): sticky enquiry form, section nav, stats, docs tabs, procedure, penalties, FAQs
+- **Service** design for compliance/lead-gen pages with a locked format (offer → hero+form → stats → section nav → content blocks → CTA). See [`docs/SERVICE-FORMAT.md`](docs/SERVICE-FORMAT.md).
 - Lead capture with UTM/gclid storage, admin leads inbox, optional webhook
 - Per-page SEO: title, description, keywords, canonical, robots, OG image, custom head, FAQ schema
 - Site-wide tracking settings: Google Analytics, Google Tag Manager, Facebook Pixel, Search Console verification, custom head/body scripts
@@ -45,6 +45,19 @@ npm start
 6. Review form submissions under **Leads**
 
 Sample seed pages: `/lmpc-registration`, `/bis-registration`
+
+## Service formatting checklist
+
+When creating a new Service page in admin, fill in this order:
+
+1. Offer banner + badge + headline + subheadline  
+2. Form title/subtitle + service options + trust points  
+3. Hero stats  
+4. Overview sections  
+5. Schemes → timelines → products → benefits → documents → procedure → risks → FAQs  
+6. SEO title/description/keywords  
+
+Full field map: [`docs/SERVICE-FORMAT.md`](docs/SERVICE-FORMAT.md)
 
 ## API
 

@@ -72,6 +72,14 @@ const samples = [
         "Document checklist",
         "End-to-end support",
       ],
+      serviceOptions: [
+        "LMPC / Packaged Commodities",
+        "Manufacturer Licence",
+        "Dealer Licence",
+        "Repairer Licence",
+        "Importer Registration",
+        "Not Sure – Need Guidance",
+      ],
       scrollCtaText: "Start your Legal Metrology registration today",
       processTitle: "How we work",
       process: [
