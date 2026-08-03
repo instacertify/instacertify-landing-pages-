@@ -66,3 +66,4 @@ UTM / gclid / gbraid are captured automatically from the URL.
 
 - `/bis-registration` — full Service format  
 - `/lmpc-registration` — same format for Legal Metrology  
+- `/msds-certificate` — same format for MSDS / SDS documentation  

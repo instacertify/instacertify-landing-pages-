@@ -635,6 +635,308 @@ const samples = [
     },
   },
   {
+    slug: "msds-certificate",
+    title: "MSDS Certificate",
+    design: "service",
+    status: "published",
+    brandName: "Instacertify",
+    headline: "MSDS Certificate for Safe Handling & Export Compliance",
+    subheadline:
+      "Material Safety Data Sheet support for storing, handling, transporting, and exporting hazardous products — clear documentation for employees, handlers, and customs readiness.",
+    ctaLabel: "Get Started Now",
+    ctaUrl: "https://instacertify.com",
+    heroImage:
+      "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1800&q=80",
+    sections: [
+      {
+        heading: "Overview of MSDS Certificate",
+        text: "MSDS (Material Safety Data Sheet) is a technical safety document covering chemical and physical properties of a product—especially hazardous substances—plus guidance for safe handling, storage, transport, and disposal. Under GHS it is formally called SDS (Safety Data Sheet), but many Indian and Asian trade workflows still refer to it as MSDS for import/export compliance.",
+      },
+      {
+        heading: "Who can apply for MSDS support in India?",
+        text: "Companies that manufacture, import, export, transport, or store chemical / hazardous products—including chemical makers, agrochemical firms, paint & coating units, pharma/API, fragrance & essential oils, cosmetics, research labs, logistics providers, and shipping agents.",
+      },
+      {
+        heading: "Validity, renewal & fees",
+        text: "MSDS documentation is commonly maintained on a multi-year review cycle (often around 3 years for controlled products). Fees vary by substance complexity and urgency. Instacertify helps scope documentation needs and prepare a clear package for your product.",
+      },
+      {
+        heading: "MSDS vs SDS",
+        text: "Older MSDS formats varied by supplier and country. SDS under GHS follows a mandatory 16-section structure with standardized hazard communication. For cross-border shipments, aligning to the destination market’s SDS/GHS expectations reduces clearance risk.",
+      },
+    ],
+    content: {
+      offerBanner: "Free expert consultation for MSDS / SDS documentation",
+      badgeText: "Consultation by expert",
+      ratingText: "Trusted guidance for chemical safety documentation",
+      headlineHighlight: "",
+      expertName: "Talk to an Instacertify specialist",
+      expertNote: "We’ll never share your details with third parties.",
+      phone: "",
+      whatsapp: "",
+      trustPoints: [
+        "Documentation checklist for hazardous products",
+        "Support aligned to common GHS / SDS section structure",
+        "Useful for export, logistics, and handling workflows",
+        "Clear next steps from product data to draft readiness",
+      ],
+      heroStats: [
+        { value: "16", label: "SDS sections covered" },
+        { value: "9", label: "Hazard class groups" },
+        { value: "Export", label: "Trade documentation" },
+        { value: "Expert", label: "Compliance guidance" },
+      ],
+      formEnabled: true,
+      formTitle: "Consultation by expert",
+      formSubtitle: "Share your product details — we’ll guide the MSDS / SDS path",
+      formSubmitLabel: "Get Started Now",
+      formSuccessMessage:
+        "Thanks! An Instacertify specialist will contact you shortly.",
+      formTrustPoints: [
+        "No spam",
+        "Confidential enquiry",
+        "Quick response",
+      ],
+      serviceOptions: [
+        "New MSDS / SDS preparation",
+        "MSDS review / update",
+        "Export documentation support",
+        "Renewal / re-issue support",
+        "Not Sure – Need Guidance",
+      ],
+      scrollCtaText: "Need MSDS Certificate support? Talk to our experts",
+      processTitle: "How we work",
+      process: [
+        {
+          title: "Gather product data",
+          text: "Collect composition, product category, and handling details needed for the safety sheet.",
+        },
+        {
+          title: "Document checklist",
+          text: "Confirm GST, COA/test inputs, product images, and ingredient breakdown.",
+        },
+        {
+          title: "Draft & organize",
+          text: "Structure hazard, first-aid, storage, transport, and regulatory information clearly.",
+        },
+        {
+          title: "Handover",
+          text: "Deliver a review-ready package and guidance for use in trade / handling workflows.",
+        },
+      ],
+      typesTitle: "Different classes of hazardous products under MSDS",
+      types: [
+        {
+          title: "Flammable gas",
+          text: "Gases that can ignite easily, such as aerosols and camping gas.",
+          items: ["Ignition risk in storage and transit", "Needs clear handling controls"],
+        },
+        {
+          title: "Explosives",
+          text: "Substances that can detonate or trigger explosive devices.",
+          items: ["High transport controls", "Emergency response clarity required"],
+        },
+        {
+          title: "Flammable liquids & solids",
+          text: "Liquids/solids that emit flammable vapours or contribute to fire risk.",
+          items: ["Examples: solvents, oil-based paints, matches", "Storage temperature and packaging matter"],
+        },
+        {
+          title: "Toxic, oxidizing, corrosive, radioactive & misc.",
+          text: "Broader hazard groups needing exposure, spill, and disposal guidance.",
+          items: [
+            "Toxic substances and insecticides",
+            "Oxidizers that intensify fire",
+            "Corrosives and radioactive sources",
+            "Miscellaneous dangerous goods (e.g. dry ice, asbestos)",
+          ],
+        },
+      ],
+      timelinesTitle: "Validity and renewal",
+      timelines: [
+        {
+          title: "Typical validity window",
+          value: "About 3 years",
+          text: "Common review cycle for controlled-product MSDS documentation; confirm product-specific needs.",
+        },
+        {
+          title: "Renewal",
+          value: "On review cycle",
+          text: "Update composition, shipment, and safety data when products or regulations change.",
+        },
+        {
+          title: "Standard documentation",
+          value: "Scoped quote",
+          text: "Fees usually vary by substance complexity and urgency rather than a single flat rate.",
+        },
+        {
+          title: "Complex mixtures / urgent",
+          value: "Higher effort",
+          text: "Multi-component or rush requests need more technical review and coordination.",
+        },
+      ],
+      productsTitle: "Who typically needs MSDS documentation",
+      products: [
+        {
+          title: "Manufacturers & formulators",
+          text: "",
+          items: [
+            "Chemical manufacturers",
+            "Agrochemical companies",
+            "Paint and coating industry",
+            "Pharmaceutical and API manufacturers",
+            "Fragrance / perfume / essential oil makers",
+            "Cosmetic manufacturers",
+          ],
+        },
+        {
+          title: "Trade & logistics",
+          text: "",
+          items: [
+            "Chemical importers",
+            "Exporters of hazardous goods",
+            "Logistics and freight forwarders",
+            "Shipping agents",
+            "Research labs and academic institutions",
+          ],
+        },
+      ],
+      documentsTitle: "Documents required for MSDS Certificate",
+      documents: [
+        {
+          title: "Business & contact",
+          items: [
+            "Valid GST registration certificate",
+            "Email ID and contact number",
+            "Company letterhead for application / request",
+          ],
+        },
+        {
+          title: "Product & technical",
+          items: [
+            "Name and category of the product",
+            "Ingredient composition with percent-wise breakdown",
+            "Certificate of Analysis and/or third-party test reports",
+            "Clear product images (front and back)",
+          ],
+        },
+      ],
+      detailProcessTitle: "Online process for MSDS Certificate",
+      detailProcess: [
+        {
+          title: "Provide documents",
+          text: "Share business papers, product composition, COA/test inputs, and images.",
+        },
+        {
+          title: "Verification",
+          text: "Review submitted details for completeness and consistency before drafting.",
+        },
+        {
+          title: "Fee confirmation",
+          text: "Confirm scoped commercials based on product complexity and urgency.",
+        },
+        {
+          title: "Preparation & organizing",
+          text: "Compile chemical/physical properties, first-aid, handling, and transport guidance into the sheet structure.",
+        },
+        {
+          title: "Issuance / handover",
+          text: "Deliver the prepared MSDS/SDS package for your compliance and shipping use cases.",
+        },
+      ],
+      benefitsTitle: "Benefits of MSDS Certificate",
+      benefits: [
+        {
+          title: "Safer handling guidance",
+          text: "Gives teams clear information for production, storage, transport, and disposal of hazardous substances.",
+        },
+        {
+          title: "Trade readiness",
+          text: "Supports import/export documentation expectations and smoother customs conversations.",
+        },
+        {
+          title: "Emergency preparedness",
+          text: "Provides first-aid, spill, and fire-related technical data when incidents occur.",
+        },
+        {
+          title: "Compliance starting point",
+          text: "Acts as a foundation document for chemical registration and workplace safety workflows.",
+        },
+      ],
+      penaltiesTitle: "Why incomplete safety sheets create risk",
+      penalties: [
+        {
+          title: "Shipment delays",
+          text: "Missing or inconsistent hazard documentation can slow customs clearance and logistics handoffs.",
+        },
+        {
+          title: "Workplace exposure risk",
+          text: "Handlers and staff need clear precautions for storage, PPE, spills, and disposal.",
+        },
+      ],
+      testimonialsTitle: "What clients say",
+      testimonials: [
+        {
+          quote:
+            "Clear checklist for composition and COA inputs. Made MSDS documentation far less confusing.",
+          name: "Export coordinator, specialty chemicals",
+        },
+        {
+          quote:
+            "Helpful guidance on SDS section structure for our coating products before shipment.",
+          name: "Operations lead, coatings manufacturer",
+        },
+      ],
+      whyTitle: "Why Instacertify for MSDS / SDS support",
+      whyUs: [
+        { value: "Clear", label: "Document checklists" },
+        { value: "Structured", label: "16-section alignment" },
+        { value: "Practical", label: "Export-focused guidance" },
+        { value: "Responsive", label: "Expert consultation" },
+      ],
+      faqsTitle: "Frequently Asked Questions",
+      faqs: [
+        {
+          q: "What is the full form of MSDS?",
+          a: "MSDS means Material Safety Data Sheet. It covers hazards, properties, safe handling, and emergency measures for chemical/hazardous products.",
+        },
+        {
+          q: "How many sections are in an MSDS / SDS?",
+          a: "Modern SDS documents follow a 16-section structure covering identification, hazards, composition, first aid, fire-fighting, spill response, handling/storage, exposure controls, properties, stability, toxicology, ecology, disposal, transport, regulatory information, and other information.",
+        },
+        {
+          q: "Who is eligible for MSDS documentation support?",
+          a: "Manufacturers, importers, exporters, logistics teams, and other businesses dealing with hazardous or chemical products that need safety documentation for handling or trade.",
+        },
+        {
+          q: "What documents are required?",
+          a: "Common inputs include GST certificate, contact details, product images, ingredient composition, and Certificate of Analysis / lab test reports.",
+        },
+        {
+          q: "What does MSDS support usually cost?",
+          a: "Pricing depends on product complexity, number of substances, and urgency. Instacertify provides a scoped consultation instead of a one-size quote.",
+        },
+        {
+          q: "What is the validity of an MSDS Certificate?",
+          a: "Many workflows treat MSDS/SDS as subject to periodic review (often around 3 years for controlled products). Update whenever composition or regulatory needs change.",
+        },
+        {
+          q: "Can MSDS documentation be renewed or updated online?",
+          a: "Yes. Renewals/updates typically involve refreshing product data and submitting an updated documentation package.",
+        },
+      ],
+      bottomCtaText: "Get support for your MSDS / SDS documentation",
+    },
+    seo: {
+      title: "MSDS Certificate | Benefits, Documents, Process & Fees | Instacertify",
+      description:
+        "MSDS Certificate support from Instacertify for hazardous product safety documentation. Learn benefits, documents, process, validity, fees, and get a free consultation.",
+      keywords:
+        "MSDS Certificate, Material Safety Data Sheet, SDS, GHS, hazardous chemicals, export compliance, Instacertify",
+      robots: "index,follow",
+    },
+  },
+  {
     slug: "iso-certification",
     title: "ISO Certification Guide",
     design: "trust",
