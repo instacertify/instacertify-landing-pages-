@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #122033;
+      --muted: #5b6b7c;
+      --brand: #00557A;
+      --brand-deep: #003f5c;
+      --accent: #F27121;
+      --accent-ink: #3d1d08;
+      --soft: #e8f3f8;
+      --panel: #ffffff;
+      --line: rgba(18, 32, 51, 0.1);
+      --shadow: 0 18px 40px rgba(18, 32, 51, 0.08);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Manrope, sans-serif;
+      color: var(--ink);
+      background: #f7faf9;
+    }
+    a { color: inherit; text-decoration: none; }
+    .preview-banner {
+      background: #111;
+      color: #fff;
+      text-align: center;
+      padding: 0.5rem;
+      font-size: 0.85rem;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.9rem clamp(1rem, 3vw, 2rem);
+      background: rgba(255,255,255,0.92);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+    }
+    .topbar strong {
+      font-family: Sora, sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: -0.03em;
+    }
+    .topbar-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+      border-radius: 0.55rem;
+      padding: 0.8rem 1.1rem;
+    }
+    .btn-brand { background: var(--accent); color: #fff; }
+    .btn-soft {
+      background: var(--soft);
+      color: var(--brand-deep);
+      border: 1px solid rgba(0, 85, 122, 0.15);
+    }
+    .brand-logo {
+      display: block;
+      height: 42px;
+      width: auto;
+    }
+    .site-footer {
+      background: #0b0b0f;
+      color: rgba(255,255,255,0.78);
+      padding: 2rem 1rem 5.5rem;
+    }
+    .site-footer-inner {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 1rem;
+    }
+    .site-footer strong {
+      color: #fff;
+      font-family: Sora, sans-serif;
+    }
+    .site-footer a { color: #fff; text-decoration: underline; }
+    .site-footer p { margin: 0; line-height: 1.6; font-size: 0.92rem; }
+    .policy-note {
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.55);
+    }
+
+    .hero {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0 1.25rem;
+      display: grid;
+      grid-template-columns: 1.35fr 0.9fr;
+      gap: 1.5rem;
+      align-items: start;
+      animation: fadeIn 700ms ease both;
+    }
+    .hero-main {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1.1rem;
+      padding: clamp(1.4rem, 3vw, 2.4rem);
+      min-height: 28rem;
+      color: #f4fffc;
+      background:
+        linear-gradient(135deg, rgba(0, 40, 58, 0.9), rgba(0, 85, 122, 0.78)),
+        <% if (page.heroImage) { %>url("<%= page.heroImage %>") center/cover no-repeat,<% } %>
+        linear-gradient(145deg, #00283a, #00557A);
+    }
+    .hero-main::after {
+      content: "";
+      position: absolute;
+      width: 18rem;
+      height: 18rem;
+      right: -4rem;
+      top: -5rem;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 65%);
+      animation: drift 8s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+    .hero-copy { position: relative; z-index: 1; }
+    .offer-strip {
+      background: linear-gradient(90deg, #003f5c, #00557A);
+      color: #fff;
+      text-align: center;
+      padding: 0.55rem 1rem;
+      font-weight: 800;
+      font-size: 0.9rem;
+      letter-spacing: 0.01em;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.22);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 0.4rem 0.7rem;
+      border-radius: 999px;
+      margin-bottom: 0.9rem;
+      animation: rise 650ms ease both;
+    }
+    .timeline-value {
+      font-family: Sora, sans-serif;
+      font-size: 1.35rem;
+      color: var(--brand-deep);
+      margin: 0 0 0.35rem;
+    }
+    .enquiry select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 0.55rem;
+      padding: 0.8rem 0.85rem;
+      font: inherit;
+      background: #fbfdff;
+    }
+    .brand {
+      font-family: Sora, sans-serif;
+      font-size: clamp(2.3rem, 5vw, 3.6rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      margin: 0 0 0.7rem;
+      animation: rise 650ms 40ms ease both;
+    }
+    .headline {
+      font-family: Sora, sans-serif;
+      font-size: clamp(1.35rem, 2.6vw, 1.9rem);
+      line-height: 1.25;
+      margin: 0 0 0.75rem;
+      max-width: 24ch;
+      animation: rise 650ms 80ms ease both;
+    }
+    .headline .hot { color: #ffb07a; }
+    .sub {
+      max-width: 48ch;
+      color: rgba(244,255,252,0.88);
+      line-height: 1.65;
+      margin: 0 0 1rem;
+      animation: rise 650ms 120ms ease both;
+    }
+    .rating {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(255,255,255,0.12);
+      border-radius: 999px;
+      padding: 0.45rem 0.8rem;
+      font-weight: 700;
+      font-size: 0.92rem;
+      margin-bottom: 1rem;
+      animation: rise 650ms 140ms ease both;
+    }
+    .trust-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 0.45rem;
+      animation: rise 650ms 170ms ease both;
+    }
+    .trust-list li {
+      display: flex;
+      gap: 0.5rem;
+      font-weight: 600;
+    }
+    .trust-list li::before {
+      content: "✓";
+      color: #ffb07a;
+      font-weight: 800;
+    }
+
+    .scroll-cta {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 70;
+      background: var(--brand);
+      color: #fff;
+      padding: 0.7rem 1rem;
+      display: none;
+      transform: translateY(-110%);
+      transition: transform 280ms ease;
+    }
+    .scroll-cta.visible {
+      display: block;
+      transform: translateY(0);
+    }
+    .scroll-cta-inner {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .scroll-cta-inner span {
+      font-family: Sora, sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .scroll-cta-inner .btn {
+      background: var(--accent);
+      color: #fff;
+    }
+    .enquiry {
+      position: sticky;
+      top: 5.2rem;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--accent);
+      border-radius: 1rem;
+      box-shadow: var(--shadow);
+      padding: 1.2rem;
+      animation: rise 700ms 80ms ease both;
+    }
+    .enquiry h2 {
+      font-family: Sora, sans-serif;
+      margin: 0 0 0.35rem;
+      font-size: 1.25rem;
+    }
+    .enquiry .hint {
+      color: var(--muted);
+      margin: 0 0 0.9rem;
+      font-size: 0.9rem;
+    }
+    .form-trust {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem 0.9rem;
+      margin-top: 0.85rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .form-trust span::before {
+      content: "✓ ";
+      color: var(--brand);
+    }
+    .cert-chip {
+      display: inline-block;
+      margin-top: 0.65rem;
+      padding: 0.25rem 0.55rem;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--brand-deep);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .float-wa {
+      position: fixed;
+      right: 1rem;
+      bottom: 5.2rem;
+      z-index: 65;
+      width: 3.2rem;
+      height: 3.2rem;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #25d366;
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+    }
+    .enquiry form { display: grid; gap: 0.65rem; }
+    .enquiry input,
+    .enquiry textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 0.55rem;
+      padding: 0.8rem 0.85rem;
+      font: inherit;
+      background: #fbfdff;
+    }
+    .enquiry .btn { width: 100%; }
+    .form-success {
+      display: none;
+      margin-top: 0.7rem;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      background: rgba(15, 106, 99, 0.1);
+      color: var(--brand-deep);
+      font-weight: 700;
+      text-align: center;
+    }
+    .form-success.show { display: block; }
+    .expert-card {
+      margin-top: 0.9rem;
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--line);
+      display: grid;
+      gap: 0.2rem;
+    }
+    .expert-card strong { font-family: Sora, sans-serif; }
+    .expert-card span,
+    .expert-card a { color: var(--muted); font-size: 0.92rem; }
+    .expert-card a { color: var(--brand); font-weight: 700; }
+
+    .stats {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto 1rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+    }
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 0.85rem;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .stat strong {
+      display: block;
+      font-family: Sora, sans-serif;
+      font-size: 1.45rem;
+      color: var(--brand-deep);
+      margin-bottom: 0.2rem;
+    }
+    .stat span { color: var(--muted); font-size: 0.92rem; }
+
+    .section-nav-wrap {
+      position: sticky;
+      top: 3.7rem;
+      z-index: 40;
+      background: rgba(247,250,249,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+    }
+    .section-nav {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+      display: flex;
+      gap: 0.4rem;
+      overflow-x: auto;
+      padding: 0.65rem 0;
+    }
+    .section-nav a {
+      white-space: nowrap;
+      padding: 0.5rem 0.8rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--muted);
+      border: 1px solid transparent;
+    }
+    .section-nav a:hover,
+    .section-nav a.active {
+      color: var(--brand-deep);
+      background: #fff;
+      border-color: var(--line);
+    }
+
+    .layout {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 1.25rem;
+      align-items: start;
+      padding: 1.25rem 0 3rem;
+    }
+    .content { display: grid; gap: 1rem; }
+    .block {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      padding: clamp(1.2rem, 2.5vw, 1.7rem);
+      box-shadow: var(--shadow);
+      scroll-margin-top: 8rem;
+    }
+    .block h2 {
+      font-family: Sora, sans-serif;
+      font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+      letter-spacing: -0.03em;
+      margin: 0 0 0.55rem;
+    }
+    .block h2::after {
+      content: "";
+      display: block;
+      width: 3rem;
+      height: 3px;
+      margin-top: 0.65rem;
+      border-radius: 999px;
+      background: var(--brand);
+    }
+    .block-lead {
+      color: var(--muted);
+      line-height: 1.65;
+      margin: 0 0 1rem;
+      max-width: 62ch;
+    }
+    .block p { color: var(--muted); line-height: 1.7; margin: 0; }
+    .field {
+      display: grid;
+      gap: 0.3rem;
+    }
+    .field span {
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--brand-deep);
+    }
+    .grid-2,
+    .grid-3,
+    .grid-4 { display: grid; gap: 0.85rem; }
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+    .item {
+      border: 1px solid var(--line);
+      border-radius: 0.75rem;
+      padding: 0.95rem;
+      background: #fbfdfc;
+    }
+    .item h3 {
+      font-family: Sora, sans-serif;
+      font-size: 1.02rem;
+      margin: 0 0 0.4rem;
+    }
+    .item p,
+    .item li { color: var(--muted); line-height: 1.6; }
+    .item ul { margin: 0.5rem 0 0; padding-left: 1.1rem; }
+    .step-num {
+      width: 1.8rem;
+      height: 1.8rem;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--soft);
+      color: var(--brand-deep);
+      font-weight: 800;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+    }
+    .doc-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 0.85rem;
+    }
+    .doc-tab {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 0.45rem 0.8rem;
+      cursor: pointer;
+    }
+    .doc-tab.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .doc-panel { display: none; }
+    .doc-panel.active { display: block; }
+    details {
+      border: 1px solid var(--line);
+      border-radius: 0.7rem;
+      padding: 0.85rem 0.95rem;
+      background: #fbfdfc;
+    }
+    details + details { margin-top: 0.55rem; }
+    summary {
+      cursor: pointer;
+      font-weight: 700;
+      font-family: Sora, sans-serif;
+    }
+    details p { margin: 0.65rem 0 0; }
+
+    .side-rail {
+      position: sticky;
+      top: 8.2rem;
+      display: grid;
+      gap: 0.85rem;
+    }
+    .side-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      padding: 1rem;
+      box-shadow: var(--shadow);
+    }
+    .side-card h3 {
+      font-family: Sora, sans-serif;
+      margin: 0 0 0.45rem;
+      font-size: 1.05rem;
+    }
+    .side-card p { margin: 0 0 0.8rem; color: var(--muted); font-size: 0.92rem; }
+    .side-card .btn { width: 100%; }
+
+    .bottom-cta {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto 3rem;
+      border-radius: 1.1rem;
+      padding: 2rem 1.25rem;
+      text-align: center;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(31, 143, 127, 0.18), transparent 40%),
+        linear-gradient(135deg, #e8f5f2, #f4faf8);
+      border: 1px solid var(--line);
+    }
+    .bottom-cta h2 {
+      font-family: Sora, sans-serif;
+      margin: 0 0 0.5rem;
+    }
+    .bottom-cta p {
+      margin: 0 0 1rem;
+      color: var(--muted);
+    }
+    .mobile-cta {
+      display: none;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 0.75rem;
+      background: rgba(255,255,255,0.96);
+      border-top: 1px solid var(--line);
+      z-index: 60;
+    }
+    .mobile-cta .btn { width: 100%; }
+    footer {
+      padding: 1.25rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0.75; }
+      to { opacity: 1; }
+    }
+    @keyframes drift {
+      from { transform: translate3d(0,0,0); }
+      to { transform: translate3d(-3%, 4%, 0); }
+    }
+    @media (max-width: 980px) {
+      .hero,
+      .layout { grid-template-columns: 1fr; }
+      .enquiry { position: relative; top: auto; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .grid-2,
+      .grid-3,
+      .grid-4 { grid-template-columns: 1fr; }
+      .side-rail { display: none; }
+      .mobile-cta { display: block; }
+      .section-nav-wrap { top: 3.55rem; }
+      .scroll-cta { display: none !important; }
+    }
+  </style>
+  <% if (page.content && page.content.faqs && page.content.faqs.length) { %>
+  <script type="application/ld+json">
+  <%- JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": page.content.faqs.map(function(faq) {
+      return {
+        "@type": "Question",
+        "name": faq.q,
+        "acceptedAnswer": { "@type": "Answer", "text": faq.a }
+      };
+    })
+  }) %>
+  </script>
+  <% } %>
+</head>
+<body>
+  <%- include('../partials/body-scripts') %>
+  <% if (isPreview) { %><div class="preview-banner">Preview — not indexed</div><% } %>
+
+  <% const c = page.content || {}; %>
+  <% const phone = c.phone || settings.support_phone; %>
+  <% const whatsapp = c.whatsapp || settings.support_whatsapp; %>
+  <% const email = settings.support_email || 'contact@instacertify.com'; %>
+  <% const legalName = settings.legal_name || 'Instacertify Labs Private Limited'; %>
+  <% const nav = []; %>
+  <% if (page.sections && page.sections.length) nav.push({ id: 'overview', label: 'Overview' }); %>
+  <% if (c.types && c.types.length) nav.push({ id: 'types', label: 'Schemes' }); %>
+  <% if (c.timelines && c.timelines.length) nav.push({ id: 'timelines', label: 'Timelines' }); %>
+  <% if (c.products && c.products.length) nav.push({ id: 'products', label: 'Products' }); %>
+  <% if (c.benefits && c.benefits.length) nav.push({ id: 'benefits', label: 'Benefits' }); %>
+  <% if (c.documents && c.documents.length) nav.push({ id: 'documents', label: 'Documents' }); %>
+  <% if ((c.detailProcess && c.detailProcess.length) || (c.process && c.process.length)) nav.push({ id: 'procedure', label: 'Procedure' }); %>
+  <% if (c.penalties && c.penalties.length) nav.push({ id: 'penalties', label: 'Risks' }); %>
+  <% if (c.whyUs && c.whyUs.length) nav.push({ id: 'why', label: 'Why us' }); %>
+  <% if (c.faqs && c.faqs.length) nav.push({ id: 'faqs', label: 'FAQs' }); %>
+
+  <% if (c.offerBanner) { %>
+  <div class="offer-strip"><%= c.offerBanner %></div>
+  <% } %>
+
+  <div class="scroll-cta" id="scroll-cta">
+    <div class="scroll-cta-inner">
+      <span><%= c.scrollCtaText || page.headline || 'Get certified faster' %></span>
+      <a class="btn" href="#lead-form"><%= c.formSubmitLabel || 'Get Free Consultation' %></a>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <a href="/" aria-label="<%= page.brandName %> home">
+      <img class="brand-logo" src="/assets/instacertify-logo-light.svg" alt="<%= page.brandName %> — certifications made simple" width="200" height="42" />
+    </a>
+    <div class="topbar-actions">
+      <% if (phone) { %><a class="btn btn-soft" href="tel:<%= String(phone).replace(/\s/g, '') %>"><%= phone %></a><% } %>
+      <a class="btn btn-brand" href="#lead-form"><%= page.ctaLabel || 'Get Free Consultation' %></a>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="hero-main">
+      <div class="hero-copy">
+        <% if (c.badgeText) { %><div class="badge"><%= c.badgeText %></div><% } %>
+        <p class="brand"><span style="color:#7ec8e3">Insta</span><span style="color:#ffb07a">certify</span></p>
+        <% if (page.headline) { %>
+          <h1 class="headline">
+            <%= page.headline %>
+            <% if (c.headlineHighlight) { %><span class="hot"> <%= c.headlineHighlight %></span><% } %>
+          </h1>
+        <% } %>
+        <% if (page.subheadline) { %><p class="sub"><%= page.subheadline %></p><% } %>
+        <% if (c.ratingText) { %><div class="rating">★ <%= c.ratingText %></div><% } %>
+        <% if (c.trustPoints && c.trustPoints.length) { %>
+          <ul class="trust-list">
+            <% c.trustPoints.slice(0, 4).forEach(function(point) { %>
+              <li><%= point %></li>
+            <% }) %>
+          </ul>
+        <% } %>
+      </div>
+    </div>
+
+    <% if (c.formEnabled !== false) { %>
+    <aside class="enquiry" id="lead-form">
+      <h2><%= c.formTitle || 'Enquiry Now' %></h2>
+      <p class="hint"><%= c.formSubtitle || page.title %></p>
+      <form id="service-lead-form">
+        <input type="hidden" name="pageSlug" value="<%= page.slug %>" />
+        <label class="field"><span>Full name</span>
+          <input name="name" required autocomplete="name" placeholder="Your Full Name" />
+        </label>
+        <label class="field"><span>Mobile</span>
+          <input name="phone" required autocomplete="tel" placeholder="Mobile Number" />
+        </label>
+        <label class="field"><span>Email</span>
+          <input type="email" name="email" required autocomplete="email" placeholder="Email Address" />
+        </label>
+        <label class="field"><span>City</span>
+          <input name="city" autocomplete="address-level2" placeholder="City" />
+        </label>
+        <% if (c.serviceOptions && c.serviceOptions.length) { %>
+          <label class="field"><span>Certification type</span>
+            <select name="service" required>
+              <option value="">Select Certification Type</option>
+              <% c.serviceOptions.forEach(function(option) { %>
+                <option value="<%= option %>"><%= option %></option>
+              <% }) %>
+            </select>
+          </label>
+        <% } else { %>
+          <input type="hidden" name="service" value="<%= page.title %>" />
+        <% } %>
+        <label class="field"><span>Requirement</span>
+          <textarea name="message" rows="3" placeholder="Product / brand / requirement"></textarea>
+        </label>
+        <button class="btn btn-brand" type="submit"><%= c.formSubmitLabel || 'Get Free Expert Consultation' %></button>
+      </form>
+      <% if (c.formTrustPoints && c.formTrustPoints.length) { %>
+        <div class="form-trust">
+          <% c.formTrustPoints.forEach(function(point) { %><span><%= point %></span><% }) %>
+        </div>
+      <% } else { %>
+        <p class="hint" style="margin-top:0.7rem;margin-bottom:0;">Free consultation · Same-day callback · End-to-end support</p>
+      <% } %>
+      <p class="form-success" id="lead-success"><%= c.formSuccessMessage || 'Thanks! Our team will contact you shortly.' %></p>
+      <% if (c.expertName || phone) { %>
+      <div class="expert-card">
+        <strong><%= c.expertName || 'Talk to an expert' %></strong>
+        <% if (phone) { %><a href="tel:<%= phone %>"><%= phone %></a><% } %>
+        <span><%= c.expertNote || 'We are available 24/7.' %></span>
+      </div>
+      <% } %>
+    </aside>
+    <% } %>
+  </header>
+
+  <% const stats = (c.heroStats && c.heroStats.length) ? c.heroStats : c.whyUs; %>
+  <% if (stats && stats.length) { %>
+  <section class="stats">
+    <% stats.slice(0, 4).forEach(function(item) { %>
+      <div class="stat">
+        <strong><%= item.value %></strong>
+        <span><%= item.label %></span>
+      </div>
+    <% }) %>
+  </section>
+  <% } %>
+
+  <% if (nav.length) { %>
+  <div class="section-nav-wrap">
+    <nav class="section-nav" aria-label="Page sections">
+      <% nav.forEach(function(item) { %>
+        <a href="#<%= item.id %>"><%= item.label %></a>
+      <% }) %>
+    </nav>
+  </div>
+  <% } %>
+
+  <div class="layout">
+    <div class="content">
+      <% if (page.sections && page.sections.length) { %>
+      <section class="block" id="overview">
+        <% page.sections.forEach(function(block, index) { %>
+          <div style="<%= index ? 'margin-top:1.25rem;' : '' %>">
+            <% if (block.heading) { %>
+              <% if (index === 0) { %>
+                <h2><%= block.heading %></h2>
+              <% } else { %>
+                <h3 style="font-family:Sora,sans-serif;margin:0 0 0.5rem;"><%= block.heading %></h3>
+              <% } %>
+            <% } %>
+            <% if (block.text) { %><p><%= block.text %></p><% } %>
+          </div>
+        <% }) %>
+      </section>
+      <% } %>
+
+      <% if (c.benefits && c.benefits.length) { %>
+      <section class="block" id="benefits">
+        <h2><%= c.benefitsTitle || 'Benefits' %></h2>
+        <div class="grid-2">
+          <% c.benefits.forEach(function(item) { %>
+            <article class="item">
+              <% if (item.title) { %><h3><%= item.title %></h3><% } %>
+              <% if (item.text) { %><p><%= item.text %></p><% } %>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% if (c.licences && c.licences.length) { %>
+      <section class="block" id="licences">
+        <h2><%= c.licencesTitle || 'Types of licences' %></h2>
+        <div class="grid-3">
+          <% c.licences.forEach(function(item) { %>
+            <article class="item">
+              <% if (item.title) { %><h3><%= item.title %></h3><% } %>
+              <% if (item.text) { %><p><%= item.text %></p><% } %>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% if (c.types && c.types.length) { %>
+      <section class="block" id="types">
+        <h2><%= c.typesTitle || 'Types of certification' %></h2>
+        <div class="grid-2">
+          <% c.types.forEach(function(type) { %>
+            <article class="item">
+              <% if (type.title) { %><h3><%= type.title %></h3><% } %>
+              <% if (type.text) { %><p><%= type.text %></p><% } %>
+              <% if (type.items && type.items.length) { %>
+                <ul><% type.items.forEach(function(item) { %><li><%= item %></li><% }) %></ul>
+              <% } %>
+              <% if (type.title) { %><span class="cert-chip"><%= type.title.split(' ')[0] %></span><% } %>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% if (c.timelines && c.timelines.length) { %>
+      <section class="block" id="timelines">
+        <h2><%= c.timelinesTitle || 'How long does certification take?' %></h2>
+        <div class="grid-2">
+          <% c.timelines.forEach(function(item) { %>
+            <article class="item">
+              <% if (item.title) { %><h3><%= item.title %></h3><% } %>
+              <% if (item.value) { %><p class="timeline-value"><%= item.value %></p><% } %>
+              <% if (item.text) { %><p><%= item.text %></p><% } %>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% if (c.products && c.products.length) { %>
+      <section class="block" id="products">
+        <h2><%= c.productsTitle || 'Mandatory products and categories' %></h2>
+        <div class="grid-2">
+          <% c.products.forEach(function(group) { %>
+            <article class="item">
+              <% if (group.title) { %><h3><%= group.title %></h3><% } %>
+              <% if (group.text) { %><p><%= group.text %></p><% } %>
+              <% if (group.items && group.items.length) { %>
+                <ul><% group.items.forEach(function(item) { %><li><%= item %></li><% }) %></ul>
+              <% } %>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% if (c.documents && c.documents.length) { %>
+      <section class="block" id="documents">
+        <h2><%= c.documentsTitle || 'Documents required' %></h2>
+        <div class="doc-tabs">
+          <% c.documents.forEach(function(group, index) { %>
+            <button type="button" class="doc-tab<%= index === 0 ? ' active' : '' %>" data-tab="<%= index %>">
+              <%= group.title || ('Group ' + (index + 1)) %>
+            </button>
+          <% }) %>
+        </div>
+        <% c.documents.forEach(function(group, index) { %>
+          <article class="item doc-panel<%= index === 0 ? ' active' : '' %>" data-panel="<%= index %>">
+            <% if (group.title) { %><h3><%= group.title %></h3><% } %>
+            <% if (group.items && group.items.length) { %>
+              <ul><% group.items.forEach(function(item) { %><li><%= item %></li><% }) %></ul>
+            <% } %>
+          </article>
+        <% }) %>
+      </section>
+      <% } %>
+
+      <% if ((c.detailProcess && c.detailProcess.length) || (c.process && c.process.length)) { %>
+      <section class="block" id="procedure">
+        <h2><%= c.detailProcessTitle || c.processTitle || 'Procedure' %></h2>
+        <% const steps = (c.detailProcess && c.detailProcess.length) ? c.detailProcess : c.process; %>
+        <div class="grid-2">
+          <% steps.forEach(function(step, index) { %>
+            <article class="item">
+              <div class="step-num"><%= index + 1 %></div>
+              <% if (step.title) { %><h3><%= step.title %></h3><% } %>
+              <% if (step.text) { %><p><%= step.text %></p><% } %>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% if (c.process && c.process.length && c.detailProcess && c.detailProcess.length) { %>
+      <section class="block" id="how-we-work">
+        <h2><%= c.processTitle || 'How we work' %></h2>
+        <div class="grid-4">
+          <% c.process.forEach(function(step, index) { %>
+            <article class="item">
+              <div class="step-num">STEP <%= index + 1 %></div>
+              <% if (step.title) { %><h3><%= step.title %></h3><% } %>
+              <% if (step.text) { %><p><%= step.text %></p><% } %>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% if (c.penalties && c.penalties.length) { %>
+      <section class="block" id="penalties">
+        <h2><%= c.penaltiesTitle || 'Penalties for non-compliance' %></h2>
+        <div class="grid-2">
+          <% c.penalties.forEach(function(item) { %>
+            <article class="item">
+              <% if (item.title) { %><h3><%= item.title %></h3><% } %>
+              <% if (item.text) { %><p><%= item.text %></p><% } %>
+            </article>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% if (c.testimonials && c.testimonials.length) { %>
+      <section class="block" id="testimonials">
+        <h2><%= c.testimonialsTitle || 'Testimonials' %></h2>
+        <div class="grid-2">
+          <% c.testimonials.forEach(function(item) { %>
+            <blockquote class="item">
+              <p>“<%= item.quote %>”</p>
+              <% if (item.name) { %><h3 style="margin-top:0.7rem;"><%= item.name %></h3><% } %>
+            </blockquote>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% if (c.whyUs && c.whyUs.length) { %>
+      <section class="block" id="why">
+        <h2><%= c.whyTitle || 'Why choose us?' %></h2>
+        <div class="grid-4">
+          <% c.whyUs.forEach(function(item) { %>
+            <div class="item" style="text-align:center;">
+              <h3><%= item.value %></h3>
+              <p><%= item.label %></p>
+            </div>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% if (c.faqs && c.faqs.length) { %>
+      <section class="block" id="faqs">
+        <h2><%= c.faqsTitle || 'Frequently Asked Questions' %></h2>
+        <p class="block-lead">Quick answers to common questions about this service.</p>
+        <% c.faqs.forEach(function(faq) { %>
+          <details>
+            <summary><%= faq.q %></summary>
+            <p><%= faq.a %></p>
+          </details>
+        <% }) %>
+      </section>
+      <% } %>
+
+      <% if (page.bodyHtml) { %>
+      <section class="block"><%- page.bodyHtml %></section>
+      <% } %>
+    </div>
+
+    <aside class="side-rail">
+      <div class="side-card">
+        <h3>Why wait? Start now!</h3>
+        <p>Get free guidance on the right service, documents, and timeline.</p>
+        <a class="btn btn-brand" href="#lead-form"><%= c.formSubmitLabel || 'Get Free Consultation' %></a>
+      </div>
+      <% if (phone || whatsapp) { %>
+      <div class="side-card">
+        <h3>Need help?</h3>
+        <p>Talk to an expert for document checklist and filing support.</p>
+        <% if (phone) { %><a class="btn btn-soft" href="tel:<%= phone %>" style="margin-bottom:0.5rem;">Call <%= phone %></a><% } %>
+        <% if (whatsapp) { %>
+          <a class="btn btn-brand" href="https://wa.me/<%= String(whatsapp).replace(/\D/g, '') %>" target="_blank" rel="noopener">WhatsApp</a>
+        <% } %>
+      </div>
+      <% } %>
+    </aside>
+  </div>
+
+  <section class="bottom-cta">
+    <h2><%= c.bottomCtaText || 'Talk to an expert' %></h2>
+    <p>Get free guidance on the right LMPC pathway, improved documents & timeline.</p>
+    <a class="btn btn-brand" href="#lead-form"><%= c.formSubmitLabel || 'Get Free Consultation' %></a>
+  </section>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <img class="brand-logo" src="/assets/instacertify-logo.svg" alt="Instacertify" width="200" height="46" style="height:46px;background:#0b0b0f;border-radius:0.35rem;" />
+      <p><strong><%= legalName %></strong></p>
+      <p>
+        Email: <a href="mailto:<%= email %>"><%= email %></a>
+        <% if (phone) { %> · Phone: <a href="tel:<%= String(phone).replace(/\s/g, '') %>"><%= phone %></a><% } %>
+      </p>
+      <p>Service page focus: <%= page.title %>. Details shown here match the service offered on this page.</p>
+      <p class="policy-note">© <%= new Date().getFullYear() %> <%= legalName %>. Contact us before purchase for scope, timelines, and commercials. No placeholder or misleading offers.</p>
+    </div>
+  </footer>
+
+  <div class="mobile-cta">
+    <a class="btn btn-brand" href="#lead-form"><%= c.formSubmitLabel || 'Get Free Consultation' %></a>
+  </div>
+
+  <% if (whatsapp) { %>
+    <a class="float-wa" href="https://wa.me/<%= String(whatsapp).replace(/\D/g, '') %>" target="_blank" rel="noopener" aria-label="WhatsApp">WA</a>
+  <% } %>
+
+  <script>
+    (function () {
+      const tabs = document.querySelectorAll(".doc-tab");
+      const panels = document.querySelectorAll(".doc-panel");
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const index = tab.dataset.tab;
+          tabs.forEach((t) => t.classList.toggle("active", t === tab));
+          panels.forEach((panel) => {
+            panel.classList.toggle("active", panel.dataset.panel === index);
+          });
+        });
+      });
+
+      const scrollCta = document.getElementById("scroll-cta");
+      const hero = document.querySelector(".hero");
+      function updateScrollCta() {
+        if (!scrollCta || !hero) return;
+        const passed = hero.getBoundingClientRect().bottom < 80;
+        scrollCta.classList.toggle("visible", passed);
+      }
+      updateScrollCta();
+      window.addEventListener("scroll", updateScrollCta, { passive: true });
+
+      const navLinks = document.querySelectorAll(".section-nav a");
+      const sections = Array.from(navLinks)
+        .map((link) => document.querySelector(link.getAttribute("href")))
+        .filter(Boolean);
+
+      function setActive() {
+        let current = sections[0];
+        sections.forEach((section) => {
+          const top = section.getBoundingClientRect().top;
+          if (top < 140) current = section;
+        });
+        navLinks.forEach((link) => {
+          link.classList.toggle(
+            "active",
+            current && link.getAttribute("href") === `#${current.id}`
+          );
+        });
+      }
+      if (sections.length) {
+        setActive();
+        window.addEventListener("scroll", setActive, { passive: true });
+      }
+
+      const form = document.getElementById("service-lead-form");
+      const success = document.getElementById("lead-success");
+      if (!form) return;
+
+      function getUtm() {
+        const params = new URLSearchParams(window.location.search);
+        const keys = [
+          "utm_source", "utm_medium", "utm_campaign", "utm_content",
+          "utm_term", "gclid", "gad_source", "gad_campaignid", "gbraid"
+        ];
+        const utm = {};
+        keys.forEach((key) => {
+          const value = params.get(key);
+          if (value) utm[key] = value;
+        });
+        return utm;
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const data = Object.fromEntries(new FormData(form).entries());
+        data.utm = getUtm();
+        const button = form.querySelector('button[type="submit"]');
+        button.disabled = true;
+        try {
+          const res = await fetch("/api/leads", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+          const payload = await res.json();
+          if (!res.ok) throw new Error(payload.error || "Failed to submit");
+          form.reset();
+          success.classList.add("show");
+        } catch (error) {
+          alert(error.message);
+        } finally {
+          button.disabled = false;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #07222a;
+      --teal: #0f8a8a;
+      --mint: #8ff0d8;
+      --muted: #3d5a63;
+      --bg: #e8f4f3;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "DM Sans", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+    .preview-banner {
+      background: var(--ink);
+      color: #fff;
+      text-align: center;
+      padding: 0.5rem;
+      font-size: 0.85rem;
+    }
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      align-content: end;
+      padding: clamp(1.5rem, 4vw, 3.5rem);
+      position: relative;
+      overflow: hidden;
+      color: #f4fffc;
+      background:
+        linear-gradient(180deg, rgba(4, 28, 34, 0.2) 0%, rgba(4, 28, 34, 0.82) 100%),
+        <% if (page.heroImage) { %>url("<%= page.heroImage %>") center/cover no-repeat,<% } %>
+        radial-gradient(circle at 70% 20%, rgba(143, 240, 216, 0.35), transparent 40%),
+        linear-gradient(145deg, #04555c, #0a2f38 55%, #061820);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 42vmax;
+      height: 42vmax;
+      border-radius: 50%;
+      right: -12vmax;
+      top: -10vmax;
+      background: radial-gradient(circle, rgba(143, 240, 216, 0.22), transparent 65%);
+      animation: drift 10s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+    .hero-inner { position: relative; z-index: 1; width: min(900px, 100%); }
+    .brand {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(2.8rem, 8vw, 5.4rem);
+      line-height: 0.95;
+      margin: 0 0 1rem;
+      letter-spacing: -0.04em;
+      animation: rise 850ms ease both;
+    }
+    .headline {
+      font-size: clamp(1.2rem, 2.4vw, 1.65rem);
+      font-weight: 700;
+      max-width: 28ch;
+      margin: 0 0 0.75rem;
+      animation: rise 850ms 70ms ease both;
+    }
+    .sub {
+      max-width: 44ch;
+      color: rgba(244, 255, 252, 0.86);
+      margin: 0 0 1.5rem;
+      animation: rise 850ms 130ms ease both;
+    }
+    .cta {
+      display: inline-flex;
+      background: var(--mint);
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 700;
+      padding: 0.95rem 1.3rem;
+      border-radius: 999px;
+      animation: rise 850ms 190ms ease both;
+    }
+    .cta:hover { filter: brightness(1.05); }
+    section {
+      width: min(900px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 4.25rem 0;
+    }
+    section h2 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(1.7rem, 3vw, 2.3rem);
+      margin: 0 0 0.7rem;
+      letter-spacing: -0.02em;
+    }
+    section p, .body-content { color: var(--muted); line-height: 1.7; max-width: 62ch; }
+    .section-block + .section-block {
+      margin-top: 2.5rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid rgba(15, 138, 138, 0.2);
+    }
+    footer {
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      background: linear-gradient(180deg, transparent, rgba(15, 138, 138, 0.08));
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes drift {
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(-4%, 6%, 0); }
+    }
+  </style>
+</head>
+<body>
+  <%- include('../partials/body-scripts') %>
+  <% if (isPreview) { %><div class="preview-banner">Preview — not indexed</div><% } %>
+  <header class="hero">
+    <div class="hero-inner">
+      <h1 class="brand"><%= page.brandName %></h1>
+      <% if (page.headline) { %><p class="headline"><%= page.headline %></p><% } %>
+      <% if (page.subheadline) { %><p class="sub"><%= page.subheadline %></p><% } %>
+      <% if (page.ctaLabel && page.ctaUrl) { %>
+        <a class="cta" href="<%= page.ctaUrl %>"><%= page.ctaLabel %></a>
+      <% } %>
+    </div>
+  </header>
+
+  <% if (page.sections && page.sections.length) { %>
+  <section>
+    <% page.sections.forEach(function(block) { %>
+      <div class="section-block">
+        <% if (block.heading) { %><h2><%= block.heading %></h2><% } %>
+        <% if (block.text) { %><p><%= block.text %></p><% } %>
+      </div>
+    <% }) %>
+  </section>
+  <% } %>
+
+  <% if (page.bodyHtml) { %>
+  <section class="body-content"><%- page.bodyHtml %></section>
+  <% } %>
+
+  <footer>© <%= new Date().getFullYear() %> <%= page.brandName %></footer>
+</body>
+</html>
