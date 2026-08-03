@@ -14,6 +14,8 @@ See [`docs/LANDING-PAGE-SYSTEM.md`](docs/LANDING-PAGE-SYSTEM.md).
 
 - Admin UI at `/admin` to create, edit, publish, and delete pages
 - Design registry: **Battery** (unique SDS/MSDS/UN38.3), **Service**, **Trust**, **Bold**, **Minimal**, **Signal**
+- **Page images**: upload, replace, preview, show/hide, set as hero/OG/gallery
+- **Review pool** per landing page: quote, rating, image, show toggle
 - Lead capture with UTM/gclid storage, admin leads inbox, optional webhook
 - Per-page SEO + site-wide GA / GTM / Pixel / Search Console / custom scripts
 - Public pages at `/:slug`, previews at `/preview/:slug`

@@ -52,13 +52,22 @@ When editing a page you can change:
 
 1. Basics + design choice  
 2. Hero content  
-3. **Page chrome & theme** — logos, wordmark, colors, side rail, bottom CTA, form labels, nav labels, footer  
-4. Sections + lead-gen repeaters (schemes, timelines, docs, FAQs, …)  
-5. Optional HTML body  
-6. **Advanced complete content JSON** — full `content_json` merge for bulk/custom keys  
-7. Page SEO  
+3. **Page images** — add / replace / preview / show on page / use as hero, OG, or gallery  
+4. **Page chrome & theme** — logos, wordmark, colors, side rail, bottom CTA, form labels, nav labels, footer  
+5. Sections + lead-gen repeaters (schemes, timelines, docs, FAQs, …)  
+6. **Review pool** — per-page reviews with rating, image, and show toggle  
+7. Optional HTML body  
+8. **Advanced complete content JSON** — full `content_json` merge for bulk/custom keys  
+9. Page SEO  
 
 Form fields win over advanced JSON when both set the same key.
+
+### Image + review APIs
+
+- `GET/POST /api/pages/:id/images`
+- `PUT/DELETE /api/pages/:id/images/:imageId`
+- `POST /api/pages/:id/images/:imageId/use` `{ "target": "hero"|"og"|"gallery"|"logoLight"|"logoDark" }`
+- Reviews live in `content.reviewPool[]` (`quote`, `name`, `rating`, `image`, `show`)
 
 ## Workflow for a new requested landing page
 

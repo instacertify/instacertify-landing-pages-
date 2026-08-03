@@ -57,6 +57,20 @@ db.exec(`
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     FOREIGN KEY (page_id) REFERENCES pages(id) ON DELETE SET NULL
   );
+
+  CREATE TABLE IF NOT EXISTS page_images (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    page_id INTEGER NOT NULL,
+    url TEXT NOT NULL,
+    original_name TEXT NOT NULL DEFAULT '',
+    alt TEXT NOT NULL DEFAULT '',
+    role TEXT NOT NULL DEFAULT 'gallery',
+    show_on_page INTEGER NOT NULL DEFAULT 1,
+    sort_order INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY (page_id) REFERENCES pages(id) ON DELETE CASCADE
+  );
 `);
 
 function ensureColumn(table, column, definition) {
@@ -126,6 +140,10 @@ const EMPTY_CONTENT = {
   penalties: [],
   testimonialsTitle: "Testimonials",
   testimonials: [],
+  reviewsTitle: "Customer reviews",
+  reviewsIntro: "Recent feedback related to this service.",
+  reviewPool: [],
+  galleryTitle: "Gallery",
   whyTitle: "Why choose us?",
   whyUs: [],
   faqsTitle: "Frequently Asked Questions",
@@ -242,6 +260,7 @@ function normalizeContent(raw, existing = null) {
     benefits: asNamedBlocks(base.benefits),
     penalties: asNamedBlocks(base.penalties),
     testimonials: asTestimonials(base.testimonials),
+    reviewPool: asReviewPool(base.reviewPool, base.testimonials),
     whyUs: asWhyUs(base.whyUs),
     faqs: asFaqs(base.faqs),
     formEnabled: Boolean(base.formEnabled),
@@ -301,8 +320,153 @@ function asTestimonials(value) {
     .map((item) => ({
       quote: String(item?.quote || "").trim(),
       name: String(item?.name || "").trim(),
+      rating: clampRating(item?.rating),
+      image: String(item?.image || "").trim(),
+      show: item?.show !== false && item?.show !== 0 && item?.show !== "0",
     }))
     .filter((item) => item.quote || item.name);
+}
+
+function asReviewPool(value, fallbackTestimonials = []) {
+  const source = Array.isArray(value)
+    ? value
+    : Array.isArray(fallbackTestimonials)
+      ? fallbackTestimonials
+      : [];
+  return source
+    .map((item) => ({
+      quote: String(item?.quote || "").trim(),
+      name: String(item?.name || "").trim(),
+      rating: clampRating(item?.rating),
+      image: String(item?.image || "").trim(),
+      show: item?.show !== false && item?.show !== 0 && item?.show !== "0",
+    }))
+    .filter((item) => item.quote || item.name);
+}
+
+function clampRating(value) {
+  const num = Number(value);
+  if (!Number.isFinite(num) || num <= 0) return 5;
+  return Math.min(5, Math.max(1, Math.round(num)));
+}
+
+function rowToImage(row) {
+  if (!row) return null;
+  return {
+    id: row.id,
+    pageId: row.page_id,
+    url: row.url,
+    originalName: row.original_name,
+    alt: row.alt,
+    role: row.role || "gallery",
+    showOnPage: Boolean(row.show_on_page),
+    sortOrder: row.sort_order || 0,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+function listPageImages(pageId) {
+  return db
+    .prepare(
+      "SELECT * FROM page_images WHERE page_id = ? ORDER BY sort_order ASC, id DESC"
+    )
+    .all(pageId)
+    .map(rowToImage);
+}
+
+function getPageImage(pageId, imageId) {
+  return rowToImage(
+    db
+      .prepare("SELECT * FROM page_images WHERE id = ? AND page_id = ?")
+      .get(imageId, pageId)
+  );
+}
+
+function createPageImage(pageId, input) {
+  const page = getPageById(pageId);
+  if (!page) throw new Error("Page not found");
+  const url = String(input.url || "").trim();
+  if (!url) throw new Error("Image URL is required");
+
+  const maxSort =
+    db
+      .prepare(
+        "SELECT COALESCE(MAX(sort_order), 0) AS max_sort FROM page_images WHERE page_id = ?"
+      )
+      .get(pageId)?.max_sort || 0;
+
+  const info = db
+    .prepare(
+      `INSERT INTO page_images (
+        page_id, url, original_name, alt, role, show_on_page, sort_order
+      ) VALUES (?, ?, ?, ?, ?, ?, ?)`
+    )
+    .run(
+      pageId,
+      url,
+      String(input.originalName || "").trim(),
+      String(input.alt || "").trim(),
+      String(input.role || "gallery").trim() || "gallery",
+      input.showOnPage === false ? 0 : 1,
+      Number.isFinite(Number(input.sortOrder))
+        ? Number(input.sortOrder)
+        : maxSort + 1
+    );
+
+  return getPageImage(pageId, info.lastInsertRowid);
+}
+
+function updatePageImage(pageId, imageId, input) {
+  const existing = getPageImage(pageId, imageId);
+  if (!existing) throw new Error("Image not found");
+
+  db.prepare(
+    `UPDATE page_images SET
+      url = ?,
+      original_name = ?,
+      alt = ?,
+      role = ?,
+      show_on_page = ?,
+      sort_order = ?,
+      updated_at = datetime('now')
+    WHERE id = ? AND page_id = ?`
+  ).run(
+    pick(input.url, existing.url, ""),
+    pick(input.originalName, existing.originalName, ""),
+    pick(input.alt, existing.alt, ""),
+    pick(input.role, existing.role, "gallery"),
+    input.showOnPage === undefined
+      ? existing.showOnPage
+        ? 1
+        : 0
+      : input.showOnPage
+        ? 1
+        : 0,
+    Number.isFinite(Number(input.sortOrder))
+      ? Number(input.sortOrder)
+      : existing.sortOrder,
+    imageId,
+    pageId
+  );
+
+  return getPageImage(pageId, imageId);
+}
+
+function deletePageImage(pageId, imageId) {
+  const existing = getPageImage(pageId, imageId);
+  if (!existing) return null;
+  db.prepare("DELETE FROM page_images WHERE id = ? AND page_id = ?").run(
+    imageId,
+    pageId
+  );
+  return existing;
+}
+
+function deletePageImagesForPage(pageId) {
+  const images = listPageImages(pageId);
+  db.prepare("DELETE FROM page_images WHERE page_id = ?").run(pageId);
+  return images;
 }
 
 function asWhyUs(value) {
@@ -329,6 +493,7 @@ function rowToPage(row) {
   if (!row) return null;
   const sections = parseJson(row.sections_json, []);
   const content = normalizeContent(parseJson(row.content_json, {}));
+  const images = listPageImages(row.id);
   return {
     id: row.id,
     slug: row.slug,
@@ -344,6 +509,7 @@ function rowToPage(row) {
     bodyHtml: row.body_html,
     sections: Array.isArray(sections) ? sections : [],
     content,
+    images,
     seo: {
       title: row.seo_title,
       description: row.seo_description,
@@ -571,4 +737,10 @@ module.exports = {
   normalizeSlug,
   createLead,
   listLeads,
+  listPageImages,
+  getPageImage,
+  createPageImage,
+  updatePageImage,
+  deletePageImage,
+  deletePageImagesForPage,
 };

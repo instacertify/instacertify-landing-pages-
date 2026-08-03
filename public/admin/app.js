@@ -17,6 +17,8 @@ const state = {
   penalties: [],
   heroStats: [],
   testimonials: [],
+  reviewPool: [],
+  images: [],
   whyUs: [],
   faqs: [],
 };
@@ -579,6 +581,345 @@ function renderTestimonials() {
   );
 }
 
+function mediaStatus(message, isError = false) {
+  const el = document.getElementById("media-status");
+  if (!el) return;
+  el.hidden = !message;
+  el.textContent = message || "";
+  el.style.color = isError ? "var(--danger)" : "var(--accent-ink)";
+}
+
+function renderHeroPreview() {
+  const box = document.getElementById("hero-image-preview");
+  const url = document.getElementById("heroImage")?.value.trim();
+  if (!box) return;
+  if (!url) {
+    box.hidden = true;
+    box.innerHTML = "";
+    return;
+  }
+  box.hidden = false;
+  box.innerHTML = `<img src="${escapeAttr(url)}" alt="Hero preview" />`;
+}
+
+function openLightbox(url) {
+  const modal = document.getElementById("media-lightbox");
+  const img = document.getElementById("lightbox-image");
+  if (!modal || !img) return;
+  img.src = url;
+  modal.classList.remove("hidden");
+}
+
+function closeLightbox() {
+  const modal = document.getElementById("media-lightbox");
+  const img = document.getElementById("lightbox-image");
+  if (!modal || !img) return;
+  img.src = "";
+  modal.classList.add("hidden");
+}
+
+function renderMediaLibrary() {
+  const container = document.getElementById("media-library");
+  if (!container) return;
+
+  if (!state.editingId) {
+    container.innerHTML =
+      '<div class="empty">Save the page once, then upload images for this landing page.</div>';
+    return;
+  }
+
+  if (!state.images.length) {
+    container.innerHTML =
+      '<div class="empty">No images yet. Add an image to build this page media pool.</div>';
+    return;
+  }
+
+  container.innerHTML = state.images
+    .map((image) => {
+      const showChecked = image.showOnPage ? "checked" : "";
+      return `
+      <article class="media-card" data-id="${image.id}">
+        <img src="${escapeAttr(image.url)}" alt="${escapeAttr(image.alt || image.originalName || "Page image")}" data-action="preview" />
+        <div class="meta-block">
+          <strong>${escapeHtml(image.originalName || "Image")}</strong>
+          <label>Alt <input data-field="alt" value="${escapeAttr(image.alt || "")}" /></label>
+          <label>Role
+            <select data-field="role">
+              ${["gallery", "hero", "og", "review", "general"]
+                .map(
+                  (role) =>
+                    `<option value="${role}" ${
+                      image.role === role ? "selected" : ""
+                    }>${role}</option>`
+                )
+                .join("")}
+            </select>
+          </label>
+          <label><span><input type="checkbox" data-field="showOnPage" ${showChecked} /> Show on page</span></label>
+        </div>
+        <div class="media-actions">
+          <button type="button" class="ghost" data-action="save-meta">Save</button>
+          <button type="button" class="ghost" data-action="replace">Replace</button>
+          <button type="button" class="ghost" data-action="use-hero">Use as hero</button>
+          <button type="button" class="ghost" data-action="use-og">Use as OG</button>
+          <button type="button" class="ghost" data-action="use-gallery">Gallery</button>
+          <button type="button" class="ghost" data-action="copy-url">Copy URL</button>
+          <button type="button" class="danger" data-action="delete">Delete</button>
+        </div>
+      </article>`;
+    })
+    .join("");
+
+  container.querySelectorAll(".media-card").forEach((card) => {
+    const id = Number(card.dataset.id);
+    card.querySelectorAll("[data-action]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const action = btn.dataset.action;
+        try {
+          if (action === "preview") {
+            openLightbox(state.images.find((img) => img.id === id)?.url || "");
+            return;
+          }
+          if (action === "copy-url") {
+            const url = state.images.find((img) => img.id === id)?.url || "";
+            await navigator.clipboard.writeText(url);
+            mediaStatus("Image URL copied");
+            return;
+          }
+          if (action === "delete") {
+            if (!confirm("Delete this image?")) return;
+            await api(`/pages/${state.editingId}/images/${id}`, {
+              method: "DELETE",
+            });
+            state.images = state.images.filter((img) => img.id !== id);
+            renderMediaLibrary();
+            mediaStatus("Image deleted");
+            return;
+          }
+          if (action === "replace") {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = "image/jpeg,image/png,image/webp,image/gif,image/svg+xml";
+            input.onchange = async () => {
+              const file = input.files?.[0];
+              if (!file) return;
+              const form = new FormData();
+              form.append("image", file);
+              const res = await fetch(
+                `/api/pages/${state.editingId}/images/${id}`,
+                {
+                  method: "PUT",
+                  credentials: "include",
+                  body: form,
+                }
+              );
+              const data = await res.json();
+              if (!res.ok) throw new Error(data.error || "Replace failed");
+              const index = state.images.findIndex((img) => img.id === id);
+              if (index >= 0) state.images[index] = data;
+              renderMediaLibrary();
+              mediaStatus("Image replaced");
+            };
+            input.click();
+            return;
+          }
+          if (action === "save-meta") {
+            const alt = card.querySelector('[data-field="alt"]').value.trim();
+            const role = card.querySelector('[data-field="role"]').value;
+            const showOnPage = card.querySelector(
+              '[data-field="showOnPage"]'
+            ).checked;
+            const form = new FormData();
+            form.append("alt", alt);
+            form.append("role", role);
+            form.append("showOnPage", showOnPage ? "1" : "0");
+            const res = await fetch(
+              `/api/pages/${state.editingId}/images/${id}`,
+              {
+                method: "PUT",
+                credentials: "include",
+                body: form,
+              }
+            );
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Update failed");
+            const index = state.images.findIndex((img) => img.id === id);
+            if (index >= 0) state.images[index] = data;
+            renderMediaLibrary();
+            mediaStatus("Image details saved");
+            return;
+          }
+          if (
+            action === "use-hero" ||
+            action === "use-og" ||
+            action === "use-gallery"
+          ) {
+            const target =
+              action === "use-hero"
+                ? "hero"
+                : action === "use-og"
+                  ? "og"
+                  : "gallery";
+            const result = await api(
+              `/pages/${state.editingId}/images/${id}/use`,
+              {
+                method: "POST",
+                body: JSON.stringify({ target }),
+              }
+            );
+            if (result.page) {
+              if (target === "hero") {
+                document.getElementById("heroImage").value =
+                  result.page.heroImage || "";
+                renderHeroPreview();
+              }
+              if (target === "og") {
+                document.getElementById("seoOgImage").value =
+                  result.page.seo?.ogImage || "";
+              }
+              state.images = result.page.images || state.images;
+            }
+            renderMediaLibrary();
+            mediaStatus(`Image set as ${target}`);
+          }
+        } catch (error) {
+          mediaStatus(error.message, true);
+        }
+      });
+    });
+  });
+}
+
+async function uploadPageImage(file) {
+  if (!state.editingId) {
+    throw new Error("Save the page before uploading images");
+  }
+  const form = new FormData();
+  form.append("image", file);
+  form.append(
+    "role",
+    document.getElementById("image-upload-role")?.value || "gallery"
+  );
+  form.append(
+    "alt",
+    document.getElementById("image-upload-alt")?.value.trim() || ""
+  );
+  const res = await fetch(`/api/pages/${state.editingId}/images`, {
+    method: "POST",
+    credentials: "include",
+    body: form,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Upload failed");
+  state.images = [data, ...state.images];
+  renderMediaLibrary();
+  mediaStatus("Image added");
+  return data;
+}
+
+function renderReviewPool() {
+  const container = document.getElementById("review-pool-list");
+  if (!container) return;
+
+  if (!state.reviewPool.length) {
+    container.innerHTML =
+      '<p class="hint">No reviews in the pool yet. Add reviews for this landing page.</p>';
+    return;
+  }
+
+  const imageOptions = state.images
+    .map(
+      (img) =>
+        `<option value="${escapeAttr(img.url)}">${escapeHtml(
+          img.alt || img.originalName || img.url
+        )}</option>`
+    )
+    .join("");
+
+  container.innerHTML = state.reviewPool
+    .map((item, index) => {
+      return `<div class="section-item review-item" data-index="${index}">
+        <div class="review-row">
+          <label>Quote
+            <textarea data-field="quote" rows="3">${escapeHtml(item.quote || "")}</textarea>
+          </label>
+          <div>
+            ${
+              item.image
+                ? `<img class="review-thumb" src="${escapeAttr(item.image)}" alt="" />`
+                : ""
+            }
+            <label>Rating
+              <select data-field="rating">
+                ${[5, 4, 3, 2, 1]
+                  .map(
+                    (n) =>
+                      `<option value="${n}" ${
+                        Number(item.rating) === n ? "selected" : ""
+                      }>${n} stars</option>`
+                  )
+                  .join("")}
+              </select>
+            </label>
+          </div>
+        </div>
+        <label>Name <input data-field="name" value="${escapeAttr(item.name || "")}" /></label>
+        <label>Image URL
+          <input data-field="image" value="${escapeAttr(item.image || "")}" placeholder="/uploads/pages/..." />
+        </label>
+        <label>Pick from page images
+          <select data-field="imagePick">
+            <option value="">Keep current / paste URL</option>
+            ${imageOptions}
+          </select>
+        </label>
+        <label><span><input type="checkbox" data-field="show" ${
+          item.show !== false ? "checked" : ""
+        } /> Show on landing page</span></label>
+        <button type="button" class="danger remove-item">Remove</button>
+      </div>`;
+    })
+    .join("");
+
+  container.querySelectorAll("[data-field]").forEach((input) => {
+    input.addEventListener("input", (e) => {
+      const index = Number(e.target.closest(".section-item").dataset.index);
+      const field = e.target.dataset.field;
+      if (field === "show") {
+        state.reviewPool[index].show = e.target.checked;
+        return;
+      }
+      if (field === "imagePick") {
+        if (e.target.value) {
+          state.reviewPool[index].image = e.target.value;
+          renderReviewPool();
+        }
+        return;
+      }
+      if (field === "rating") {
+        state.reviewPool[index].rating = Number(e.target.value) || 5;
+        return;
+      }
+      state.reviewPool[index][field] = e.target.value;
+    });
+    input.addEventListener("change", (e) => {
+      if (e.target.dataset.field === "imagePick" && e.target.value) {
+        const index = Number(e.target.closest(".section-item").dataset.index);
+        state.reviewPool[index].image = e.target.value;
+        renderReviewPool();
+      }
+    });
+  });
+
+  container.querySelectorAll(".remove-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const index = Number(btn.closest(".section-item").dataset.index);
+      state.reviewPool.splice(index, 1);
+      renderReviewPool();
+    });
+  });
+}
+
 function renderWhyUs() {
   renderNamedList(
     "why-list",
@@ -659,6 +1000,10 @@ function blankPage() {
       penalties: [],
       testimonialsTitle: "Testimonials",
       testimonials: [],
+      reviewsTitle: "Customer reviews",
+      reviewsIntro: "Recent feedback related to this service.",
+      reviewPool: [],
+      galleryTitle: "Gallery",
       whyTitle: "Why choose us?",
       whyUs: [],
       faqsTitle: "Frequently Asked Questions",
@@ -751,6 +1096,12 @@ function fillEditor(page) {
   state.testimonials = Array.isArray(content.testimonials)
     ? content.testimonials.map((s) => ({ ...s }))
     : [];
+  state.reviewPool = Array.isArray(content.reviewPool)
+    ? content.reviewPool.map((s) => ({ ...s }))
+    : state.testimonials.map((s) => ({ ...s, show: true, rating: 5 }));
+  state.images = Array.isArray(page.images)
+    ? page.images.map((img) => ({ ...img }))
+    : [];
   state.whyUs = Array.isArray(content.whyUs)
     ? content.whyUs.map((s) => ({ ...s }))
     : [];
@@ -773,6 +1124,8 @@ function fillEditor(page) {
   document.getElementById("ctaUrl").value = page.ctaUrl || "";
   document.getElementById("heroImage").value = page.heroImage || "";
   document.getElementById("bodyHtml").value = page.bodyHtml || "";
+  renderHeroPreview();
+  mediaStatus("");
 
   document.getElementById("offerBanner").value = content.offerBanner || "";
   document.getElementById("badgeText").value = content.badgeText || "";
@@ -816,6 +1169,11 @@ function fillEditor(page) {
   document.getElementById("penaltiesTitle").value = content.penaltiesTitle || "";
   document.getElementById("testimonialsTitle").value =
     content.testimonialsTitle || "";
+  document.getElementById("reviewsTitle").value =
+    content.reviewsTitle || "Customer reviews";
+  document.getElementById("reviewsIntro").value = content.reviewsIntro || "";
+  document.getElementById("galleryTitle").value =
+    content.galleryTitle || "Gallery";
   document.getElementById("whyTitle").value = content.whyTitle || "";
   document.getElementById("faqsTitle").value = content.faqsTitle || "";
 
@@ -843,6 +1201,8 @@ function fillEditor(page) {
   renderBenefits();
   renderPenalties();
   renderTestimonials();
+  renderReviewPool();
+  renderMediaLibrary();
   renderWhyUs();
   renderFaqs();
 }
@@ -923,6 +1283,10 @@ function collectPagePayload() {
         .getElementById("testimonialsTitle")
         .value.trim(),
       testimonials: state.testimonials,
+      reviewsTitle: document.getElementById("reviewsTitle").value.trim(),
+      reviewsIntro: document.getElementById("reviewsIntro").value.trim(),
+      galleryTitle: document.getElementById("galleryTitle").value.trim(),
+      reviewPool: state.reviewPool,
       whyTitle: document.getElementById("whyTitle").value.trim(),
       whyUs: state.whyUs,
       faqsTitle: document.getElementById("faqsTitle").value.trim(),
@@ -1087,6 +1451,16 @@ document
     state.testimonials.push({ quote: "", name: "" });
     renderTestimonials();
   });
+document.getElementById("add-review-btn")?.addEventListener("click", () => {
+  state.reviewPool.push({
+    quote: "",
+    name: "",
+    rating: 5,
+    image: "",
+    show: true,
+  });
+  renderReviewPool();
+});
 document.getElementById("add-why-btn").addEventListener("click", () => {
   state.whyUs.push({ value: "", label: "" });
   renderWhyUs();
@@ -1094,6 +1468,26 @@ document.getElementById("add-why-btn").addEventListener("click", () => {
 document.getElementById("add-faq-btn").addEventListener("click", () => {
   state.faqs.push({ q: "", a: "" });
   renderFaqs();
+});
+
+document.getElementById("heroImage")?.addEventListener("input", renderHeroPreview);
+document
+  .getElementById("image-upload-input")
+  ?.addEventListener("change", async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    try {
+      await uploadPageImage(file);
+    } catch (error) {
+      mediaStatus(error.message, true);
+    }
+  });
+document
+  .getElementById("close-lightbox-btn")
+  ?.addEventListener("click", closeLightbox);
+document.getElementById("media-lightbox")?.addEventListener("click", (e) => {
+  if (e.target.id === "media-lightbox") closeLightbox();
 });
 
 document.getElementById("title").addEventListener("input", (e) => {

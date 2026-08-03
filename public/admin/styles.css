@@ -309,6 +309,122 @@ label input[type="checkbox"] {
   text-align: center;
 }
 
+.media-toolbar {
+  display: grid;
+  grid-template-columns: auto 160px 1fr;
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.file-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  border-radius: 0.4rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+}
+
+.media-library {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.media-card {
+  border: 1px solid var(--line);
+  border-radius: 0.55rem;
+  overflow: hidden;
+  background: #fff;
+  display: grid;
+  gap: 0.45rem;
+  padding-bottom: 0.55rem;
+}
+
+.media-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+  background: #eef3f4;
+  cursor: zoom-in;
+}
+
+.media-card .meta-block {
+  padding: 0 0.55rem;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+}
+
+.media-card .meta-block input,
+.media-card .meta-block select {
+  padding: 0.4rem 0.5rem;
+  font-size: 0.82rem;
+}
+
+.media-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  padding: 0 0.55rem;
+}
+
+.media-actions button {
+  padding: 0.4rem 0.55rem;
+  font-size: 0.78rem;
+}
+
+.image-preview-box {
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #fff;
+}
+
+.image-preview-box img {
+  display: block;
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+}
+
+.media-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(8, 20, 28, 0.86);
+  display: grid;
+  place-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+}
+
+.media-lightbox img {
+  max-width: min(960px, 100%);
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 0.4rem;
+  background: #111;
+}
+
+.review-item .review-row {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  gap: 0.6rem;
+}
+
+.review-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #eef3f4;
+}
+
 @media (max-width: 900px) {
   .dashboard { grid-template-columns: 1fr; }
   .sidebar {

@@ -924,6 +924,35 @@ const samples = [
           name: "Compliance coordinator",
         },
       ],
+      reviewsTitle: "Customer reviews",
+      reviewsIntro: "Feedback from teams handling SDS, MSDS Certificate, and UN38.3 battery shipping docs.",
+      galleryTitle: "Related visuals",
+      reviewPool: [
+        {
+          quote:
+            "We needed MSDS for export chemicals and UN38.3 clarity for battery packs in the same shipment plan. One checklist helped.",
+          name: "Export operations lead",
+          rating: 5,
+          image: "",
+          show: true,
+        },
+        {
+          quote:
+            "Clear distinction between SDS and MSDS terminology, plus practical next steps for battery shipping docs.",
+          name: "Compliance coordinator",
+          rating: 5,
+          image: "",
+          show: true,
+        },
+        {
+          quote:
+            "Fast response on what documents we needed before booking lithium battery air freight.",
+          name: "Logistics manager",
+          rating: 4,
+          image: "",
+          show: true,
+        },
+      ],
       whyTitle: "Why Instacertify Labs Private Limited",
       whyUs: [
         { value: "SDS", label: "Certificate focus" },

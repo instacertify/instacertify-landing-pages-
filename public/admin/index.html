@@ -89,7 +89,35 @@
               <label>Supporting sentence <textarea id="subheadline" rows="3"></textarea></label>
               <label>CTA label <input id="ctaLabel" /></label>
               <label>CTA URL <input id="ctaUrl" /></label>
-              <label>Hero image URL <input id="heroImage" placeholder="https://..." /></label>
+              <label>Hero image URL <input id="heroImage" placeholder="https://... or use Media library" /></label>
+              <div id="hero-image-preview" class="image-preview-box" hidden></div>
+            </fieldset>
+
+            <fieldset class="full" id="media-fieldset">
+              <legend>Page images</legend>
+              <p class="hint">Add, replace, preview, and assign images for this landing page. Save the page first to upload files.</p>
+              <div class="media-toolbar">
+                <label class="file-btn">
+                  Add image
+                  <input type="file" id="image-upload-input" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml" hidden />
+                </label>
+                <label>Role
+                  <select id="image-upload-role">
+                    <option value="gallery">Gallery</option>
+                    <option value="hero">Hero</option>
+                    <option value="og">OG / social</option>
+                    <option value="review">Review avatar</option>
+                    <option value="general">General</option>
+                  </select>
+                </label>
+                <label>Alt text <input id="image-upload-alt" placeholder="Describe the image" /></label>
+              </div>
+              <p id="media-status" class="hint" hidden></p>
+              <div id="media-library" class="media-library"></div>
+              <div id="media-lightbox" class="media-lightbox hidden" role="dialog" aria-modal="true">
+                <button type="button" class="ghost" id="close-lightbox-btn">Close</button>
+                <img id="lightbox-image" alt="Preview" />
+              </div>
             </fieldset>
 
             <fieldset class="full" id="chrome-fieldset">
@@ -263,7 +291,19 @@
 
               <div class="repeater-block">
                 <div class="repeater-head">
-                  <h3>Testimonials</h3>
+                  <h3>Review pool</h3>
+                  <button type="button" id="add-review-btn" class="ghost">Add review</button>
+                </div>
+                <p class="hint">Reviews tied to this landing page. Toggle Show to publish on the page. Attach an image URL from the media library.</p>
+                <label>Reviews section title <input id="reviewsTitle" /></label>
+                <label>Reviews intro <input id="reviewsIntro" /></label>
+                <label>Gallery section title <input id="galleryTitle" /></label>
+                <div id="review-pool-list"></div>
+              </div>
+
+              <div class="repeater-block">
+                <div class="repeater-head">
+                  <h3>Legacy testimonials (optional)</h3>
                   <button type="button" id="add-testimonial-btn" class="ghost">Add testimonial</button>
                 </div>
                 <label>Testimonials section title <input id="testimonialsTitle" /></label>

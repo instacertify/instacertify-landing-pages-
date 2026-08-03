@@ -658,12 +658,35 @@
       </section>
       <% } %>
 
-      <% if (c.testimonials && c.testimonials.length) { %>
+      <% const galleryImages = (page.images || []).filter(function(img) { return img.showOnPage && (img.role === 'gallery' || img.role === 'hero'); }); %>
+      <% if (galleryImages.length) { %>
+      <section class="block" id="gallery">
+        <h2><%= c.galleryTitle || 'Gallery' %></h2>
+        <div class="grid-3">
+          <% galleryImages.forEach(function(img) { %>
+            <figure class="item" style="padding:0;overflow:hidden;">
+              <img src="<%= img.url %>" alt="<%= img.alt || page.title %>" style="display:block;width:100%;height:180px;object-fit:cover;" loading="lazy" />
+              <% if (img.alt) { %><figcaption style="padding:0.7rem;color:var(--muted);font-size:0.88rem;"><%= img.alt %></figcaption><% } %>
+            </figure>
+          <% }) %>
+        </div>
+      </section>
+      <% } %>
+
+      <% const reviews = (c.reviewPool && c.reviewPool.length) ? c.reviewPool.filter(function(item){ return item.show !== false; }) : (c.testimonials || []); %>
+      <% if (reviews.length) { %>
       <section class="block" id="testimonials">
-        <h2><%= c.testimonialsTitle || 'Testimonials' %></h2>
+        <h2><%= c.reviewsTitle || c.testimonialsTitle || 'Customer reviews' %></h2>
+        <% if (c.reviewsIntro) { %><p class="block-lead"><%= c.reviewsIntro %></p><% } %>
         <div class="grid-2">
-          <% c.testimonials.forEach(function(item) { %>
+          <% reviews.forEach(function(item) { %>
             <article class="item">
+              <% if (item.image) { %>
+                <img src="<%= item.image %>" alt="<%= item.name || 'Reviewer' %>" style="width:48px;height:48px;border-radius:50%;object-fit:cover;margin-bottom:0.65rem;" loading="lazy" />
+              <% } %>
+              <% if (item.rating) { %>
+                <p style="margin:0 0 0.45rem;color:var(--accent);font-weight:800;letter-spacing:0.08em;"><%= '★'.repeat(item.rating) %><%= '☆'.repeat(Math.max(0, 5 - item.rating)) %></p>
+              <% } %>
               <% if (item.quote) { %><p>“<%= item.quote %>”</p><% } %>
               <% if (item.name) { %><h3><%= item.name %></h3><% } %>
             </article>
