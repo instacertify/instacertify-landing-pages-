@@ -2,6 +2,8 @@
 
 Small frontend + backend for publishing SEO/Ads landing pages on **info.instacertify.com**.
 
+Stack: **Express + EJS + sql.js (SQLite)** — no native modules, Hostinger-friendly.
+
 ## System rule
 
 - **Same backend** for every landing page (pages, `content_json`, leads, SEO, tracking)

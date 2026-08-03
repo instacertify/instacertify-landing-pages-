@@ -1,77 +1,14 @@
-const Database = require("better-sqlite3");
 const path = require("path");
 const fs = require("fs");
+const { openSqlite } = require("./sqlite");
 
 const dataDir = path.join(__dirname, "..", "data");
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
-const db = new Database(path.join(dataDir, "landing.db"));
-db.pragma("journal_mode = WAL");
-db.pragma("foreign_keys = ON");
-
-db.exec(`
-  CREATE TABLE IF NOT EXISTS site_settings (
-    key TEXT PRIMARY KEY,
-    value TEXT NOT NULL DEFAULT ''
-  );
-
-  CREATE TABLE IF NOT EXISTS pages (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    slug TEXT NOT NULL UNIQUE,
-    title TEXT NOT NULL,
-    design TEXT NOT NULL DEFAULT 'trust',
-    status TEXT NOT NULL DEFAULT 'draft',
-    brand_name TEXT NOT NULL DEFAULT 'Instacertify',
-    headline TEXT NOT NULL DEFAULT '',
-    subheadline TEXT NOT NULL DEFAULT '',
-    cta_label TEXT NOT NULL DEFAULT 'Get started',
-    cta_url TEXT NOT NULL DEFAULT 'https://instacertify.com',
-    hero_image TEXT NOT NULL DEFAULT '',
-    body_html TEXT NOT NULL DEFAULT '',
-    sections_json TEXT NOT NULL DEFAULT '[]',
-    content_json TEXT NOT NULL DEFAULT '{}',
-    seo_title TEXT NOT NULL DEFAULT '',
-    seo_description TEXT NOT NULL DEFAULT '',
-    seo_keywords TEXT NOT NULL DEFAULT '',
-    og_image TEXT NOT NULL DEFAULT '',
-    canonical_url TEXT NOT NULL DEFAULT '',
-    robots TEXT NOT NULL DEFAULT 'index,follow',
-    custom_head TEXT NOT NULL DEFAULT '',
-    created_at TEXT NOT NULL DEFAULT (datetime('now')),
-    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-  );
-
-  CREATE TABLE IF NOT EXISTS leads (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    page_id INTEGER,
-    page_slug TEXT NOT NULL DEFAULT '',
-    name TEXT NOT NULL DEFAULT '',
-    email TEXT NOT NULL DEFAULT '',
-    phone TEXT NOT NULL DEFAULT '',
-    city TEXT NOT NULL DEFAULT '',
-    service TEXT NOT NULL DEFAULT '',
-    message TEXT NOT NULL DEFAULT '',
-    utm_json TEXT NOT NULL DEFAULT '{}',
-    created_at TEXT NOT NULL DEFAULT (datetime('now')),
-    FOREIGN KEY (page_id) REFERENCES pages(id) ON DELETE SET NULL
-  );
-
-  CREATE TABLE IF NOT EXISTS page_images (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    page_id INTEGER NOT NULL,
-    url TEXT NOT NULL,
-    original_name TEXT NOT NULL DEFAULT '',
-    alt TEXT NOT NULL DEFAULT '',
-    role TEXT NOT NULL DEFAULT 'gallery',
-    show_on_page INTEGER NOT NULL DEFAULT 1,
-    sort_order INTEGER NOT NULL DEFAULT 0,
-    created_at TEXT NOT NULL DEFAULT (datetime('now')),
-    updated_at TEXT NOT NULL DEFAULT (datetime('now')),
-    FOREIGN KEY (page_id) REFERENCES pages(id) ON DELETE CASCADE
-  );
-`);
+const dbPath = path.join(dataDir, "landing.db");
+let db;
 
 function ensureColumn(table, column, definition) {
   const cols = db.prepare(`PRAGMA table_info(${table})`).all();
@@ -80,7 +17,79 @@ function ensureColumn(table, column, definition) {
   }
 }
 
-ensureColumn("pages", "content_json", "TEXT NOT NULL DEFAULT '{}'");
+function bootstrapSchema() {
+  db.pragma("foreign_keys = ON");
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS site_settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL DEFAULT ''
+    );
+
+    CREATE TABLE IF NOT EXISTS pages (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      slug TEXT NOT NULL UNIQUE,
+      title TEXT NOT NULL,
+      design TEXT NOT NULL DEFAULT 'trust',
+      status TEXT NOT NULL DEFAULT 'draft',
+      brand_name TEXT NOT NULL DEFAULT 'Instacertify',
+      headline TEXT NOT NULL DEFAULT '',
+      subheadline TEXT NOT NULL DEFAULT '',
+      cta_label TEXT NOT NULL DEFAULT 'Get started',
+      cta_url TEXT NOT NULL DEFAULT 'https://instacertify.com',
+      hero_image TEXT NOT NULL DEFAULT '',
+      body_html TEXT NOT NULL DEFAULT '',
+      sections_json TEXT NOT NULL DEFAULT '[]',
+      content_json TEXT NOT NULL DEFAULT '{}',
+      seo_title TEXT NOT NULL DEFAULT '',
+      seo_description TEXT NOT NULL DEFAULT '',
+      seo_keywords TEXT NOT NULL DEFAULT '',
+      og_image TEXT NOT NULL DEFAULT '',
+      canonical_url TEXT NOT NULL DEFAULT '',
+      robots TEXT NOT NULL DEFAULT 'index,follow',
+      custom_head TEXT NOT NULL DEFAULT '',
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS leads (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      page_id INTEGER,
+      page_slug TEXT NOT NULL DEFAULT '',
+      name TEXT NOT NULL DEFAULT '',
+      email TEXT NOT NULL DEFAULT '',
+      phone TEXT NOT NULL DEFAULT '',
+      city TEXT NOT NULL DEFAULT '',
+      service TEXT NOT NULL DEFAULT '',
+      message TEXT NOT NULL DEFAULT '',
+      utm_json TEXT NOT NULL DEFAULT '{}',
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (page_id) REFERENCES pages(id) ON DELETE SET NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS page_images (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      page_id INTEGER NOT NULL,
+      url TEXT NOT NULL,
+      original_name TEXT NOT NULL DEFAULT '',
+      alt TEXT NOT NULL DEFAULT '',
+      role TEXT NOT NULL DEFAULT 'gallery',
+      show_on_page INTEGER NOT NULL DEFAULT 1,
+      sort_order INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (page_id) REFERENCES pages(id) ON DELETE CASCADE
+    );
+  `);
+
+  ensureColumn("pages", "content_json", "TEXT NOT NULL DEFAULT '{}'");
+  ensureSettings();
+}
+
+const ready = openSqlite(dbPath).then((database) => {
+  db = database;
+  bootstrapSchema();
+  return api;
+});
 
 const DEFAULT_SETTINGS = {
   google_analytics_id: "",
@@ -203,8 +212,6 @@ function ensureSettings() {
   });
   tx();
 }
-
-ensureSettings();
 
 function getSettings() {
   const rows = db.prepare("SELECT key, value FROM site_settings").all();
@@ -723,8 +730,11 @@ function pick(...values) {
   return "";
 }
 
-module.exports = {
-  db,
+const api = {
+  ready,
+  get db() {
+    return db;
+  },
   EMPTY_CONTENT,
   getSettings,
   updateSettings,
@@ -744,3 +754,5 @@ module.exports = {
   deletePageImage,
   deletePageImagesForPage,
 };
+
+module.exports = api;

@@ -6,7 +6,8 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const helmet = require("helmet");
 const api = require("./routes/api");
-const { getPageBySlug, getSettings, listPages } = require("./db");
+const db = require("./db");
+const { getPageBySlug, getSettings, listPages } = db;
 const { resolveTemplate } = require("./designs/registry");
 
 const app = express();
@@ -132,7 +133,14 @@ function escapeXml(value) {
 
 const HOST = process.env.HOST || "0.0.0.0";
 
-app.listen(PORT, HOST, () => {
-  console.log(`Instacertify landing pages running on http://${HOST}:${PORT}`);
-  console.log(`Admin: http://${HOST}:${PORT}/admin`);
-});
+db.ready
+  .then(() => {
+    app.listen(PORT, HOST, () => {
+      console.log(`Instacertify landing pages running on http://${HOST}:${PORT}`);
+      console.log(`Admin: http://${HOST}:${PORT}/admin`);
+    });
+  })
+  .catch((error) => {
+    console.error("Failed to start database:", error);
+    process.exit(1);
+  });

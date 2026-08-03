@@ -12,10 +12,12 @@ This app is an **Express** server (`server/index.js`), not a static site. Use Ho
 | --- | --- |
 | Framework | Express / Other |
 | Branch | `main` (after merge) or `cursor/unique-designs-complete-editor-14b8` |
-| Node.js version | **20** or **22** |
+| Node.js version | **20** or **22** (24 also OK) |
 | Build command | `npm run build` |
 | Entry file | `server/index.js` |
 | Start command | `npm start` (if asked) |
+
+> Uses pure-JS SQLite (`sql.js`) — no Python / node-gyp / native build tools required on Hostinger.
 
 4. Add environment variables in Hostinger:
 

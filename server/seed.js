@@ -1,22 +1,12 @@
 require("dotenv").config();
+const db = require("./db");
 const {
   createPage,
   getPageBySlug,
   updatePage,
   updateSettings,
   listPages,
-} = require("./db");
-
-updateSettings({
-  site_name: "Instacertify",
-  legal_name: "Instacertify Labs Private Limited",
-  support_email: "contact@instacertify.com",
-  support_phone: "+91 99999118039",
-  support_whatsapp: "9199999118039",
-  favicon_url: "/assets/instacertify-logo.svg",
-  google_analytics_id: "",
-  google_tag_manager_id: "",
-});
+} = db;
 
 const samples = [
   {
@@ -1032,15 +1022,33 @@ const samples = [
   },
 ];
 
-for (const sample of samples) {
-  const existing = getPageBySlug(sample.slug);
-  if (existing) {
-    updatePage(existing.id, sample);
-    console.log(`Updated page: /${sample.slug}`);
-  } else {
-    createPage(sample);
-    console.log(`Created page: /${sample.slug}`);
-  }
-}
+db.ready
+  .then(() => {
+    updateSettings({
+      site_name: "Instacertify",
+      legal_name: "Instacertify Labs Private Limited",
+      support_email: "contact@instacertify.com",
+      support_phone: "+91 99999118039",
+      support_whatsapp: "9199999118039",
+      favicon_url: "/assets/instacertify-logo.svg",
+      google_analytics_id: "",
+      google_tag_manager_id: "",
+    });
 
-console.log(`Total pages: ${listPages().length}`);
+    for (const sample of samples) {
+      const existing = getPageBySlug(sample.slug);
+      if (existing) {
+        updatePage(existing.id, sample);
+        console.log(`Updated page: /${sample.slug}`);
+      } else {
+        createPage(sample);
+        console.log(`Created page: /${sample.slug}`);
+      }
+    }
+
+    console.log(`Total pages: ${listPages().length}`);
+  })
+  .catch((error) => {
+    console.error("Seed failed:", error);
+    process.exit(1);
+  });
