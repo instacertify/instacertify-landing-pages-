@@ -7,6 +7,8 @@ const {
   deletePage,
   getSettings,
   updateSettings,
+  createLead,
+  listLeads,
 } = require("../db");
 const {
   SESSION_COOKIE,
@@ -19,6 +21,12 @@ const {
 const router = express.Router();
 
 const DESIGNS = [
+  {
+    id: "service",
+    name: "Service",
+    description:
+      "Lead-gen layout inspired by compliance landing pages: hero form, process, docs, FAQs.",
+  },
   {
     id: "trust",
     name: "Trust",
@@ -115,6 +123,33 @@ router.get("/settings", requireAuth, (_req, res) => {
 router.put("/settings", requireAuth, (req, res) => {
   const settings = updateSettings(req.body || {});
   res.json(settings);
+});
+
+router.get("/leads", requireAuth, (_req, res) => {
+  res.json(listLeads());
+});
+
+router.post("/leads", async (req, res) => {
+  try {
+    const lead = createLead(req.body || {});
+    const settings = getSettings();
+
+    if (settings.lead_webhook_url) {
+      try {
+        await fetch(settings.lead_webhook_url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(lead),
+        });
+      } catch (error) {
+        console.error("Lead webhook failed:", error.message);
+      }
+    }
+
+    return res.status(201).json({ ok: true, id: lead.id });
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
 });
 
 module.exports = router;

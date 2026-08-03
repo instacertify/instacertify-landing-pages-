@@ -270,6 +270,38 @@ label.full { grid-column: 1 / -1; }
 
 .section-item:first-child { border-top: 0; padding-top: 0; }
 
+.repeater-block {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 0.75rem;
+}
+
+.repeater-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.repeater-head h3 {
+  margin: 0;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1rem;
+}
+
+label span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+label input[type="checkbox"] {
+  width: auto;
+}
+
 .empty {
   padding: 2rem;
   border: 1px dashed var(--line);

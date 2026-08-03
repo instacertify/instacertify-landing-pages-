@@ -32,6 +32,7 @@
         </div>
         <nav>
           <button type="button" data-view="pages" class="nav-btn active">Pages</button>
+          <button type="button" data-view="leads" class="nav-btn">Leads</button>
           <button type="button" data-view="settings" class="nav-btn">SEO &amp; Tracking</button>
         </nav>
         <button type="button" id="logout-btn" class="ghost">Sign out</button>
@@ -98,6 +99,88 @@
             </fieldset>
 
             <fieldset class="full">
+              <legend>Service / lead-gen content</legend>
+              <p class="hint">Best with the Service design. Inspired by compliance landing pages: form, trust points, process, docs, FAQs.</p>
+              <div class="two-col">
+                <label>Page phone <input id="contentPhone" placeholder="+91..." /></label>
+                <label>Page WhatsApp <input id="contentWhatsapp" placeholder="91..." /></label>
+                <label>Offer text <input id="offerText" placeholder="Limited festive offer" /></label>
+                <label>Offer price <input id="offerPrice" placeholder="From ₹18,999" /></label>
+                <label class="full">Trust points (one per line)
+                  <textarea id="trustPoints" rows="5" placeholder="10+ years experience&#10;Same-day consultation&#10;Dedicated compliance support"></textarea>
+                </label>
+                <label>Form title <input id="formTitle" /></label>
+                <label>Form submit label <input id="formSubmitLabel" /></label>
+                <label class="full">Form success message <input id="formSuccessMessage" /></label>
+                <label class="full"><span><input type="checkbox" id="formEnabled" checked /> Enable lead form</span></label>
+                <label class="full">Bottom CTA text <input id="bottomCtaText" /></label>
+              </div>
+
+              <div class="repeater-block">
+                <div class="repeater-head">
+                  <h3>Process steps</h3>
+                  <button type="button" id="add-process-btn" class="ghost">Add step</button>
+                </div>
+                <label>Process section title <input id="processTitle" /></label>
+                <div id="process-list"></div>
+              </div>
+
+              <div class="repeater-block">
+                <div class="repeater-head">
+                  <h3>Types / coverage</h3>
+                  <button type="button" id="add-type-btn" class="ghost">Add type</button>
+                </div>
+                <label>Types section title <input id="typesTitle" /></label>
+                <div id="types-list"></div>
+              </div>
+
+              <div class="repeater-block">
+                <div class="repeater-head">
+                  <h3>Documents required</h3>
+                  <button type="button" id="add-doc-btn" class="ghost">Add group</button>
+                </div>
+                <label>Documents section title <input id="documentsTitle" /></label>
+                <div id="documents-list"></div>
+              </div>
+
+              <div class="repeater-block">
+                <div class="repeater-head">
+                  <h3>Benefits</h3>
+                  <button type="button" id="add-benefit-btn" class="ghost">Add benefit</button>
+                </div>
+                <label>Benefits section title <input id="benefitsTitle" /></label>
+                <div id="benefits-list"></div>
+              </div>
+
+              <div class="repeater-block">
+                <div class="repeater-head">
+                  <h3>Testimonials</h3>
+                  <button type="button" id="add-testimonial-btn" class="ghost">Add testimonial</button>
+                </div>
+                <label>Testimonials section title <input id="testimonialsTitle" /></label>
+                <div id="testimonials-list"></div>
+              </div>
+
+              <div class="repeater-block">
+                <div class="repeater-head">
+                  <h3>Why choose us</h3>
+                  <button type="button" id="add-why-btn" class="ghost">Add stat</button>
+                </div>
+                <label>Why section title <input id="whyTitle" /></label>
+                <div id="why-list"></div>
+              </div>
+
+              <div class="repeater-block">
+                <div class="repeater-head">
+                  <h3>FAQs</h3>
+                  <button type="button" id="add-faq-btn" class="ghost">Add FAQ</button>
+                </div>
+                <label>FAQ section title <input id="faqsTitle" /></label>
+                <div id="faqs-list"></div>
+              </div>
+            </fieldset>
+
+            <fieldset class="full">
               <legend>Optional HTML body</legend>
               <textarea id="bodyHtml" rows="6" placeholder="<p>Extra content...</p>"></textarea>
             </fieldset>
@@ -127,6 +210,17 @@
           <p id="editor-status" class="status" hidden></p>
         </div>
 
+        <div id="leads-view" class="hidden">
+          <header class="toolbar">
+            <div>
+              <h2>Leads</h2>
+              <p>Form submissions from service landing pages</p>
+            </div>
+            <button type="button" id="refresh-leads-btn" class="ghost">Refresh</button>
+          </header>
+          <div id="leads-list" class="pages-list"></div>
+        </div>
+
         <div id="settings-view" class="hidden">
           <header class="toolbar">
             <div>
@@ -142,6 +236,11 @@
               <label>Site name <input id="site_name" /></label>
               <label>Default OG image <input id="default_og_image" /></label>
               <label>Favicon URL <input id="favicon_url" /></label>
+              <label>Support phone <input id="support_phone" placeholder="+91..." /></label>
+              <label>Support WhatsApp <input id="support_whatsapp" placeholder="91..." /></label>
+              <label>Lead webhook URL
+                <input id="lead_webhook_url" placeholder="https://hooks.zapier.com/..." />
+              </label>
             </fieldset>
 
             <fieldset>

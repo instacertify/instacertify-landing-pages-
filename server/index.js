@@ -89,7 +89,9 @@ app.get("/:slug", (req, res) => {
 
 function renderLanding(res, page, isPreview) {
   const settings = getSettings();
-  const design = ["trust", "bold", "minimal", "signal"].includes(page.design)
+  const design = ["service", "trust", "bold", "minimal", "signal"].includes(
+    page.design
+  )
     ? page.design
     : "trust";
 

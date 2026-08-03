@@ -2,9 +2,17 @@ const state = {
   authenticated: false,
   designs: [],
   pages: [],
+  leads: [],
   settings: null,
   editingId: null,
   sections: [],
+  process: [],
+  types: [],
+  documents: [],
+  benefits: [],
+  testimonials: [],
+  whyUs: [],
+  faqs: [],
 };
 
 const els = {
@@ -17,7 +25,9 @@ const els = {
   pagesView: document.getElementById("pages-view"),
   editorView: document.getElementById("editor-view"),
   settingsView: document.getElementById("settings-view"),
+  leadsView: document.getElementById("leads-view"),
   pagesList: document.getElementById("pages-list"),
+  leadsList: document.getElementById("leads-list"),
   newPageBtn: document.getElementById("new-page-btn"),
   backBtn: document.getElementById("back-btn"),
   saveBtn: document.getElementById("save-btn"),
@@ -29,6 +39,7 @@ const els = {
   settingsForm: document.getElementById("settings-form"),
   saveSettingsBtn: document.getElementById("save-settings-btn"),
   settingsStatus: document.getElementById("settings-status"),
+  refreshLeadsBtn: document.getElementById("refresh-leads-btn"),
   navButtons: document.querySelectorAll(".nav-btn"),
 };
 
@@ -62,9 +73,13 @@ function showView(name) {
   els.pagesView.classList.toggle("hidden", name !== "pages");
   els.editorView.classList.toggle("hidden", name !== "editor");
   els.settingsView.classList.toggle("hidden", name !== "settings");
+  els.leadsView.classList.toggle("hidden", name !== "leads");
   els.navButtons.forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.view === (name === "editor" ? "pages" : name));
+    const active =
+      btn.dataset.view === (name === "editor" ? "pages" : name);
+    btn.classList.toggle("active", active);
   });
+  if (name === "leads") loadLeads();
 }
 
 function slugify(value) {
@@ -74,6 +89,29 @@ function slugify(value) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 80);
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function escapeAttr(value) {
+  return escapeHtml(value).replace(/'/g, "&#39;");
+}
+
+function linesToArray(value) {
+  return String(value || "")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+function arrayToLines(value) {
+  return Array.isArray(value) ? value.join("\n") : "";
 }
 
 function renderDesignOptions() {
@@ -94,7 +132,8 @@ function renderPages() {
 
   els.pagesList.innerHTML = state.pages
     .map((page) => {
-      const url = page.status === "published" ? `/${page.slug}` : `/preview/${page.slug}`;
+      const url =
+        page.status === "published" ? `/${page.slug}` : `/preview/${page.slug}`;
       return `
         <article class="page-row" data-id="${page.id}">
           <div>
@@ -134,48 +173,220 @@ function renderPages() {
   });
 }
 
-function renderSections() {
-  if (!state.sections.length) {
-    els.sectionsList.innerHTML =
-      '<p class="hint">No sections yet. Add one below.</p>';
+function renderLeads() {
+  if (!state.leads.length) {
+    els.leadsList.innerHTML =
+      '<div class="empty">No leads yet. Submissions from Service pages will appear here.</div>';
     return;
   }
 
-  els.sectionsList.innerHTML = state.sections
+  els.leadsList.innerHTML = state.leads
     .map(
-      (section, index) => `
-      <div class="section-item" data-index="${index}">
-        <label>Heading
-          <input class="section-heading" value="${escapeAttr(section.heading || "")}" />
-        </label>
-        <label>Text
-          <textarea class="section-text" rows="3">${escapeHtml(section.text || "")}</textarea>
-        </label>
-        <button type="button" class="danger remove-section">Remove</button>
-      </div>
+      (lead) => `
+      <article class="page-row">
+        <div>
+          <h3>${escapeHtml(lead.name)}</h3>
+          <div class="meta">
+            ${lead.phone ? `<span class="badge">${escapeHtml(lead.phone)}</span>` : ""}
+            ${lead.email ? escapeHtml(lead.email) + " · " : ""}
+            ${lead.pageSlug ? "/" + escapeHtml(lead.pageSlug) + " · " : ""}
+            ${escapeHtml(lead.createdAt)}
+          </div>
+          <div class="meta">${escapeHtml(lead.service || "")} ${lead.city ? "· " + escapeHtml(lead.city) : ""}</div>
+          ${lead.message ? `<p class="hint">${escapeHtml(lead.message)}</p>` : ""}
+        </div>
+      </article>
     `
     )
     .join("");
+}
 
-  els.sectionsList.querySelectorAll(".section-heading").forEach((input) => {
+function renderNamedList(containerId, items, fields, onChange) {
+  const container = document.getElementById(containerId);
+  if (!items.length) {
+    container.innerHTML = '<p class="hint">None yet.</p>';
+    return;
+  }
+
+  container.innerHTML = items
+    .map((item, index) => {
+      const inputs = fields
+        .map((field) => {
+          if (field.type === "textarea") {
+            return `<label>${field.label}
+              <textarea data-field="${field.key}" rows="${field.rows || 3}">${escapeHtml(item[field.key] || "")}</textarea>
+            </label>`;
+          }
+          return `<label>${field.label}
+            <input data-field="${field.key}" value="${escapeAttr(item[field.key] || "")}" />
+          </label>`;
+        })
+        .join("");
+      return `<div class="section-item" data-index="${index}">
+        ${inputs}
+        <button type="button" class="danger remove-item">Remove</button>
+      </div>`;
+    })
+    .join("");
+
+  container.querySelectorAll("[data-field]").forEach((input) => {
     input.addEventListener("input", (e) => {
       const index = Number(e.target.closest(".section-item").dataset.index);
-      state.sections[index].heading = e.target.value;
+      items[index][e.target.dataset.field] = e.target.value;
     });
   });
-  els.sectionsList.querySelectorAll(".section-text").forEach((input) => {
-    input.addEventListener("input", (e) => {
-      const index = Number(e.target.closest(".section-item").dataset.index);
-      state.sections[index].text = e.target.value;
-    });
-  });
-  els.sectionsList.querySelectorAll(".remove-section").forEach((btn) => {
+  container.querySelectorAll(".remove-item").forEach((btn) => {
     btn.addEventListener("click", () => {
       const index = Number(btn.closest(".section-item").dataset.index);
-      state.sections.splice(index, 1);
-      renderSections();
+      items.splice(index, 1);
+      onChange?.();
     });
   });
+}
+
+function renderSections() {
+  renderNamedList(
+    "sections-list",
+    state.sections,
+    [
+      { key: "heading", label: "Heading" },
+      { key: "text", label: "Text", type: "textarea" },
+    ],
+    renderSections
+  );
+}
+
+function renderProcess() {
+  renderNamedList(
+    "process-list",
+    state.process,
+    [
+      { key: "title", label: "Step title" },
+      { key: "text", label: "Step text", type: "textarea" },
+    ],
+    renderProcess
+  );
+}
+
+function renderTypes() {
+  const container = document.getElementById("types-list");
+  if (!state.types.length) {
+    container.innerHTML = '<p class="hint">None yet.</p>';
+    return;
+  }
+  container.innerHTML = state.types
+    .map(
+      (item, index) => `
+      <div class="section-item" data-index="${index}">
+        <label>Title <input data-field="title" value="${escapeAttr(item.title || "")}" /></label>
+        <label>Text <textarea data-field="text" rows="2">${escapeHtml(item.text || "")}</textarea></label>
+        <label>Bullet items (one per line)
+          <textarea data-field="items" rows="4">${escapeHtml(arrayToLines(item.items))}</textarea>
+        </label>
+        <button type="button" class="danger remove-item">Remove</button>
+      </div>`
+    )
+    .join("");
+
+  container.querySelectorAll("[data-field]").forEach((input) => {
+    input.addEventListener("input", (e) => {
+      const index = Number(e.target.closest(".section-item").dataset.index);
+      const field = e.target.dataset.field;
+      state.types[index][field] =
+        field === "items" ? linesToArray(e.target.value) : e.target.value;
+    });
+  });
+  container.querySelectorAll(".remove-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const index = Number(btn.closest(".section-item").dataset.index);
+      state.types.splice(index, 1);
+      renderTypes();
+    });
+  });
+}
+
+function renderDocuments() {
+  const container = document.getElementById("documents-list");
+  if (!state.documents.length) {
+    container.innerHTML = '<p class="hint">None yet.</p>';
+    return;
+  }
+  container.innerHTML = state.documents
+    .map(
+      (item, index) => `
+      <div class="section-item" data-index="${index}">
+        <label>Group title <input data-field="title" value="${escapeAttr(item.title || "")}" /></label>
+        <label>Documents (one per line)
+          <textarea data-field="items" rows="4">${escapeHtml(arrayToLines(item.items))}</textarea>
+        </label>
+        <button type="button" class="danger remove-item">Remove</button>
+      </div>`
+    )
+    .join("");
+
+  container.querySelectorAll("[data-field]").forEach((input) => {
+    input.addEventListener("input", (e) => {
+      const index = Number(e.target.closest(".section-item").dataset.index);
+      const field = e.target.dataset.field;
+      state.documents[index][field] =
+        field === "items" ? linesToArray(e.target.value) : e.target.value;
+    });
+  });
+  container.querySelectorAll(".remove-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const index = Number(btn.closest(".section-item").dataset.index);
+      state.documents.splice(index, 1);
+      renderDocuments();
+    });
+  });
+}
+
+function renderBenefits() {
+  renderNamedList(
+    "benefits-list",
+    state.benefits,
+    [
+      { key: "title", label: "Benefit title" },
+      { key: "text", label: "Benefit text", type: "textarea" },
+    ],
+    renderBenefits
+  );
+}
+
+function renderTestimonials() {
+  renderNamedList(
+    "testimonials-list",
+    state.testimonials,
+    [
+      { key: "quote", label: "Quote", type: "textarea" },
+      { key: "name", label: "Name" },
+    ],
+    renderTestimonials
+  );
+}
+
+function renderWhyUs() {
+  renderNamedList(
+    "why-list",
+    state.whyUs,
+    [
+      { key: "value", label: "Stat value" },
+      { key: "label", label: "Stat label" },
+    ],
+    renderWhyUs
+  );
+}
+
+function renderFaqs() {
+  renderNamedList(
+    "faqs-list",
+    state.faqs,
+    [
+      { key: "q", label: "Question" },
+      { key: "a", label: "Answer", type: "textarea", rows: 4 },
+    ],
+    renderFaqs
+  );
 }
 
 function blankPage() {
@@ -184,15 +395,41 @@ function blankPage() {
     title: "",
     slug: "",
     status: "draft",
-    design: state.designs[0]?.id || "trust",
+    design: "service",
     brandName: "Instacertify",
     headline: "",
     subheadline: "",
-    ctaLabel: "Get started",
+    ctaLabel: "Get a free consultation",
     ctaUrl: "https://instacertify.com",
     heroImage: "",
     bodyHtml: "",
     sections: [],
+    content: {
+      phone: "",
+      whatsapp: "",
+      trustPoints: [],
+      offerText: "",
+      offerPrice: "",
+      formEnabled: true,
+      formTitle: "Fill the form now",
+      formSubmitLabel: "Get a free consultation",
+      formSuccessMessage: "Thanks! Our team will contact you shortly.",
+      processTitle: "Registration procedure",
+      process: [],
+      typesTitle: "",
+      types: [],
+      documentsTitle: "",
+      documents: [],
+      benefitsTitle: "",
+      benefits: [],
+      testimonialsTitle: "Testimonials",
+      testimonials: [],
+      whyTitle: "Why choose us",
+      whyUs: [],
+      faqsTitle: "FAQs",
+      faqs: [],
+      bottomCtaText: "Book a free consultation",
+    },
     seo: {
       title: "",
       description: "",
@@ -210,6 +447,28 @@ function fillEditor(page) {
   state.sections = Array.isArray(page.sections)
     ? page.sections.map((s) => ({ ...s }))
     : [];
+  const content = page.content || {};
+  state.process = Array.isArray(content.process)
+    ? content.process.map((s) => ({ ...s }))
+    : [];
+  state.types = Array.isArray(content.types)
+    ? content.types.map((s) => ({ ...s, items: [...(s.items || [])] }))
+    : [];
+  state.documents = Array.isArray(content.documents)
+    ? content.documents.map((s) => ({ ...s, items: [...(s.items || [])] }))
+    : [];
+  state.benefits = Array.isArray(content.benefits)
+    ? content.benefits.map((s) => ({ ...s }))
+    : [];
+  state.testimonials = Array.isArray(content.testimonials)
+    ? content.testimonials.map((s) => ({ ...s }))
+    : [];
+  state.whyUs = Array.isArray(content.whyUs)
+    ? content.whyUs.map((s) => ({ ...s }))
+    : [];
+  state.faqs = Array.isArray(content.faqs)
+    ? content.faqs.map((s) => ({ ...s }))
+    : [];
 
   document.getElementById("editor-title").textContent = page.id
     ? "Edit page"
@@ -218,7 +477,7 @@ function fillEditor(page) {
   document.getElementById("title").value = page.title || "";
   document.getElementById("slug").value = page.slug || "";
   document.getElementById("status").value = page.status || "draft";
-  document.getElementById("design").value = page.design || "trust";
+  document.getElementById("design").value = page.design || "service";
   document.getElementById("brandName").value = page.brandName || "Instacertify";
   document.getElementById("headline").value = page.headline || "";
   document.getElementById("subheadline").value = page.subheadline || "";
@@ -226,15 +485,48 @@ function fillEditor(page) {
   document.getElementById("ctaUrl").value = page.ctaUrl || "";
   document.getElementById("heroImage").value = page.heroImage || "";
   document.getElementById("bodyHtml").value = page.bodyHtml || "";
+
+  document.getElementById("contentPhone").value = content.phone || "";
+  document.getElementById("contentWhatsapp").value = content.whatsapp || "";
+  document.getElementById("offerText").value = content.offerText || "";
+  document.getElementById("offerPrice").value = content.offerPrice || "";
+  document.getElementById("trustPoints").value = arrayToLines(
+    content.trustPoints || []
+  );
+  document.getElementById("formTitle").value = content.formTitle || "";
+  document.getElementById("formSubmitLabel").value =
+    content.formSubmitLabel || "";
+  document.getElementById("formSuccessMessage").value =
+    content.formSuccessMessage || "";
+  document.getElementById("formEnabled").checked = content.formEnabled !== false;
+  document.getElementById("bottomCtaText").value = content.bottomCtaText || "";
+  document.getElementById("processTitle").value = content.processTitle || "";
+  document.getElementById("typesTitle").value = content.typesTitle || "";
+  document.getElementById("documentsTitle").value = content.documentsTitle || "";
+  document.getElementById("benefitsTitle").value = content.benefitsTitle || "";
+  document.getElementById("testimonialsTitle").value =
+    content.testimonialsTitle || "";
+  document.getElementById("whyTitle").value = content.whyTitle || "";
+  document.getElementById("faqsTitle").value = content.faqsTitle || "";
+
   document.getElementById("seoTitle").value = page.seo?.title || "";
   document.getElementById("seoDescription").value = page.seo?.description || "";
   document.getElementById("seoKeywords").value = page.seo?.keywords || "";
   document.getElementById("seoOgImage").value = page.seo?.ogImage || "";
   document.getElementById("seoCanonical").value = page.seo?.canonicalUrl || "";
-  document.getElementById("seoRobots").value = page.seo?.robots || "index,follow";
+  document.getElementById("seoRobots").value =
+    page.seo?.robots || "index,follow";
   document.getElementById("seoCustomHead").value = page.seo?.customHead || "";
   els.editorStatus.hidden = true;
+
   renderSections();
+  renderProcess();
+  renderTypes();
+  renderDocuments();
+  renderBenefits();
+  renderTestimonials();
+  renderWhyUs();
+  renderFaqs();
 }
 
 function collectPagePayload() {
@@ -251,6 +543,36 @@ function collectPagePayload() {
     heroImage: document.getElementById("heroImage").value.trim(),
     bodyHtml: document.getElementById("bodyHtml").value,
     sections: state.sections,
+    content: {
+      phone: document.getElementById("contentPhone").value.trim(),
+      whatsapp: document.getElementById("contentWhatsapp").value.trim(),
+      trustPoints: linesToArray(document.getElementById("trustPoints").value),
+      offerText: document.getElementById("offerText").value.trim(),
+      offerPrice: document.getElementById("offerPrice").value.trim(),
+      formEnabled: document.getElementById("formEnabled").checked,
+      formTitle: document.getElementById("formTitle").value.trim(),
+      formSubmitLabel: document.getElementById("formSubmitLabel").value.trim(),
+      formSuccessMessage: document
+        .getElementById("formSuccessMessage")
+        .value.trim(),
+      processTitle: document.getElementById("processTitle").value.trim(),
+      process: state.process,
+      typesTitle: document.getElementById("typesTitle").value.trim(),
+      types: state.types,
+      documentsTitle: document.getElementById("documentsTitle").value.trim(),
+      documents: state.documents,
+      benefitsTitle: document.getElementById("benefitsTitle").value.trim(),
+      benefits: state.benefits,
+      testimonialsTitle: document
+        .getElementById("testimonialsTitle")
+        .value.trim(),
+      testimonials: state.testimonials,
+      whyTitle: document.getElementById("whyTitle").value.trim(),
+      whyUs: state.whyUs,
+      faqsTitle: document.getElementById("faqsTitle").value.trim(),
+      faqs: state.faqs,
+      bottomCtaText: document.getElementById("bottomCtaText").value.trim(),
+    },
     seo: {
       title: document.getElementById("seoTitle").value.trim(),
       description: document.getElementById("seoDescription").value.trim(),
@@ -279,6 +601,9 @@ function fillSettings(settings) {
     "site_name",
     "default_og_image",
     "favicon_url",
+    "support_phone",
+    "support_whatsapp",
+    "lead_webhook_url",
     "google_analytics_id",
     "google_tag_manager_id",
     "facebook_pixel_id",
@@ -296,6 +621,11 @@ async function loadPages() {
   renderPages();
 }
 
+async function loadLeads() {
+  state.leads = await api("/leads");
+  renderLeads();
+}
+
 async function bootstrapAuthed() {
   const [designs, settings] = await Promise.all([
     api("/designs"),
@@ -306,18 +636,6 @@ async function bootstrapAuthed() {
   fillSettings(settings);
   await loadPages();
   showView("pages");
-}
-
-function escapeHtml(value) {
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
-function escapeAttr(value) {
-  return escapeHtml(value).replace(/'/g, "&#39;");
 }
 
 els.loginForm.addEventListener("submit", async (e) => {
@@ -347,10 +665,41 @@ els.navButtons.forEach((btn) => {
 
 els.newPageBtn.addEventListener("click", () => openEditor(null));
 els.backBtn.addEventListener("click", () => showView("pages"));
+els.refreshLeadsBtn.addEventListener("click", () => loadLeads());
 
 els.addSectionBtn.addEventListener("click", () => {
   state.sections.push({ heading: "", text: "" });
   renderSections();
+});
+document.getElementById("add-process-btn").addEventListener("click", () => {
+  state.process.push({ title: "", text: "" });
+  renderProcess();
+});
+document.getElementById("add-type-btn").addEventListener("click", () => {
+  state.types.push({ title: "", text: "", items: [] });
+  renderTypes();
+});
+document.getElementById("add-doc-btn").addEventListener("click", () => {
+  state.documents.push({ title: "", items: [] });
+  renderDocuments();
+});
+document.getElementById("add-benefit-btn").addEventListener("click", () => {
+  state.benefits.push({ title: "", text: "" });
+  renderBenefits();
+});
+document
+  .getElementById("add-testimonial-btn")
+  .addEventListener("click", () => {
+    state.testimonials.push({ quote: "", name: "" });
+    renderTestimonials();
+  });
+document.getElementById("add-why-btn").addEventListener("click", () => {
+  state.whyUs.push({ value: "", label: "" });
+  renderWhyUs();
+});
+document.getElementById("add-faq-btn").addEventListener("click", () => {
+  state.faqs.push({ q: "", a: "" });
+  renderFaqs();
 });
 
 document.getElementById("title").addEventListener("input", (e) => {
@@ -404,6 +753,9 @@ els.saveSettingsBtn.addEventListener("click", async () => {
       "site_name",
       "default_og_image",
       "favicon_url",
+      "support_phone",
+      "support_whatsapp",
+      "lead_webhook_url",
       "google_analytics_id",
       "google_tag_manager_id",
       "facebook_pixel_id",

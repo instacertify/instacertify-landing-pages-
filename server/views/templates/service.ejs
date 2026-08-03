@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/head') %>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #0c2430;
+      --muted: #4c6673;
+      --brand: #0b6e6a;
+      --brand-dark: #084e4b;
+      --accent: #e8a317;
+      --accent-ink: #3a2800;
+      --paper: #f3f7f6;
+      --panel: #ffffff;
+      --line: rgba(12, 36, 48, 0.12);
+      --hero-a: #08343a;
+      --hero-b: #0f5f5a;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Source Sans 3", sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+    }
+    a { color: inherit; }
+    .preview-banner {
+      background: #111;
+      color: #fff;
+      text-align: center;
+      padding: 0.5rem;
+      font-size: 0.85rem;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.85rem 1.25rem;
+      background: rgba(255,255,255,0.92);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+    }
+    .topbar strong {
+      font-family: Sora, sans-serif;
+      font-size: 1.15rem;
+      letter-spacing: -0.03em;
+    }
+    .topbar-actions {
+      display: flex;
+      gap: 0.55rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border: 0;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+      border-radius: 0.4rem;
+      padding: 0.8rem 1.1rem;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--accent-ink);
+    }
+    .btn-dark {
+      background: var(--brand);
+      color: #fff;
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--ink);
+    }
+    .hero {
+      min-height: calc(100vh - 64px);
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: clamp(1.25rem, 3vw, 2.5rem);
+      align-items: center;
+      padding: clamp(1.5rem, 4vw, 3rem);
+      color: #f4fffc;
+      background:
+        linear-gradient(135deg, rgba(8, 52, 58, 0.92), rgba(15, 95, 90, 0.88)),
+        <% if (page.heroImage) { %>url("<%= page.heroImage %>") center/cover no-repeat,<% } %>
+        radial-gradient(circle at 80% 10%, rgba(232, 163, 23, 0.28), transparent 35%),
+        linear-gradient(160deg, var(--hero-a), var(--hero-b));
+      animation: fadeIn 700ms ease both;
+    }
+    .brand {
+      font-family: Sora, sans-serif;
+      font-size: clamp(2.4rem, 6vw, 4.4rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      margin: 0 0 0.85rem;
+      animation: rise 750ms ease both;
+    }
+    .headline {
+      font-family: Sora, sans-serif;
+      font-size: clamp(1.35rem, 2.8vw, 2rem);
+      line-height: 1.2;
+      margin: 0 0 0.75rem;
+      max-width: 22ch;
+      animation: rise 750ms 60ms ease both;
+    }
+    .sub {
+      max-width: 48ch;
+      color: rgba(244, 255, 252, 0.88);
+      margin: 0 0 1.25rem;
+      animation: rise 750ms 120ms ease both;
+    }
+    .trust-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1.25rem;
+      display: grid;
+      gap: 0.55rem;
+      animation: rise 750ms 160ms ease both;
+    }
+    .trust-list li {
+      display: flex;
+      gap: 0.55rem;
+      align-items: flex-start;
+      font-weight: 600;
+    }
+    .trust-list li::before {
+      content: "";
+      width: 0.7rem;
+      height: 0.7rem;
+      margin-top: 0.35rem;
+      border-radius: 50%;
+      background: var(--accent);
+      flex: 0 0 auto;
+    }
+    .offer-chip {
+      display: inline-block;
+      background: rgba(232, 163, 23, 0.95);
+      color: var(--accent-ink);
+      font-weight: 700;
+      padding: 0.7rem 0.95rem;
+      border-radius: 0.35rem;
+      animation: rise 750ms 200ms ease both;
+    }
+    .lead-panel {
+      background: var(--panel);
+      color: var(--ink);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+      animation: rise 800ms 120ms ease both;
+    }
+    .lead-panel h2 {
+      font-family: Sora, sans-serif;
+      font-size: 1.35rem;
+      margin: 0 0 0.9rem;
+      letter-spacing: -0.02em;
+    }
+    .lead-panel form {
+      display: grid;
+      gap: 0.7rem;
+    }
+    .lead-panel label {
+      display: grid;
+      gap: 0.3rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .lead-panel input,
+    .lead-panel select,
+    .lead-panel textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 0.4rem;
+      padding: 0.75rem 0.8rem;
+      font: inherit;
+      background: #fbfdff;
+    }
+    .lead-panel .btn { width: 100%; }
+    .form-note {
+      margin: 0.55rem 0 0;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    .form-success {
+      display: none;
+      padding: 0.85rem;
+      border-radius: 0.4rem;
+      background: rgba(11, 110, 106, 0.1);
+      color: var(--brand-dark);
+      font-weight: 600;
+    }
+    .form-success.show { display: block; }
+    .section {
+      width: min(1080px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 4rem 0;
+    }
+    .section h2 {
+      font-family: Sora, sans-serif;
+      font-size: clamp(1.7rem, 3vw, 2.3rem);
+      letter-spacing: -0.03em;
+      margin: 0 0 1.25rem;
+      text-align: center;
+    }
+    .section-intro {
+      text-align: center;
+      color: var(--muted);
+      max-width: 62ch;
+      margin: -0.5rem auto 1.75rem;
+      line-height: 1.65;
+    }
+    .process-grid,
+    .benefits-grid,
+    .why-grid,
+    .types-grid {
+      display: grid;
+      gap: 1rem;
+    }
+    .process-grid { grid-template-columns: repeat(3, 1fr); }
+    .benefits-grid,
+    .types-grid { grid-template-columns: repeat(2, 1fr); }
+    .why-grid { grid-template-columns: repeat(4, 1fr); }
+    .step,
+    .benefit,
+    .type-block,
+    .doc-group,
+    .quote,
+    .why-item {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 0.65rem;
+      padding: 1.15rem;
+    }
+    .step-num {
+      font-family: Sora, sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--brand);
+      margin-bottom: 0.4rem;
+    }
+    .step h3,
+    .benefit h3,
+    .type-block h3,
+    .doc-group h3 {
+      font-family: Sora, sans-serif;
+      margin: 0 0 0.45rem;
+      font-size: 1.1rem;
+    }
+    .step p,
+    .benefit p,
+    .type-block p,
+    .quote p,
+    .content-copy p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+    .type-block ul,
+    .doc-group ul {
+      margin: 0.6rem 0 0;
+      padding-left: 1.1rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .offer-banner {
+      background: linear-gradient(90deg, #0b3d3a, #11756f);
+      color: #fff;
+      text-align: center;
+      padding: 1.4rem 1rem;
+      font-weight: 700;
+    }
+    .offer-banner span {
+      color: var(--accent);
+    }
+    .content-band {
+      background: linear-gradient(180deg, #e8f2f0, var(--paper));
+    }
+    .content-copy {
+      width: min(820px, 100%);
+      margin: 0 auto;
+    }
+    .content-copy h2 {
+      text-align: left;
+      margin-bottom: 0.75rem;
+    }
+    .quotes {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    .quote strong {
+      display: block;
+      margin-top: 0.8rem;
+      font-family: Sora, sans-serif;
+    }
+    .why-item {
+      text-align: center;
+    }
+    .why-item strong {
+      display: block;
+      font-family: Sora, sans-serif;
+      font-size: 1.7rem;
+      color: var(--brand);
+      margin-bottom: 0.25rem;
+    }
+    .faq-list {
+      display: grid;
+      gap: 0.65rem;
+      width: min(820px, 100%);
+      margin: 0 auto;
+    }
+    details {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 0.55rem;
+      padding: 0.9rem 1rem;
+    }
+    summary {
+      cursor: pointer;
+      font-weight: 700;
+      font-family: Sora, sans-serif;
+    }
+    details p {
+      margin: 0.7rem 0 0;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+    .bottom-cta {
+      text-align: center;
+      padding: 3.5rem 1rem 5.5rem;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(232, 163, 23, 0.18), transparent 45%),
+        linear-gradient(180deg, #e7f3f1, #dceceb);
+    }
+    .bottom-cta h2 {
+      font-family: Sora, sans-serif;
+      margin: 0 0 1rem;
+    }
+    .mobile-cta {
+      display: none;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 0.75rem;
+      background: rgba(255,255,255,0.96);
+      border-top: 1px solid var(--line);
+      z-index: 30;
+    }
+    .mobile-cta .btn { width: 100%; }
+    footer {
+      padding: 1.25rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0.7; }
+      to { opacity: 1; }
+    }
+    @media (max-width: 960px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .process-grid,
+      .benefits-grid,
+      .types-grid,
+      .quotes { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: repeat(2, 1fr); }
+      .mobile-cta { display: block; }
+    }
+  </style>
+  <% if (page.content && page.content.faqs && page.content.faqs.length) { %>
+  <script type="application/ld+json">
+  <%- JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": page.content.faqs.map(function(faq) {
+      return {
+        "@type": "Question",
+        "name": faq.q,
+        "acceptedAnswer": { "@type": "Answer", "text": faq.a }
+      };
+    })
+  }) %>
+  </script>
+  <% } %>
+</head>
+<body>
+  <%- include('../partials/body-scripts') %>
+  <% if (isPreview) { %><div class="preview-banner">Preview — not indexed</div><% } %>
+
+  <% const c = page.content || {}; %>
+  <% const phone = c.phone || settings.support_phone; %>
+  <% const whatsapp = c.whatsapp || settings.support_whatsapp; %>
+
+  <div class="topbar">
+    <strong><%= page.brandName %></strong>
+    <div class="topbar-actions">
+      <% if (phone) { %><a class="btn btn-ghost" href="tel:<%= phone %>"><%= phone %></a><% } %>
+      <a class="btn btn-primary" href="#lead-form"><%= page.ctaLabel || 'Book a free consultation' %></a>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div>
+      <p class="brand"><%= page.brandName %></p>
+      <% if (page.headline) { %><h1 class="headline"><%= page.headline %></h1><% } %>
+      <% if (page.subheadline) { %><p class="sub"><%= page.subheadline %></p><% } %>
+
+      <% if (c.trustPoints && c.trustPoints.length) { %>
+      <ul class="trust-list">
+        <% c.trustPoints.forEach(function(point) { %>
+          <li><%= point %></li>
+        <% }) %>
+      </ul>
+      <% } %>
+
+      <% if (c.offerText || c.offerPrice) { %>
+      <div class="offer-chip">
+        <%= c.offerText %><% if (c.offerPrice) { %> — <strong><%= c.offerPrice %></strong><% } %>
+      </div>
+      <% } %>
+    </div>
+
+    <% if (c.formEnabled !== false) { %>
+    <aside class="lead-panel" id="lead-form">
+      <h2><%= c.formTitle || 'Fill the form now' %></h2>
+      <form id="service-lead-form">
+        <input type="hidden" name="pageSlug" value="<%= page.slug %>" />
+        <label>Name <input name="name" required autocomplete="name" /></label>
+        <label>Phone <input name="phone" required autocomplete="tel" /></label>
+        <label>Email <input type="email" name="email" autocomplete="email" /></label>
+        <label>City <input name="city" autocomplete="address-level2" /></label>
+        <label>Service interest
+          <input name="service" value="<%= page.title %>" />
+        </label>
+        <label>Message <textarea name="message" rows="3" placeholder="Tell us briefly what you need"></textarea></label>
+        <button class="btn btn-dark" type="submit"><%= c.formSubmitLabel || 'Proceed' %></button>
+      </form>
+      <p class="form-note">We respond during business hours. No spam.</p>
+      <p class="form-success" id="lead-success"><%= c.formSuccessMessage || 'Thanks! Our team will contact you shortly.' %></p>
+    </aside>
+    <% } %>
+  </header>
+
+  <% if (c.offerText || c.offerPrice) { %>
+  <div class="offer-banner">
+    <%= c.offerText || 'Limited offer' %>
+    <% if (c.offerPrice) { %> <span><%= c.offerPrice %></span><% } %>
+  </div>
+  <% } %>
+
+  <% if (c.process && c.process.length) { %>
+  <section class="section">
+    <h2><%= c.processTitle || 'Registration procedure' %></h2>
+    <div class="process-grid">
+      <% c.process.forEach(function(step, index) { %>
+        <article class="step">
+          <div class="step-num">Step <%= index + 1 %></div>
+          <% if (step.title) { %><h3><%= step.title %></h3><% } %>
+          <% if (step.text) { %><p><%= step.text %></p><% } %>
+        </article>
+      <% }) %>
+    </div>
+  </section>
+  <% } %>
+
+  <% if (page.sections && page.sections.length) { %>
+  <div class="content-band">
+    <section class="section content-copy">
+      <% page.sections.forEach(function(block) { %>
+        <div style="margin-bottom: 2rem;">
+          <% if (block.heading) { %><h2><%= block.heading %></h2><% } %>
+          <% if (block.text) { %><p><%= block.text %></p><% } %>
+        </div>
+      <% }) %>
+    </section>
+  </div>
+  <% } %>
+
+  <% if (c.types && c.types.length) { %>
+  <section class="section">
+    <h2><%= c.typesTitle || 'Types & coverage' %></h2>
+    <div class="types-grid">
+      <% c.types.forEach(function(type) { %>
+        <article class="type-block">
+          <% if (type.title) { %><h3><%= type.title %></h3><% } %>
+          <% if (type.text) { %><p><%= type.text %></p><% } %>
+          <% if (type.items && type.items.length) { %>
+            <ul>
+              <% type.items.forEach(function(item) { %><li><%= item %></li><% }) %>
+            </ul>
+          <% } %>
+        </article>
+      <% }) %>
+    </div>
+  </section>
+  <% } %>
+
+  <% if (c.documents && c.documents.length) { %>
+  <section class="section">
+    <h2><%= c.documentsTitle || 'Documents required' %></h2>
+    <div class="types-grid">
+      <% c.documents.forEach(function(group) { %>
+        <article class="doc-group">
+          <% if (group.title) { %><h3><%= group.title %></h3><% } %>
+          <% if (group.items && group.items.length) { %>
+            <ul>
+              <% group.items.forEach(function(item) { %><li><%= item %></li><% }) %>
+            </ul>
+          <% } %>
+        </article>
+      <% }) %>
+    </div>
+  </section>
+  <% } %>
+
+  <% if (c.benefits && c.benefits.length) { %>
+  <section class="section">
+    <h2><%= c.benefitsTitle || 'Benefits' %></h2>
+    <div class="benefits-grid">
+      <% c.benefits.forEach(function(item) { %>
+        <article class="benefit">
+          <% if (item.title) { %><h3><%= item.title %></h3><% } %>
+          <% if (item.text) { %><p><%= item.text %></p><% } %>
+        </article>
+      <% }) %>
+    </div>
+  </section>
+  <% } %>
+
+  <% if (c.testimonials && c.testimonials.length) { %>
+  <section class="section">
+    <h2><%= c.testimonialsTitle || 'Testimonials' %></h2>
+    <div class="quotes">
+      <% c.testimonials.forEach(function(item) { %>
+        <blockquote class="quote">
+          <p>“<%= item.quote %>”</p>
+          <% if (item.name) { %><strong><%= item.name %></strong><% } %>
+        </blockquote>
+      <% }) %>
+    </div>
+  </section>
+  <% } %>
+
+  <% if (c.whyUs && c.whyUs.length) { %>
+  <section class="section">
+    <h2><%= c.whyTitle || 'Why choose us' %></h2>
+    <div class="why-grid">
+      <% c.whyUs.forEach(function(item) { %>
+        <div class="why-item">
+          <strong><%= item.value %></strong>
+          <span><%= item.label %></span>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+  <% } %>
+
+  <% if (c.faqs && c.faqs.length) { %>
+  <section class="section">
+    <h2><%= c.faqsTitle || 'FAQs' %></h2>
+    <div class="faq-list">
+      <% c.faqs.forEach(function(faq) { %>
+        <details>
+          <summary><%= faq.q %></summary>
+          <p><%= faq.a %></p>
+        </details>
+      <% }) %>
+    </div>
+  </section>
+  <% } %>
+
+  <% if (page.bodyHtml) { %>
+  <section class="section content-copy"><%- page.bodyHtml %></section>
+  <% } %>
+
+  <section class="bottom-cta">
+    <h2><%= c.bottomCtaText || page.ctaLabel || 'Book a free consultation' %></h2>
+    <div class="topbar-actions" style="justify-content:center;">
+      <a class="btn btn-primary" href="#lead-form"><%= c.formSubmitLabel || 'Fill the form now' %></a>
+      <% if (whatsapp) { %>
+        <a class="btn btn-dark" href="https://wa.me/<%= String(whatsapp).replace(/\D/g, '') %>" target="_blank" rel="noopener">WhatsApp</a>
+      <% } else if (page.ctaUrl) { %>
+        <a class="btn btn-dark" href="<%= page.ctaUrl %>"><%= page.ctaLabel || 'Learn more' %></a>
+      <% } %>
+    </div>
+  </section>
+
+  <footer>© <%= new Date().getFullYear() %> <%= page.brandName %></footer>
+
+  <div class="mobile-cta">
+    <a class="btn btn-primary" href="#lead-form"><%= c.formSubmitLabel || 'Get a free consultation' %></a>
+  </div>
+
+  <script>
+    (function () {
+      const form = document.getElementById("service-lead-form");
+      const success = document.getElementById("lead-success");
+      if (!form) return;
+
+      function getUtm() {
+        const params = new URLSearchParams(window.location.search);
+        const keys = [
+          "utm_source", "utm_medium", "utm_campaign", "utm_content",
+          "utm_term", "gclid", "gad_source", "gad_campaignid"
+        ];
+        const utm = {};
+        keys.forEach((key) => {
+          const value = params.get(key);
+          if (value) utm[key] = value;
+        });
+        return utm;
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const data = Object.fromEntries(new FormData(form).entries());
+        data.utm = getUtm();
+        const button = form.querySelector('button[type="submit"]');
+        button.disabled = true;
+        try {
+          const res = await fetch("/api/leads", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+          const payload = await res.json();
+          if (!res.ok) throw new Error(payload.error || "Failed to submit");
+          form.reset();
+          success.classList.add("show");
+        } catch (error) {
+          alert(error.message);
+        } finally {
+          button.disabled = false;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

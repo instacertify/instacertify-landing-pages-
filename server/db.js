@@ -31,6 +31,7 @@ db.exec(`
     hero_image TEXT NOT NULL DEFAULT '',
     body_html TEXT NOT NULL DEFAULT '',
     sections_json TEXT NOT NULL DEFAULT '[]',
+    content_json TEXT NOT NULL DEFAULT '{}',
     seo_title TEXT NOT NULL DEFAULT '',
     seo_description TEXT NOT NULL DEFAULT '',
     seo_keywords TEXT NOT NULL DEFAULT '',
@@ -41,7 +42,31 @@ db.exec(`
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     updated_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS leads (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    page_id INTEGER,
+    page_slug TEXT NOT NULL DEFAULT '',
+    name TEXT NOT NULL DEFAULT '',
+    email TEXT NOT NULL DEFAULT '',
+    phone TEXT NOT NULL DEFAULT '',
+    city TEXT NOT NULL DEFAULT '',
+    service TEXT NOT NULL DEFAULT '',
+    message TEXT NOT NULL DEFAULT '',
+    utm_json TEXT NOT NULL DEFAULT '{}',
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    FOREIGN KEY (page_id) REFERENCES pages(id) ON DELETE SET NULL
+  );
 `);
+
+function ensureColumn(table, column, definition) {
+  const cols = db.prepare(`PRAGMA table_info(${table})`).all();
+  if (!cols.some((col) => col.name === column)) {
+    db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+  }
+}
+
+ensureColumn("pages", "content_json", "TEXT NOT NULL DEFAULT '{}'");
 
 const DEFAULT_SETTINGS = {
   google_analytics_id: "",
@@ -53,6 +78,36 @@ const DEFAULT_SETTINGS = {
   site_name: "Instacertify",
   default_og_image: "",
   favicon_url: "",
+  lead_webhook_url: "",
+  support_phone: "",
+  support_whatsapp: "",
+};
+
+const EMPTY_CONTENT = {
+  phone: "",
+  whatsapp: "",
+  trustPoints: [],
+  offerText: "",
+  offerPrice: "",
+  formEnabled: true,
+  formTitle: "Fill the form now",
+  formSubmitLabel: "Get a free consultation",
+  formSuccessMessage: "Thanks! Our team will contact you shortly.",
+  processTitle: "Registration procedure",
+  process: [],
+  typesTitle: "",
+  types: [],
+  documentsTitle: "",
+  documents: [],
+  benefitsTitle: "",
+  benefits: [],
+  testimonialsTitle: "Testimonials",
+  testimonials: [],
+  whyTitle: "Why choose us",
+  whyUs: [],
+  faqsTitle: "FAQs",
+  faqs: [],
+  bottomCtaText: "Book a free consultation",
 };
 
 function ensureSettings() {
@@ -92,14 +147,105 @@ function updateSettings(updates) {
   return getSettings();
 }
 
+function parseJson(value, fallback) {
+  try {
+    return JSON.parse(value || "");
+  } catch {
+    return fallback;
+  }
+}
+
+function normalizeContent(raw, existing = null) {
+  const base = {
+    ...EMPTY_CONTENT,
+    ...(existing || {}),
+    ...(raw && typeof raw === "object" ? raw : {}),
+  };
+
+  return {
+    ...base,
+    trustPoints: asStringArray(base.trustPoints),
+    process: asNamedBlocks(base.process),
+    types: asTypeBlocks(base.types),
+    documents: asDocGroups(base.documents),
+    benefits: asNamedBlocks(base.benefits),
+    testimonials: asTestimonials(base.testimonials),
+    whyUs: asWhyUs(base.whyUs),
+    faqs: asFaqs(base.faqs),
+    formEnabled: Boolean(base.formEnabled),
+  };
+}
+
+function asStringArray(value) {
+  if (!Array.isArray(value)) return [];
+  return value.map((item) => String(item || "").trim()).filter(Boolean);
+}
+
+function asNamedBlocks(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => ({
+      title: String(item?.title || "").trim(),
+      text: String(item?.text || "").trim(),
+    }))
+    .filter((item) => item.title || item.text);
+}
+
+function asTypeBlocks(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => ({
+      title: String(item?.title || "").trim(),
+      text: String(item?.text || "").trim(),
+      items: asStringArray(item?.items),
+    }))
+    .filter((item) => item.title || item.text || item.items.length);
+}
+
+function asDocGroups(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => ({
+      title: String(item?.title || "").trim(),
+      items: asStringArray(item?.items),
+    }))
+    .filter((item) => item.title || item.items.length);
+}
+
+function asTestimonials(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => ({
+      quote: String(item?.quote || "").trim(),
+      name: String(item?.name || "").trim(),
+    }))
+    .filter((item) => item.quote || item.name);
+}
+
+function asWhyUs(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => ({
+      value: String(item?.value || "").trim(),
+      label: String(item?.label || "").trim(),
+    }))
+    .filter((item) => item.value || item.label);
+}
+
+function asFaqs(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => ({
+      q: String(item?.q || item?.question || "").trim(),
+      a: String(item?.a || item?.answer || "").trim(),
+    }))
+    .filter((item) => item.q || item.a);
+}
+
 function rowToPage(row) {
   if (!row) return null;
-  let sections = [];
-  try {
-    sections = JSON.parse(row.sections_json || "[]");
-  } catch {
-    sections = [];
-  }
+  const sections = parseJson(row.sections_json, []);
+  const content = normalizeContent(parseJson(row.content_json, {}));
   return {
     id: row.id,
     slug: row.slug,
@@ -113,7 +259,8 @@ function rowToPage(row) {
     ctaUrl: row.cta_url,
     heroImage: row.hero_image,
     bodyHtml: row.body_html,
-    sections,
+    sections: Array.isArray(sections) ? sections : [],
+    content,
     seo: {
       title: row.seo_title,
       description: row.seo_description,
@@ -161,12 +308,12 @@ function createPage(input) {
     .prepare(
       `INSERT INTO pages (
         slug, title, design, status, brand_name, headline, subheadline,
-        cta_label, cta_url, hero_image, body_html, sections_json,
+        cta_label, cta_url, hero_image, body_html, sections_json, content_json,
         seo_title, seo_description, seo_keywords, og_image, canonical_url,
         robots, custom_head
       ) VALUES (
         @slug, @title, @design, @status, @brand_name, @headline, @subheadline,
-        @cta_label, @cta_url, @hero_image, @body_html, @sections_json,
+        @cta_label, @cta_url, @hero_image, @body_html, @sections_json, @content_json,
         @seo_title, @seo_description, @seo_keywords, @og_image, @canonical_url,
         @robots, @custom_head
       )`
@@ -197,6 +344,7 @@ function updatePage(id, input) {
       hero_image = @hero_image,
       body_html = @body_html,
       sections_json = @sections_json,
+      content_json = @content_json,
       seo_title = @seo_title,
       seo_description = @seo_description,
       seo_keywords = @seo_keywords,
@@ -218,6 +366,11 @@ function deletePage(id) {
 
 function pageParams(input, slug, existing = null) {
   const seo = input.seo || {};
+  const content = normalizeContent(
+    input.content !== undefined ? input.content : null,
+    existing?.content || EMPTY_CONTENT
+  );
+
   return {
     slug,
     title: pick(input.title, existing?.title, ""),
@@ -235,6 +388,7 @@ function pageParams(input, slug, existing = null) {
         ? input.sections
         : existing?.sections || []
     ),
+    content_json: JSON.stringify(content),
     seo_title: pick(seo.title, existing?.seo?.title, ""),
     seo_description: pick(seo.description, existing?.seo?.description, ""),
     seo_keywords: pick(seo.keywords, existing?.seo?.keywords, ""),
@@ -243,6 +397,74 @@ function pageParams(input, slug, existing = null) {
     robots: pick(seo.robots, existing?.seo?.robots, "index,follow"),
     custom_head: pick(seo.customHead, existing?.seo?.customHead, ""),
   };
+}
+
+function createLead(input) {
+  const pageSlug = String(input.pageSlug || "").trim();
+  const page = pageSlug ? getPageBySlug(pageSlug) : null;
+  const name = String(input.name || "").trim();
+  const phone = String(input.phone || "").trim();
+  const email = String(input.email || "").trim();
+
+  if (!name) throw new Error("Name is required");
+  if (!phone && !email) throw new Error("Phone or email is required");
+
+  const info = db
+    .prepare(
+      `INSERT INTO leads (
+        page_id, page_slug, name, email, phone, city, service, message, utm_json
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    )
+    .run(
+      page?.id || null,
+      pageSlug,
+      name,
+      email,
+      phone,
+      String(input.city || "").trim(),
+      String(input.service || "").trim(),
+      String(input.message || "").trim(),
+      JSON.stringify(input.utm || {})
+    );
+
+  return getLeadById(info.lastInsertRowid);
+}
+
+function getLeadById(id) {
+  const row = db.prepare("SELECT * FROM leads WHERE id = ?").get(id);
+  if (!row) return null;
+  return {
+    id: row.id,
+    pageId: row.page_id,
+    pageSlug: row.page_slug,
+    name: row.name,
+    email: row.email,
+    phone: row.phone,
+    city: row.city,
+    service: row.service,
+    message: row.message,
+    utm: parseJson(row.utm_json, {}),
+    createdAt: row.created_at,
+  };
+}
+
+function listLeads(limit = 100) {
+  return db
+    .prepare("SELECT * FROM leads ORDER BY created_at DESC LIMIT ?")
+    .all(limit)
+    .map((row) => ({
+      id: row.id,
+      pageId: row.page_id,
+      pageSlug: row.page_slug,
+      name: row.name,
+      email: row.email,
+      phone: row.phone,
+      city: row.city,
+      service: row.service,
+      message: row.message,
+      utm: parseJson(row.utm_json, {}),
+      createdAt: row.created_at,
+    }));
 }
 
 function pick(...values) {
@@ -254,6 +476,7 @@ function pick(...values) {
 
 module.exports = {
   db,
+  EMPTY_CONTENT,
   getSettings,
   updateSettings,
   listPages,
@@ -263,4 +486,6 @@ module.exports = {
   updatePage,
   deletePage,
   normalizeSlug,
+  createLead,
+  listLeads,
 };
