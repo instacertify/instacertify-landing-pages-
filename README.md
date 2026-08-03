@@ -34,7 +34,13 @@ npm start
 
 ## Deploy on Hostinger
 
-This is an Express app. Use Hostinger **Node.js Web App** (Business/Cloud) with entry file `server/index.js`. Full steps: [`docs/HOSTINGER-DEPLOY.md`](docs/HOSTINGER-DEPLOY.md).
+### Option A — WordPress (recommended on shared hosting)
+Plugin: `wordpress/instacertify-landing-pages/`  
+Guide: [`docs/WORDPRESS-DEPLOY.md`](docs/WORDPRESS-DEPLOY.md)
+
+### Option B — Node.js Web App
+Express app with entry file `server/index.js`.  
+Guide: [`docs/HOSTINGER-DEPLOY.md`](docs/HOSTINGER-DEPLOY.md).
 
 - Public home: http://localhost:3000
 - Admin: http://localhost:3000/admin

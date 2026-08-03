@@ -1,0 +1,15 @@
+.iclp-admin .iclp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1rem;
+}
+.iclp-admin textarea.code {
+  font-family: Consolas, Monaco, monospace;
+  font-size: 12px;
+}
+.iclp-admin .button.iclp-media-btn {
+  margin-top: 0.4rem;
+}
+@media (max-width: 900px) {
+  .iclp-admin .iclp-grid { grid-template-columns: 1fr; }
+}
