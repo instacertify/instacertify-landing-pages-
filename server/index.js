@@ -71,7 +71,9 @@ app.get("/", (_req, res) => {
 });
 
 app.get("/preview/:slug", (req, res) => {
-  const page = getPageBySlug(req.params.slug);
+  const aliases = { "msds-certificate": "sds-certificate" };
+  const slug = aliases[req.params.slug] || req.params.slug;
+  const page = getPageBySlug(slug);
   if (!page) return res.status(404).render("404", { slug: req.params.slug });
   return renderLanding(res, page, true);
 });
@@ -79,6 +81,10 @@ app.get("/preview/:slug", (req, res) => {
 app.get("/:slug", (req, res) => {
   const reserved = new Set(["api", "admin", "assets", "robots.txt", "sitemap.xml"]);
   if (reserved.has(req.params.slug)) return res.status(404).end();
+
+  if (req.params.slug === "msds-certificate") {
+    return res.redirect(301, "/sds-certificate");
+  }
 
   const page = getPageBySlug(req.params.slug);
   if (!page || page.status !== "published") {

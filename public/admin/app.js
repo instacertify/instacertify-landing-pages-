@@ -769,6 +769,8 @@ function fillSettings(settings) {
   state.settings = settings;
   [
     "site_name",
+    "legal_name",
+    "support_email",
     "default_og_image",
     "favicon_url",
     "support_phone",
@@ -948,6 +950,8 @@ els.saveSettingsBtn.addEventListener("click", async () => {
     const payload = {};
     [
       "site_name",
+      "legal_name",
+      "support_email",
       "default_og_image",
       "favicon_url",
       "support_phone",

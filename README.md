@@ -44,7 +44,10 @@ npm start
 5. Under **SEO & Tracking**, add GA / GTM / Pixel IDs, support phone/WhatsApp, and optional lead webhook
 6. Review form submissions under **Leads**
 
-Sample seed pages: `/lmpc-registration`, `/bis-registration`, `/msds-certificate`
+Sample seed pages: `/sds-certificate` (primary Ads LP), `/lmpc-registration`, `/bis-registration`
+
+### Primary Ads page: `/sds-certificate`
+Focus keywords from Google Keyword Stats: **msds cert** (highest volume), SDS certification, MSDS certificate for export/chemicals, plus **UN38.3** for battery shipping. Includes Instacertify logo, teal/orange brand, legal name, phone, and email for Google landing-page contact clarity.
 
 ## Service formatting checklist
 

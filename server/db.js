@@ -76,11 +76,13 @@ const DEFAULT_SETTINGS = {
   custom_head_scripts: "",
   custom_body_scripts: "",
   site_name: "Instacertify",
+  legal_name: "Instacertify Labs Private Limited",
+  support_email: "contact@instacertify.com",
+  support_phone: "+91 99999118039",
+  support_whatsapp: "9199999118039",
   default_og_image: "",
-  favicon_url: "",
+  favicon_url: "/assets/instacertify-logo.svg",
   lead_webhook_url: "",
-  support_phone: "",
-  support_whatsapp: "",
 };
 
 const EMPTY_CONTENT = {

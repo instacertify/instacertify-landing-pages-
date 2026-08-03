@@ -64,6 +64,6 @@ UTM / gclid / gbraid are captured automatically from the URL.
 
 ## Seed examples
 
-- `/bis-registration` — full Service format  
-- `/lmpc-registration` — same format for Legal Metrology  
-- `/msds-certificate` — same format for MSDS / SDS documentation  
+- `/sds-certificate` — primary Ads LP (SDS + MSDS + UN38.3 battery shipping)  
+- `/bis-registration` — BIS schemes format  
+- `/lmpc-registration` — Legal Metrology format  
