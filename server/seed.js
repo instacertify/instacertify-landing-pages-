@@ -63,9 +63,16 @@ const samples = [
       offerPrice: "",
       formEnabled: true,
       formTitle: "Enquiry Now",
+      formSubtitle: "Legal Metrology / LMPC guidance",
       formSubmitLabel: "Get Free Consultation",
       formSuccessMessage:
         "Thanks! An Instacertify specialist will contact you shortly.",
+      formTrustPoints: [
+        "Free consultation",
+        "Document checklist",
+        "End-to-end support",
+      ],
+      scrollCtaText: "Start your Legal Metrology registration today",
       processTitle: "How we work",
       process: [
         {
@@ -260,6 +267,251 @@ const samples = [
         "Legal Metrology Act registration support from Instacertify. Learn benefits, documents, procedure, penalties, and get a free consultation for LMPC compliance.",
       keywords:
         "Legal Metrology Act registration, LMPC certificate, Legal Metrology licence, documents, procedure, Instacertify",
+      robots: "index,follow",
+    },
+  },
+  {
+    slug: "bis-registration",
+    title: "BIS Registration",
+    design: "service",
+    status: "published",
+    brandName: "Instacertify",
+    headline: "Get BIS Certified Fast",
+    subheadline:
+      "BIS registration support for ISI Mark, CRS, FMCS, Hallmark, and Scheme X pathways — documentation, testing coordination, and filing guidance end to end.",
+    ctaLabel: "Get Free Quote",
+    ctaUrl: "https://instacertify.com",
+    heroImage:
+      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1800&q=80",
+    sections: [
+      {
+        heading: "Bureau of Indian Standards — overview",
+        text: "BIS certification helps ensure products meet Indian safety, quality, and reliability requirements. For many regulated categories, certification is mandatory before manufacture, import, or sale in India.",
+      },
+      {
+        heading: "Who typically needs BIS registration?",
+        text: "Domestic manufacturers, foreign manufacturers entering India, importers, brand owners, and electronics/IT sellers whose products fall under ISI, CRS, FMCS, Hallmark, or Scheme X requirements.",
+      },
+    ],
+    content: {
+      badgeText: "Free consultation",
+      ratingText: "Expert guidance for ISI, CRS, FMCS & more",
+      headlineHighlight: "— Compliant",
+      expertName: "Talk to Instacertify",
+      expertNote: "Free consultation · same-day callback",
+      phone: "",
+      whatsapp: "",
+      trustPoints: [
+        "Identify the right BIS scheme for your product",
+        "Documentation and application support",
+        "Testing coordination guidance",
+        "End-to-end follow-up through certification",
+      ],
+      heroStats: [
+        { value: "ISI", label: "Mark pathway" },
+        { value: "CRS", label: "Electronics route" },
+        { value: "FMCS", label: "Foreign makers" },
+        { value: "End-to-end", label: "Filing support" },
+      ],
+      formEnabled: true,
+      formTitle: "Free Consultation",
+      formSubtitle: "Same-day callback · Get best price & timeline",
+      formSubmitLabel: "Get Free Consultation",
+      formSuccessMessage:
+        "Thanks! An Instacertify specialist will contact you shortly.",
+      formTrustPoints: [
+        "Free consultation",
+        "Fast response",
+        "End-to-end support",
+      ],
+      scrollCtaText: "Get BIS Compliant Faster — Talk To Our Experts",
+      processTitle: "How we work",
+      process: [
+        {
+          title: "Connect & scope",
+          text: "Share your product and manufacturing location so we can map the right BIS pathway.",
+        },
+        {
+          title: "Documentation & testing plan",
+          text: "Get a checklist covering reports, business papers, and lab/testing coordination needs.",
+        },
+        {
+          title: "Application support",
+          text: "Guidance for portal filing, follow-ups, and inspection readiness where applicable.",
+        },
+        {
+          title: "Certification handover",
+          text: "Track progress through grant/renewal milestones with clear next steps.",
+        },
+      ],
+      typesTitle: "Types of BIS certification",
+      types: [
+        {
+          title: "ISI Mark",
+          text: "Common pathway for many domestic manufacturers needing product certification under Indian Standards.",
+          items: [
+            "Product standard mapping",
+            "Factory / quality documentation support",
+            "Application and inspection readiness guidance",
+          ],
+        },
+        {
+          title: "CRS Registration",
+          text: "Compulsory Registration Scheme route often used for electronics and IT products before sale in India.",
+          items: [
+            "Model/product category guidance",
+            "Test report coordination support",
+            "Online application package support",
+          ],
+        },
+        {
+          title: "FMCS",
+          text: "Foreign Manufacturer Certification Scheme support for overseas factories selling into India.",
+          items: [
+            "AIR / representation guidance",
+            "Documentation readiness",
+            "Inspection and liaison support planning",
+          ],
+        },
+        {
+          title: "Hallmark & Scheme X",
+          text: "Support pathways for jewellery hallmarking and machinery-related Scheme X categories where applicable.",
+          items: [
+            "Eligibility check",
+            "Document checklist",
+            "Filing and follow-up support",
+          ],
+        },
+      ],
+      documentsTitle: "Documents often required for BIS registration",
+      documents: [
+        {
+          title: "Business basics",
+          items: [
+            "Business licence / incorporation papers",
+            "GST certificate",
+            "PAN card",
+            "Brand / trademark certificate where applicable",
+          ],
+        },
+        {
+          title: "Technical package",
+          items: [
+            "Test reports from recognized labs where required",
+            "Factory layout / process flow",
+            "Raw material list",
+            "Quality system documentation",
+          ],
+        },
+      ],
+      detailProcessTitle: "How is the process done?",
+      detailProcess: [
+        {
+          title: "Identify the right scheme",
+          text: "Confirm whether your product needs ISI, CRS, FMCS, Hallmark, Scheme X, or another route based on category and manufacturing location.",
+        },
+        {
+          title: "Prepare documents and testing",
+          text: "Compile business and technical documents and coordinate product testing where required.",
+        },
+        {
+          title: "Submit application",
+          text: "File through the relevant BIS portal with the complete documentation package.",
+        },
+        {
+          title: "Inspection / review",
+          text: "Support review queries and factory inspection readiness where the scheme requires it.",
+        },
+        {
+          title: "Grant and compliance",
+          text: "Receive certification outcomes and plan renewals / ongoing compliance.",
+        },
+      ],
+      benefitsTitle: "Benefits of BIS certification",
+      benefits: [
+        {
+          title: "Legal market access",
+          text: "Sell regulated products in India with the required certification pathway in place.",
+        },
+        {
+          title: "Buyer and retail confidence",
+          text: "Demonstrate conformity to recognized Indian standards and safety expectations.",
+        },
+        {
+          title: "Import / customs readiness",
+          text: "Reduce clearance friction for products that need BIS before entry or sale.",
+        },
+        {
+          title: "Brand protection",
+          text: "Avoid seizures, penalties, and reputation damage linked to non-compliance.",
+        },
+      ],
+      penaltiesTitle: "Non-compliance isn’t just a risk",
+      penalties: [
+        {
+          title: "Penalties and enforcement",
+          text: "Selling without required BIS certification can attract monetary penalties, product action, and other enforcement measures.",
+        },
+        {
+          title: "Business disruption",
+          text: "Missing certification can block imports, marketplace listings, and retail distribution.",
+        },
+      ],
+      testimonialsTitle: "Trusted by compliance-focused teams",
+      testimonials: [
+        {
+          quote:
+            "Clear guidance on whether we needed CRS or another route, plus a practical document checklist.",
+          name: "Electronics brand manager",
+        },
+        {
+          quote:
+            "Helpful end-to-end support for documentation and follow-ups. Made BIS registration far less confusing.",
+          name: "Import operations lead",
+        },
+      ],
+      whyTitle: "Your expert partner in BIS compliance",
+      whyUs: [
+        { value: "Scheme", label: "Selection guidance" },
+        { value: "Docs", label: "Checklist ready" },
+        { value: "Filing", label: "Application support" },
+        { value: "Follow-up", label: "Until handover" },
+      ],
+      faqsTitle: "Got questions? We have answers",
+      faqs: [
+        {
+          q: "What is BIS certification and why is it mandatory?",
+          a: "BIS certification is a quality/conformity mark framework used in India. For many regulated products it is mandatory before legal sale, helping ensure safety and standard compliance.",
+        },
+        {
+          q: "How long does the BIS certification process take?",
+          a: "Timelines vary by scheme and product. CRS is often weeks, while ISI/FMCS can take longer depending on testing, inspection, and documentation readiness.",
+        },
+        {
+          q: "Can foreign manufacturers get BIS certification?",
+          a: "Yes. Foreign manufacturers commonly use FMCS or CRS with an Authorized Indian Representative, depending on product category.",
+        },
+        {
+          q: "Which products require mandatory BIS CRS registration?",
+          a: "Many electronics and IT products such as phones, laptops, LED lights, power banks, chargers, and related accessories may require CRS before sale in India.",
+        },
+        {
+          q: "What documents are needed for BIS registration?",
+          a: "Common papers include business licence, GST, PAN, trademark (if applicable), test reports, factory/process details, and quality documentation. Exact needs depend on the scheme.",
+        },
+        {
+          q: "Do you help with certification renewal?",
+          a: "Yes. Instacertify can support renewal reminders, documentation updates, re-testing coordination, and filing follow-ups.",
+        },
+      ],
+      bottomCtaText: "Get BIS Compliant Faster! Talk To Our Experts Today",
+    },
+    seo: {
+      title: "BIS Registration India | ISI, CRS, FMCS Support | Instacertify",
+      description:
+        "BIS registration support from Instacertify for ISI Mark, CRS, FMCS, Hallmark and Scheme X. Get free consultation on documents, process, and timelines.",
+      keywords:
+        "BIS registration, ISI Mark, CRS registration, FMCS, Hallmark, Scheme X, Instacertify",
       robots: "index,follow",
     },
   },

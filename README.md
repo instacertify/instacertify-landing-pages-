@@ -44,7 +44,7 @@ npm start
 5. Under **SEO & Tracking**, add GA / GTM / Pixel IDs, support phone/WhatsApp, and optional lead webhook
 6. Review form submissions under **Leads**
 
-Sample seed page: `/lmpc-registration`
+Sample seed pages: `/lmpc-registration`, `/bis-registration`
 
 ## API
 

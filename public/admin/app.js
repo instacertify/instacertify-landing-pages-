@@ -470,8 +470,11 @@ function blankPage() {
       offerPrice: "",
       formEnabled: true,
       formTitle: "Enquiry Now",
+      formSubtitle: "",
       formSubmitLabel: "Get Free Consultation",
       formSuccessMessage: "Thanks! Our team will contact you shortly.",
+      formTrustPoints: [],
+      scrollCtaText: "",
       processTitle: "How we work",
       process: [],
       licencesTitle: "",
@@ -576,8 +579,13 @@ function fillEditor(page) {
     content.trustPoints || []
   );
   document.getElementById("formTitle").value = content.formTitle || "";
+  document.getElementById("formSubtitle").value = content.formSubtitle || "";
   document.getElementById("formSubmitLabel").value =
     content.formSubmitLabel || "";
+  document.getElementById("scrollCtaText").value = content.scrollCtaText || "";
+  document.getElementById("formTrustPoints").value = arrayToLines(
+    content.formTrustPoints || []
+  );
   document.getElementById("formSuccessMessage").value =
     content.formSuccessMessage || "";
   document.getElementById("formEnabled").checked = content.formEnabled !== false;
@@ -649,10 +657,15 @@ function collectPagePayload() {
       offerPrice: document.getElementById("offerPrice").value.trim(),
       formEnabled: document.getElementById("formEnabled").checked,
       formTitle: document.getElementById("formTitle").value.trim(),
+      formSubtitle: document.getElementById("formSubtitle").value.trim(),
       formSubmitLabel: document.getElementById("formSubmitLabel").value.trim(),
       formSuccessMessage: document
         .getElementById("formSuccessMessage")
         .value.trim(),
+      formTrustPoints: linesToArray(
+        document.getElementById("formTrustPoints").value
+      ),
+      scrollCtaText: document.getElementById("scrollCtaText").value.trim(),
       processTitle: document.getElementById("processTitle").value.trim(),
       process: state.process,
       licencesTitle: document.getElementById("licencesTitle").value.trim(),

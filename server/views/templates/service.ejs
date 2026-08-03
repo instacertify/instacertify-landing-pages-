@@ -174,11 +174,46 @@
       font-weight: 800;
     }
 
+    .scroll-cta {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 70;
+      background: var(--brand-deep);
+      color: #fff;
+      padding: 0.7rem 1rem;
+      display: none;
+      transform: translateY(-110%);
+      transition: transform 280ms ease;
+    }
+    .scroll-cta.visible {
+      display: block;
+      transform: translateY(0);
+    }
+    .scroll-cta-inner {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .scroll-cta-inner span {
+      font-family: Sora, sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .scroll-cta-inner .btn {
+      background: #fff;
+      color: var(--brand-deep);
+    }
     .enquiry {
       position: sticky;
       top: 5.2rem;
       background: var(--panel);
       border: 1px solid var(--line);
+      border-top: 4px solid var(--brand);
       border-radius: 1rem;
       box-shadow: var(--shadow);
       padding: 1.2rem;
@@ -193,6 +228,46 @@
       color: var(--muted);
       margin: 0 0 0.9rem;
       font-size: 0.9rem;
+    }
+    .form-trust {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem 0.9rem;
+      margin-top: 0.85rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .form-trust span::before {
+      content: "✓ ";
+      color: var(--brand);
+    }
+    .cert-chip {
+      display: inline-block;
+      margin-top: 0.65rem;
+      padding: 0.25rem 0.55rem;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--brand-deep);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .float-wa {
+      position: fixed;
+      right: 1rem;
+      bottom: 5.2rem;
+      z-index: 65;
+      width: 3.2rem;
+      height: 3.2rem;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #25d366;
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.18);
     }
     .enquiry form { display: grid; gap: 0.65rem; }
     .enquiry input,
@@ -458,6 +533,7 @@
       .side-rail { display: none; }
       .mobile-cta { display: block; }
       .section-nav-wrap { top: 3.55rem; }
+      .scroll-cta { display: none !important; }
     }
   </style>
   <% if (page.content && page.content.faqs && page.content.faqs.length) { %>
@@ -485,12 +561,20 @@
   <% const whatsapp = c.whatsapp || settings.support_whatsapp; %>
   <% const nav = []; %>
   <% if (page.sections && page.sections.length) nav.push({ id: 'overview', label: 'Overview' }); %>
+  <% if (c.types && c.types.length) nav.push({ id: 'types', label: 'Schemes' }); %>
   <% if (c.benefits && c.benefits.length) nav.push({ id: 'benefits', label: 'Benefits' }); %>
   <% if (c.documents && c.documents.length) nav.push({ id: 'documents', label: 'Documents' }); %>
   <% if ((c.detailProcess && c.detailProcess.length) || (c.process && c.process.length)) nav.push({ id: 'procedure', label: 'Procedure' }); %>
-  <% if (c.penalties && c.penalties.length) nav.push({ id: 'penalties', label: 'Penalties' }); %>
+  <% if (c.penalties && c.penalties.length) nav.push({ id: 'penalties', label: 'Risks' }); %>
   <% if (c.whyUs && c.whyUs.length) nav.push({ id: 'why', label: 'Why us' }); %>
   <% if (c.faqs && c.faqs.length) nav.push({ id: 'faqs', label: 'FAQs' }); %>
+
+  <div class="scroll-cta" id="scroll-cta">
+    <div class="scroll-cta-inner">
+      <span><%= c.scrollCtaText || page.headline || 'Get certified faster' %></span>
+      <a class="btn" href="#lead-form"><%= c.formSubmitLabel || 'Get Free Consultation' %></a>
+    </div>
+  </div>
 
   <div class="topbar">
     <strong><%= page.brandName %></strong>
@@ -526,18 +610,24 @@
     <% if (c.formEnabled !== false) { %>
     <aside class="enquiry" id="lead-form">
       <h2><%= c.formTitle || 'Enquiry Now' %></h2>
-      <p class="hint"><%= page.title %></p>
+      <p class="hint"><%= c.formSubtitle || page.title %></p>
       <form id="service-lead-form">
         <input type="hidden" name="pageSlug" value="<%= page.slug %>" />
         <input type="hidden" name="service" value="<%= page.title %>" />
-        <input name="name" required autocomplete="name" placeholder="Name*" />
-        <input type="email" name="email" required autocomplete="email" placeholder="Email*" />
-        <input name="phone" required autocomplete="tel" placeholder="Mobile*" />
-        <input name="city" autocomplete="address-level2" placeholder="City*" />
-        <textarea name="message" rows="3" placeholder="Tell us about your requirement"></textarea>
-        <button class="btn btn-brand" type="submit"><%= c.formSubmitLabel || 'Get Free Consultation' %></button>
+        <input name="name" required autocomplete="name" placeholder="Your full name" />
+        <input type="email" name="email" required autocomplete="email" placeholder="your@email.com" />
+        <input name="phone" required autocomplete="tel" placeholder="+91 XXXXXXXXXX" />
+        <input name="city" autocomplete="address-level2" placeholder="City" />
+        <textarea name="message" rows="3" placeholder="Product / certification requirement"></textarea>
+        <button class="btn btn-brand" type="submit"><%= c.formSubmitLabel || 'Get Free Consultation' %> →</button>
       </form>
-      <p class="hint" style="margin-top:0.7rem;margin-bottom:0;">Your details are safe with us.</p>
+      <% if (c.formTrustPoints && c.formTrustPoints.length) { %>
+        <div class="form-trust">
+          <% c.formTrustPoints.forEach(function(point) { %><span><%= point %></span><% }) %>
+        </div>
+      <% } else { %>
+        <p class="hint" style="margin-top:0.7rem;margin-bottom:0;">Free consultation · Same-day callback · End-to-end support</p>
+      <% } %>
       <p class="form-success" id="lead-success"><%= c.formSuccessMessage || 'Thanks! Our team will contact you shortly.' %></p>
       <% if (c.expertName || phone) { %>
       <div class="expert-card">
@@ -621,7 +711,7 @@
 
       <% if (c.types && c.types.length) { %>
       <section class="block" id="types">
-        <h2><%= c.typesTitle || 'Certificate coverage' %></h2>
+        <h2><%= c.typesTitle || 'Types of certification' %></h2>
         <div class="grid-2">
           <% c.types.forEach(function(type) { %>
             <article class="item">
@@ -630,6 +720,7 @@
               <% if (type.items && type.items.length) { %>
                 <ul><% type.items.forEach(function(item) { %><li><%= item %></li><% }) %></ul>
               <% } %>
+              <% if (type.title) { %><span class="cert-chip"><%= type.title.split(' ')[0] %></span><% } %>
             </article>
           <% }) %>
         </div>
@@ -779,6 +870,10 @@
     <a class="btn btn-brand" href="#lead-form"><%= c.formSubmitLabel || 'Get Free Consultation' %></a>
   </div>
 
+  <% if (whatsapp) { %>
+    <a class="float-wa" href="https://wa.me/<%= String(whatsapp).replace(/\D/g, '') %>" target="_blank" rel="noopener" aria-label="WhatsApp">WA</a>
+  <% } %>
+
   <script>
     (function () {
       const tabs = document.querySelectorAll(".doc-tab");
@@ -792,6 +887,16 @@
           });
         });
       });
+
+      const scrollCta = document.getElementById("scroll-cta");
+      const hero = document.querySelector(".hero");
+      function updateScrollCta() {
+        if (!scrollCta || !hero) return;
+        const passed = hero.getBoundingClientRect().bottom < 80;
+        scrollCta.classList.toggle("visible", passed);
+      }
+      updateScrollCta();
+      window.addEventListener("scroll", updateScrollCta, { passive: true });
 
       const navLinks = document.querySelectorAll(".section-nav a");
       const sections = Array.from(navLinks)
