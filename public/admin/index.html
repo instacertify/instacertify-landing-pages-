@@ -102,6 +102,7 @@
               <legend>Service / lead-gen content</legend>
               <p class="hint">Best with the Service design. Inspired by compliance landing pages: form, trust points, process, docs, FAQs.</p>
               <div class="two-col">
+                <label>Headline highlight <input id="headlineHighlight" placeholder="100% @ Lowest Price Today" /></label>
                 <label>Page phone <input id="contentPhone" placeholder="+91..." /></label>
                 <label>Page WhatsApp <input id="contentWhatsapp" placeholder="91..." /></label>
                 <label>Offer text <input id="offerText" placeholder="Limited festive offer" /></label>
@@ -127,7 +128,16 @@
 
               <div class="repeater-block">
                 <div class="repeater-head">
-                  <h3>Types / coverage</h3>
+                  <h3>Licence types</h3>
+                  <button type="button" id="add-licence-btn" class="ghost">Add licence</button>
+                </div>
+                <label>Licences section title <input id="licencesTitle" /></label>
+                <div id="licences-list"></div>
+              </div>
+
+              <div class="repeater-block">
+                <div class="repeater-head">
+                  <h3>Certificate types / coverage</h3>
                   <button type="button" id="add-type-btn" class="ghost">Add type</button>
                 </div>
                 <label>Types section title <input id="typesTitle" /></label>
@@ -141,6 +151,15 @@
                 </div>
                 <label>Documents section title <input id="documentsTitle" /></label>
                 <div id="documents-list"></div>
+              </div>
+
+              <div class="repeater-block">
+                <div class="repeater-head">
+                  <h3>Detailed process</h3>
+                  <button type="button" id="add-detail-process-btn" class="ghost">Add step</button>
+                </div>
+                <label>Detailed process title <input id="detailProcessTitle" /></label>
+                <div id="detail-process-list"></div>
               </div>
 
               <div class="repeater-block">

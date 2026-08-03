@@ -11,6 +11,8 @@ updateSettings({
   site_name: "Instacertify",
   google_analytics_id: "",
   google_tag_manager_id: "",
+  support_phone: "",
+  support_whatsapp: "",
 });
 
 const samples = [
@@ -20,164 +22,235 @@ const samples = [
     design: "service",
     status: "published",
     brandName: "Instacertify",
-    headline: "Get LMPC certificate support with clear timelines",
+    headline: "Get LMPC Certificate Within 1 Day",
     subheadline:
-      "Guidance for importers, manufacturers, and packers who need Legal Metrology / LMPC registration without the paperwork maze.",
-    ctaLabel: "Book a free consultation",
+      "Seek LMPC Certificate for import, manufacturer, packing, weighing machine, and related use cases. Hassle-free support with clear documentation and guided filing.",
+    ctaLabel: "Book a Free Consultation",
     ctaUrl: "https://instacertify.com",
     heroImage:
       "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1800&q=80",
     sections: [
       {
         heading: "What is Legal Metrology?",
-        text: "Legal metrology sets rules for weights, measures, and packaged commodities so trade stays fair for buyers and sellers. If you sell or distribute packaged goods in India, LMPC compliance is often required under the Legal Metrology Act, 2009.",
-      },
-      {
-        heading: "Who typically needs LMPC?",
-        text: "Importers, manufacturers, packers, and dealers handling weighing/measuring instruments or pre-packaged commodities that fall under Legal Metrology rules.",
+        text: "Metrology is the scientific study of measurement. Legal metrology sets rules for measures and measuring devices to protect the public, environment, customers, and merchants—critical for fair commerce. Under the Legal Metrology Act, 2009, businesses engaged in sale or distribution of packaged goods in India (including many export, food, and consumer products) may need Legal Metrology / LMPC compliance from the Metrology Department of Consumer Affairs.",
       },
     ],
     content: {
+      headlineHighlight: "100% @ Lowest Price Today",
       phone: "",
       whatsapp: "",
       trustPoints: [
-        "Dedicated compliance specialists",
-        "Document checklist before you start",
-        "End-to-end application support",
-        "Clear updates through each stage",
-        "Support for importer, manufacturer, and packer use cases",
+        "Experienced compliance support for LMPC pathways",
+        "Document checklist before you apply",
+        "Guidance for importer, manufacturer, packer & dealer cases",
+        "Clear updates through application and review stages",
+        "Free consultation to identify the right licence type",
+        "Support across India for packaged commodity compliance",
       ],
-      offerText: "Consultation-first onboarding for LMPC registration",
-      offerPrice: "Talk to Instacertify today",
+      offerText: 'GREAT OFFER "LMPC Registration support with advisory"',
+      offerPrice: "Talk to Instacertify",
       formEnabled: true,
-      formTitle: "Fill the form now",
-      formSubmitLabel: "Get a free consultation",
+      formTitle: "Fill The Form Now!",
+      formSubmitLabel: "Proceed",
       formSuccessMessage:
         "Thanks! An Instacertify specialist will contact you shortly.",
-      processTitle: "LMPC registration procedure",
+      processTitle: "LMPC Registration Procedure",
       process: [
         {
-          title: "Application filling",
-          text: "We help prepare and file the LMPC registration application with the required details.",
+          title: "Application Filling",
+          text: "On your behalf, we help complete the LMPC application registration form.",
         },
         {
-          title: "Document submission",
-          text: "Share identity, business, and premises documents from a clear checklist.",
+          title: "Document Submission",
+          text: "Share the appropriate identity, business, and premises documents from our checklist.",
         },
         {
-          title: "Certification support",
-          text: "Track review stages and receive guidance until the certificate is issued.",
+          title: "Certification Issuance",
+          text: "Receive guided follow-up until your LMPC certificate is issued.",
         },
       ],
-      typesTitle: "Types of LMPC / Legal Metrology coverage",
+      licencesTitle: "Types of Legal Metrology Licence",
+      licences: [
+        {
+          title: "Manufacturer's Licence",
+          text: "For makers of weights and measures who need manufacturer licensing support.",
+        },
+        {
+          title: "Repairer Licence",
+          text: "For anyone who cleans, lubricates, modifies, or paints any weight or measure.",
+        },
+        {
+          title: "Legal Metrology Dealer Licence",
+          text: "For those who trade and market weights and measures, often alongside importer or producer pathways.",
+        },
+      ],
+      typesTitle: "Types of LMPC Certificates",
       types: [
         {
-          title: "For weight & measuring instruments",
-          text: "Common pathways for W&M tools and related approvals.",
+          title: "Regarding Weight and Measuring (W&M) Tools",
+          text: "",
           items: [
-            "Model approval support",
-            "Importer registration",
-            "Manufacturer / dealer / repairer pathways",
-            "Packer registration where applicable",
+            "Model approval for Indian W&M instruments",
+            "Registration of importers of weight and measurement equipment",
+            "Model approval for manufacturing licence & imported goods",
+            "Registering as a packer for an LMPC certificate",
+            "Dealer permit for scales and measuring devices",
+            "Repair permit",
           ],
         },
         {
-          title: "For other packaged commodities",
-          text: "Support for packers, manufacturers, and importers of pre-packaged goods.",
+          title: "For Instruments Other Than Weight and Measurement (W&M)",
+          text: "",
           items: [
-            "Packer / manufacturer registration",
+            "Registration of the packer or manufacturer for the LMPC certificate",
             "Importer certification / LMPC registration",
           ],
         },
       ],
-      documentsTitle: "Documents commonly required",
+      documentsTitle: "Documents Required for Different Types of License",
       documents: [
         {
-          title: "Manufacturer / dealer / repairer",
+          title: "Manufacturer's License",
           items: [
-            "Photo ID and address proof",
+            "Applicant's photo ID and proof of address",
             "Date of birth proof",
-            "PAN, GST, and premises documents",
-            "Partnership deed (if applicable)",
-            "Affidavit / declaration as required",
-            "Shop / establishment or trade licence where needed",
+            "Lease for the planned property, GST registration, and PAN",
+            "Partnership deed for partnership firms",
+            "Declaration that the applicant has no criminal history",
+            "Affidavit confirming legal requirements will be followed",
+            "Shop / establishment or municipal trade licence (if necessary)",
           ],
         },
         {
-          title: "Additional for dealers / equipment cases",
+          title: "Repairer’s License",
           items: [
-            "Model approval related papers where applicable",
-            "Equipment / tools list",
-            "Experience certificates for repairer cases when required",
+            "Applicant's photo ID and proof of address",
+            "Date of birth proof",
+            "Lease, GST registration, and PAN",
+            "Partnership deed for partnership firms",
+            "No-criminal-history declaration and affidavit",
+            "Shop / establishment or municipal trade licence (if necessary)",
+            "Documents for electronic weighing devices where applicable",
+            "List of required equipment and experience certificates",
+          ],
+        },
+        {
+          title: "Legal Metrology Dealer License",
+          items: [
+            "Applicant's photo ID and proof of address",
+            "Date of birth proof",
+            "Lease, GST registration, and PAN",
+            "Partnership deed for partnership firms",
+            "No-criminal-history declaration and affidavit",
+            "Shop / establishment or municipal trade licence (if necessary)",
+            "Model certificate of approval where applicable",
+            "List of equipment and tools for registration",
           ],
         },
       ],
-      benefitsTitle: "Benefits of LMPC compliance",
+      detailProcessTitle: "Process for LMPC Registration",
+      detailProcess: [
+        {
+          title: "Filling of LMPC Registration Application",
+          text: "Submit an application in the prescribed format with supporting documentation. Based on the firm's location, the nodal official forwards it to the appropriate Legal Metrology Officer.",
+        },
+        {
+          title: "Inspection of Premises",
+          text: "An inspector may examine the planned premises and documentation to assess capacity, then prepare a report for further recommendations.",
+        },
+        {
+          title: "Reviewing of Application",
+          text: "If the application has material errors, the Local Inspector, Asst. Controller, or Controller may raise objections that must be resolved.",
+        },
+        {
+          title: "Make Payment",
+          text: "After assessment, the Controller may ask the applicant to pay the applicable licence fee in the relevant accounts.",
+        },
+        {
+          title: "Issuing of LMPC Certificate",
+          text: "After fee deposit and receipt at the Controller's office, the LMPC Certificate is issued in the specified format.",
+        },
+      ],
+      benefitsTitle: "Benefits of LMPC Certificate in India",
       benefits: [
         {
-          title: "Fair trade clarity",
-          text: "Accurate measurement and labelling practices build trust between sellers and buyers.",
+          title: "Balance between sellers and buyers",
+          text: "Accurate measurement supports transparent trade practices for both sides of a transaction.",
         },
         {
-          title: "Lower friction in commerce",
-          text: "Proper compliance reduces disputes, rework, and avoidable transaction delays.",
+          title: "Reducing transaction costs",
+          text: "Precise measures that follow Legal Metrology rules can reduce time and cost for sellers and purchasers.",
         },
         {
-          title: "Market readiness",
-          text: "Stay aligned with Legal Metrology expectations for packaged goods and instruments.",
+          title: "Supporting and promoting trade",
+          text: "Compliance helps prevent unfair practices and keeps measuring devices fit for intended use and standards.",
         },
         {
-          title: "Stronger documentation hygiene",
-          text: "A clean file makes inspections, renewals, and future filings easier.",
+          title: "Reducing technical barriers to trade",
+          text: "Trusted measurement systems improve confidence and readiness for broader market participation.",
         },
       ],
-      testimonialsTitle: "What clients say",
+      testimonialsTitle: "Testimonials",
       testimonials: [
         {
           quote:
-            "The checklist and follow-ups made LMPC registration much easier than doing it alone.",
-          name: "Operations lead, packaging business",
+            "I had many queries about LMPC certification. The team explained each step and helped with documentation end to end.",
+          name: "Importer, Delhi NCR",
         },
         {
           quote:
-            "Clear communication on documents and timelines. Exactly what we needed for importer compliance.",
-          name: "Import coordinator",
+            "The process felt smooth once the checklist was clear. Good follow-up through application and review.",
+          name: "Packaging business owner",
+        },
+        {
+          quote:
+            "Helpful consultation for choosing between manufacturer, dealer, and importer pathways.",
+          name: "Operations manager",
+        },
+        {
+          quote:
+            "Clear communication and practical guidance. Recommended for LMPC registration support.",
+          name: "Quality lead",
         },
       ],
-      whyTitle: "Why choose Instacertify",
+      whyTitle: "Why Choose Us?",
       whyUs: [
+        { value: "Pan-India", label: "Support coverage" },
         { value: "Expert", label: "Compliance guidance" },
+        { value: "Fast", label: "Consultation turnaround" },
         { value: "Clear", label: "Document checklists" },
-        { value: "Fast", label: "Response turnaround" },
-        { value: "End-to-end", label: "Filing support" },
       ],
-      faqsTitle: "FAQs",
+      faqsTitle: "FAQ'S",
       faqs: [
         {
-          q: "What does the Legal Metrology department oversee?",
-          a: "It regulates accuracy and compliance for weights, measures, and many packaged commodities used in trade.",
+          q: "1. What is the Legal Metrology department's job description?",
+          a: "It is a regulatory agency responsible for consistency and accuracy in weights and measures equipment used by traders in markets and trading hubs. Traders using regulated weights and measures typically need appropriate LMPC / Legal Metrology compliance.",
         },
         {
-          q: "Who issues LMPC licences?",
-          a: "Applications are typically examined by Legal Metrology officials and granted through the designated controller process after review and fee payment.",
+          q: "2. In which LMPC certificate program does model approval exist?",
+          a: "Before manufacturing or importing many weighing and measuring instruments regulated by the Legal Metrology Act, 2009, manufacturers and importers may need government model approval. Some limited retail measurement categories may have specific exemptions.",
         },
         {
-          q: "Which products may need mandatory declarations?",
-          a: "Pre-packaged commodities often need packer/importer/manufacturer details, net quantity, MRP, and related declarations under Legal Metrology rules.",
+          q: "3. Who issues LMPC licences?",
+          a: "An application is generally examined by the Inspector of Legal Metrology, who may inspect the business and recommend it to the Controller of Legal Metrology for consideration before the certificate is awarded.",
         },
         {
-          q: "Can Instacertify help if I am unsure which licence I need?",
-          a: "Yes. Start with the form and our team will help identify the likely pathway based on your product and business activity.",
+          q: "4. What products are covered by the Rules as commodities?",
+          a: "The Rules under the Legal Metrology Act generally govern pre-packaged goods and related declarations, with specific exceptions such as certain pharmaceuticals, quick-food products, and very small package sizes as defined in the rules.",
+        },
+        {
+          q: "5. What obligatory statements must packaged goods include?",
+          a: "Common mandatory declarations include name and address of packager/importer/manufacturer, net quantity, manufacture/import/pack date details, price, expiry where applicable, and customer support information.",
         },
       ],
-      bottomCtaText: "Ready to start your LMPC registration?",
+      bottomCtaText: "Book a Free Consultation",
     },
     seo: {
-      title: "LMPC Registration Support | Instacertify",
+      title: "LMPC Registration | Get LMPC Certificate Support | Instacertify",
       description:
-        "Instacertify helps with LMPC / Legal Metrology registration for importers, manufacturers, and packers. Get consultation, document guidance, and filing support.",
+        "Get LMPC certificate support with Instacertify. Guidance for importer, manufacturer, packer and dealer registration, documents, process, and free consultation.",
       keywords:
-        "LMPC registration, Legal Metrology, LMPC certificate, importer registration, Instacertify",
+        "LMPC registration, LMPC certificate, Legal Metrology, importer registration, manufacturer licence, Instacertify",
       robots: "index,follow",
     },
   },
@@ -198,10 +271,6 @@ const samples = [
       {
         heading: "What this page covers",
         text: "A concise overview of certification scope, documentation, and how teams prepare for assessment.",
-      },
-      {
-        heading: "Who it is for",
-        text: "Operations, quality, and compliance leads who need a clear public explainer for stakeholders.",
       },
     ],
     seo: {

@@ -7,8 +7,10 @@ const state = {
   editingId: null,
   sections: [],
   process: [],
+  licences: [],
   types: [],
   documents: [],
+  detailProcess: [],
   benefits: [],
   testimonials: [],
   whyUs: [],
@@ -268,6 +270,30 @@ function renderProcess() {
   );
 }
 
+function renderLicences() {
+  renderNamedList(
+    "licences-list",
+    state.licences,
+    [
+      { key: "title", label: "Licence title" },
+      { key: "text", label: "Licence text", type: "textarea" },
+    ],
+    renderLicences
+  );
+}
+
+function renderDetailProcess() {
+  renderNamedList(
+    "detail-process-list",
+    state.detailProcess,
+    [
+      { key: "title", label: "Step title" },
+      { key: "text", label: "Step text", type: "textarea" },
+    ],
+    renderDetailProcess
+  );
+}
+
 function renderTypes() {
   const container = document.getElementById("types-list");
   if (!state.types.length) {
@@ -407,28 +433,33 @@ function blankPage() {
     content: {
       phone: "",
       whatsapp: "",
+      headlineHighlight: "",
       trustPoints: [],
       offerText: "",
       offerPrice: "",
       formEnabled: true,
-      formTitle: "Fill the form now",
-      formSubmitLabel: "Get a free consultation",
+      formTitle: "Fill The Form Now!",
+      formSubmitLabel: "Proceed",
       formSuccessMessage: "Thanks! Our team will contact you shortly.",
-      processTitle: "Registration procedure",
+      processTitle: "Registration Procedure",
       process: [],
+      licencesTitle: "",
+      licences: [],
       typesTitle: "",
       types: [],
       documentsTitle: "",
       documents: [],
+      detailProcessTitle: "",
+      detailProcess: [],
       benefitsTitle: "",
       benefits: [],
       testimonialsTitle: "Testimonials",
       testimonials: [],
-      whyTitle: "Why choose us",
+      whyTitle: "Why Choose Us?",
       whyUs: [],
-      faqsTitle: "FAQs",
+      faqsTitle: "FAQ'S",
       faqs: [],
-      bottomCtaText: "Book a free consultation",
+      bottomCtaText: "Book a Free Consultation",
     },
     seo: {
       title: "",
@@ -451,11 +482,17 @@ function fillEditor(page) {
   state.process = Array.isArray(content.process)
     ? content.process.map((s) => ({ ...s }))
     : [];
+  state.licences = Array.isArray(content.licences)
+    ? content.licences.map((s) => ({ ...s }))
+    : [];
   state.types = Array.isArray(content.types)
     ? content.types.map((s) => ({ ...s, items: [...(s.items || [])] }))
     : [];
   state.documents = Array.isArray(content.documents)
     ? content.documents.map((s) => ({ ...s, items: [...(s.items || [])] }))
+    : [];
+  state.detailProcess = Array.isArray(content.detailProcess)
+    ? content.detailProcess.map((s) => ({ ...s }))
     : [];
   state.benefits = Array.isArray(content.benefits)
     ? content.benefits.map((s) => ({ ...s }))
@@ -486,6 +523,8 @@ function fillEditor(page) {
   document.getElementById("heroImage").value = page.heroImage || "";
   document.getElementById("bodyHtml").value = page.bodyHtml || "";
 
+  document.getElementById("headlineHighlight").value =
+    content.headlineHighlight || "";
   document.getElementById("contentPhone").value = content.phone || "";
   document.getElementById("contentWhatsapp").value = content.whatsapp || "";
   document.getElementById("offerText").value = content.offerText || "";
@@ -501,8 +540,11 @@ function fillEditor(page) {
   document.getElementById("formEnabled").checked = content.formEnabled !== false;
   document.getElementById("bottomCtaText").value = content.bottomCtaText || "";
   document.getElementById("processTitle").value = content.processTitle || "";
+  document.getElementById("licencesTitle").value = content.licencesTitle || "";
   document.getElementById("typesTitle").value = content.typesTitle || "";
   document.getElementById("documentsTitle").value = content.documentsTitle || "";
+  document.getElementById("detailProcessTitle").value =
+    content.detailProcessTitle || "";
   document.getElementById("benefitsTitle").value = content.benefitsTitle || "";
   document.getElementById("testimonialsTitle").value =
     content.testimonialsTitle || "";
@@ -521,8 +563,10 @@ function fillEditor(page) {
 
   renderSections();
   renderProcess();
+  renderLicences();
   renderTypes();
   renderDocuments();
+  renderDetailProcess();
   renderBenefits();
   renderTestimonials();
   renderWhyUs();
@@ -546,6 +590,9 @@ function collectPagePayload() {
     content: {
       phone: document.getElementById("contentPhone").value.trim(),
       whatsapp: document.getElementById("contentWhatsapp").value.trim(),
+      headlineHighlight: document
+        .getElementById("headlineHighlight")
+        .value.trim(),
       trustPoints: linesToArray(document.getElementById("trustPoints").value),
       offerText: document.getElementById("offerText").value.trim(),
       offerPrice: document.getElementById("offerPrice").value.trim(),
@@ -557,10 +604,16 @@ function collectPagePayload() {
         .value.trim(),
       processTitle: document.getElementById("processTitle").value.trim(),
       process: state.process,
+      licencesTitle: document.getElementById("licencesTitle").value.trim(),
+      licences: state.licences,
       typesTitle: document.getElementById("typesTitle").value.trim(),
       types: state.types,
       documentsTitle: document.getElementById("documentsTitle").value.trim(),
       documents: state.documents,
+      detailProcessTitle: document
+        .getElementById("detailProcessTitle")
+        .value.trim(),
+      detailProcess: state.detailProcess,
       benefitsTitle: document.getElementById("benefitsTitle").value.trim(),
       benefits: state.benefits,
       testimonialsTitle: document
@@ -675,6 +728,10 @@ document.getElementById("add-process-btn").addEventListener("click", () => {
   state.process.push({ title: "", text: "" });
   renderProcess();
 });
+document.getElementById("add-licence-btn").addEventListener("click", () => {
+  state.licences.push({ title: "", text: "" });
+  renderLicences();
+});
 document.getElementById("add-type-btn").addEventListener("click", () => {
   state.types.push({ title: "", text: "", items: [] });
   renderTypes();
@@ -683,10 +740,17 @@ document.getElementById("add-doc-btn").addEventListener("click", () => {
   state.documents.push({ title: "", items: [] });
   renderDocuments();
 });
+document
+  .getElementById("add-detail-process-btn")
+  .addEventListener("click", () => {
+    state.detailProcess.push({ title: "", text: "" });
+    renderDetailProcess();
+  });
 document.getElementById("add-benefit-btn").addEventListener("click", () => {
   state.benefits.push({ title: "", text: "" });
   renderBenefits();
 });
+
 document
   .getElementById("add-testimonial-btn")
   .addEventListener("click", () => {

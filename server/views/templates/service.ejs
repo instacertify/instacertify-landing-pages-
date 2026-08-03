@@ -4,20 +4,19 @@
   <%- include('../partials/head') %>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --ink: #0c2430;
-      --muted: #4c6673;
-      --brand: #0b6e6a;
-      --brand-dark: #084e4b;
-      --accent: #e8a317;
-      --accent-ink: #3a2800;
-      --paper: #f3f7f6;
+      --ink: #0d1b2a;
+      --muted: #4d6070;
+      --brand: #0a6fb2;
+      --brand-deep: #034d82;
+      --gold: #ffbf00;
+      --gold-ink: #3d2d00;
+      --paper: #f5f8fb;
       --panel: #ffffff;
-      --line: rgba(12, 36, 48, 0.12);
-      --hero-a: #08343a;
-      --hero-b: #0f5f5a;
+      --line: rgba(13, 27, 42, 0.12);
+      --strip: #eef5fb;
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -27,7 +26,7 @@
       color: var(--ink);
       background: var(--paper);
     }
-    a { color: inherit; }
+    a { color: inherit; text-decoration: none; }
     .preview-banner {
       background: #111;
       color: #fff;
@@ -40,227 +39,267 @@
       justify-content: space-between;
       align-items: center;
       gap: 1rem;
-      padding: 0.85rem 1.25rem;
-      background: rgba(255,255,255,0.92);
-      border-bottom: 1px solid var(--line);
+      padding: 0.85rem clamp(1rem, 3vw, 2rem);
+      background: #061429;
+      color: #fff;
       position: sticky;
       top: 0;
-      z-index: 20;
-      backdrop-filter: blur(10px);
+      z-index: 40;
     }
     .topbar strong {
       font-family: Sora, sans-serif;
-      font-size: 1.15rem;
+      font-size: 1.25rem;
       letter-spacing: -0.03em;
     }
-    .topbar-actions {
-      display: flex;
-      gap: 0.55rem;
-      flex-wrap: wrap;
-    }
+    .topbar-actions { display: flex; gap: 0.55rem; flex-wrap: wrap; }
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      text-decoration: none;
       border: 0;
       cursor: pointer;
       font: inherit;
       font-weight: 700;
-      border-radius: 0.4rem;
-      padding: 0.8rem 1.1rem;
+      border-radius: 0.35rem;
+      padding: 0.8rem 1.15rem;
     }
-    .btn-primary {
-      background: var(--accent);
-      color: var(--accent-ink);
-    }
-    .btn-dark {
-      background: var(--brand);
-      color: #fff;
-    }
+    .btn-gold { background: var(--gold); color: var(--gold-ink); }
+    .btn-blue { background: var(--brand); color: #fff; }
+    .btn-dark { background: #061429; color: #fff; }
     .btn-ghost {
       background: transparent;
-      border: 1px solid var(--line);
-      color: var(--ink);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.35);
     }
+
     .hero {
       min-height: calc(100vh - 64px);
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: clamp(1.25rem, 3vw, 2.5rem);
+      grid-template-columns: 1.25fr 0.85fr;
+      gap: clamp(1.25rem, 3vw, 2.75rem);
       align-items: center;
-      padding: clamp(1.5rem, 4vw, 3rem);
-      color: #f4fffc;
+      padding: clamp(1.5rem, 4vw, 3.25rem);
+      position: relative;
+      overflow: hidden;
       background:
-        linear-gradient(135deg, rgba(8, 52, 58, 0.92), rgba(15, 95, 90, 0.88)),
-        <% if (page.heroImage) { %>url("<%= page.heroImage %>") center/cover no-repeat,<% } %>
-        radial-gradient(circle at 80% 10%, rgba(232, 163, 23, 0.28), transparent 35%),
-        linear-gradient(160deg, var(--hero-a), var(--hero-b));
+        linear-gradient(105deg, rgba(245,248,251,0.96) 0%, rgba(245,248,251,0.88) 48%, rgba(245,248,251,0.35) 100%),
+        <% if (page.heroImage) { %>url("<%= page.heroImage %>") right center / cover no-repeat,<% } %>
+        radial-gradient(circle at 85% 15%, rgba(10, 111, 178, 0.18), transparent 35%),
+        linear-gradient(180deg, #e9f2f9, #f5f8fb);
       animation: fadeIn 700ms ease both;
     }
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 28rem;
+      height: 28rem;
+      right: -8rem;
+      bottom: -10rem;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 191, 0, 0.22), transparent 65%);
+      animation: drift 9s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+    .hero-copy { position: relative; z-index: 1; }
     .brand {
       font-family: Sora, sans-serif;
-      font-size: clamp(2.4rem, 6vw, 4.4rem);
+      font-size: clamp(2.6rem, 7vw, 4.8rem);
       line-height: 0.95;
-      letter-spacing: -0.04em;
+      letter-spacing: -0.045em;
       margin: 0 0 0.85rem;
-      animation: rise 750ms ease both;
+      color: var(--ink);
+      animation: rise 700ms ease both;
     }
     .headline {
       font-family: Sora, sans-serif;
-      font-size: clamp(1.35rem, 2.8vw, 2rem);
+      font-size: clamp(1.45rem, 3vw, 2.35rem);
       line-height: 1.2;
-      margin: 0 0 0.75rem;
+      margin: 0 0 0.85rem;
       max-width: 22ch;
-      animation: rise 750ms 60ms ease both;
+      animation: rise 700ms 70ms ease both;
     }
+    .headline .accent { color: var(--brand); }
+    .headline .hot { color: #d97706; }
     .sub {
       max-width: 48ch;
-      color: rgba(244, 255, 252, 0.88);
-      margin: 0 0 1.25rem;
-      animation: rise 750ms 120ms ease both;
+      color: var(--muted);
+      margin: 0 0 1.2rem;
+      line-height: 1.6;
+      animation: rise 700ms 120ms ease both;
     }
     .trust-list {
       list-style: none;
       padding: 0;
-      margin: 0 0 1.25rem;
+      margin: 0 0 1.2rem;
       display: grid;
       gap: 0.55rem;
-      animation: rise 750ms 160ms ease both;
+      animation: rise 700ms 160ms ease both;
     }
     .trust-list li {
       display: flex;
-      gap: 0.55rem;
+      gap: 0.65rem;
       align-items: flex-start;
+      background: rgba(255,255,255,0.78);
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--brand);
+      padding: 0.65rem 0.8rem;
       font-weight: 600;
     }
     .trust-list li::before {
-      content: "";
-      width: 0.7rem;
-      height: 0.7rem;
-      margin-top: 0.35rem;
-      border-radius: 50%;
-      background: var(--accent);
-      flex: 0 0 auto;
+      content: "▸";
+      color: #d97706;
+      font-weight: 800;
     }
     .offer-chip {
       display: inline-block;
-      background: rgba(232, 163, 23, 0.95);
-      color: var(--accent-ink);
-      font-weight: 700;
-      padding: 0.7rem 0.95rem;
+      background: var(--gold);
+      color: var(--gold-ink);
+      font-weight: 800;
+      padding: 0.85rem 1rem;
       border-radius: 0.35rem;
-      animation: rise 750ms 200ms ease both;
+      box-shadow: 10px 12px 18px rgba(0,0,0,0.08);
+      animation: rise 700ms 200ms ease both;
+      max-width: 36rem;
     }
+
     .lead-panel {
+      position: relative;
+      z-index: 1;
       background: var(--panel);
-      color: var(--ink);
-      border-radius: 0.75rem;
-      padding: 1.25rem;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
-      animation: rise 800ms 120ms ease both;
+      border: 3px outset #061429;
+      border-radius: 0.85rem;
+      padding: 1.35rem 1.2rem 1.2rem;
+      box-shadow: 0 22px 50px rgba(6, 20, 41, 0.16);
+      animation: rise 750ms 100ms ease both;
     }
     .lead-panel h2 {
       font-family: Sora, sans-serif;
-      font-size: 1.35rem;
-      margin: 0 0 0.9rem;
-      letter-spacing: -0.02em;
+      text-align: center;
+      margin: 0 0 1rem;
+      font-size: 1.45rem;
+      color: var(--brand-deep);
     }
-    .lead-panel form {
-      display: grid;
-      gap: 0.7rem;
-    }
-    .lead-panel label {
-      display: grid;
-      gap: 0.3rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
+    .lead-panel form { display: grid; gap: 0.7rem; }
     .lead-panel input,
-    .lead-panel select,
     .lead-panel textarea {
       width: 100%;
       border: 1px solid var(--line);
       border-radius: 0.4rem;
-      padding: 0.75rem 0.8rem;
+      padding: 0.85rem 0.9rem;
       font: inherit;
-      background: #fbfdff;
+      background: #fff;
     }
-    .lead-panel .btn { width: 100%; }
+    .lead-panel .btn { width: 100%; font-size: 1.05rem; }
     .form-note {
-      margin: 0.55rem 0 0;
+      margin: 0.6rem 0 0;
+      text-align: center;
       color: var(--muted);
       font-size: 0.85rem;
     }
     .form-success {
       display: none;
+      margin-top: 0.75rem;
       padding: 0.85rem;
       border-radius: 0.4rem;
-      background: rgba(11, 110, 106, 0.1);
-      color: var(--brand-dark);
-      font-weight: 600;
+      background: rgba(10, 111, 178, 0.1);
+      color: var(--brand-deep);
+      font-weight: 700;
+      text-align: center;
     }
     .form-success.show { display: block; }
+
+    .offer-banner {
+      background: #002881;
+      color: #fff;
+      text-align: center;
+      padding: 1.1rem 1rem;
+      font-weight: 800;
+      box-shadow: inset 0 -4px 0 rgba(255, 191, 0, 0.9);
+    }
+    .offer-banner span { color: var(--gold); }
+
     .section {
-      width: min(1080px, calc(100% - 2rem));
+      width: min(1100px, calc(100% - 2rem));
       margin: 0 auto;
       padding: 4rem 0;
     }
     .section h2 {
       font-family: Sora, sans-serif;
-      font-size: clamp(1.7rem, 3vw, 2.3rem);
+      font-size: clamp(1.7rem, 3vw, 2.35rem);
       letter-spacing: -0.03em;
-      margin: 0 0 1.25rem;
+      margin: 0 0 1.4rem;
       text-align: center;
+      color: var(--ink);
     }
-    .section-intro {
-      text-align: center;
-      color: var(--muted);
-      max-width: 62ch;
-      margin: -0.5rem auto 1.75rem;
-      line-height: 1.65;
+    .section-line {
+      width: 4.5rem;
+      height: 4px;
+      background: var(--gold);
+      margin: -0.7rem auto 1.6rem;
     }
+
     .process-grid,
     .benefits-grid,
+    .types-grid,
+    .licence-grid,
     .why-grid,
-    .types-grid {
+    .quotes {
       display: grid;
       gap: 1rem;
     }
     .process-grid { grid-template-columns: repeat(3, 1fr); }
+    .detail-grid { display: grid; gap: 1rem; }
     .benefits-grid,
-    .types-grid { grid-template-columns: repeat(2, 1fr); }
+    .types-grid,
+    .quotes { grid-template-columns: repeat(2, 1fr); }
+    .licence-grid { grid-template-columns: repeat(3, 1fr); }
     .why-grid { grid-template-columns: repeat(4, 1fr); }
+
     .step,
     .benefit,
     .type-block,
     .doc-group,
     .quote,
-    .why-item {
+    .why-item,
+    .licence-card,
+    .detail-step {
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 0.65rem;
       padding: 1.15rem;
     }
+    .step {
+      text-align: center;
+      box-shadow: 0 10px 24px rgba(6, 20, 41, 0.05);
+    }
     .step-num {
+      width: 2.4rem;
+      height: 2.4rem;
+      margin: 0 auto 0.7rem;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--brand);
+      color: #fff;
       font-family: Sora, sans-serif;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--brand);
-      margin-bottom: 0.4rem;
+      font-weight: 800;
     }
     .step h3,
     .benefit h3,
     .type-block h3,
-    .doc-group h3 {
+    .doc-group h3,
+    .licence-card h3,
+    .detail-step h3 {
       font-family: Sora, sans-serif;
       margin: 0 0 0.45rem;
-      font-size: 1.1rem;
+      font-size: 1.08rem;
     }
     .step p,
     .benefit p,
     .type-block p,
     .quote p,
+    .licence-card p,
+    .detail-step p,
     .content-copy p {
       margin: 0;
       color: var(--muted);
@@ -273,47 +312,47 @@
       color: var(--muted);
       line-height: 1.6;
     }
-    .offer-banner {
-      background: linear-gradient(90deg, #0b3d3a, #11756f);
-      color: #fff;
-      text-align: center;
-      padding: 1.4rem 1rem;
-      font-weight: 700;
-    }
-    .offer-banner span {
-      color: var(--accent);
-    }
-    .content-band {
-      background: linear-gradient(180deg, #e8f2f0, var(--paper));
-    }
-    .content-copy {
-      width: min(820px, 100%);
-      margin: 0 auto;
-    }
-    .content-copy h2 {
-      text-align: left;
-      margin-bottom: 0.75rem;
-    }
-    .quotes {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
-    }
+    .content-band { background: linear-gradient(180deg, #eaf2f8, var(--paper)); }
+    .content-copy { width: min(820px, 100%); margin: 0 auto; }
+    .content-copy h2 { text-align: left; margin-bottom: 0.75rem; }
     .quote strong {
       display: block;
       margin-top: 0.8rem;
       font-family: Sora, sans-serif;
     }
-    .why-item {
-      text-align: center;
-    }
+    .why-item { text-align: center; }
     .why-item strong {
       display: block;
       font-family: Sora, sans-serif;
-      font-size: 1.7rem;
-      color: var(--brand);
+      font-size: 1.55rem;
+      color: var(--brand-deep);
       margin-bottom: 0.25rem;
     }
+
+    .doc-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .doc-tab {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 0.55rem 0.9rem;
+      cursor: pointer;
+    }
+    .doc-tab.active {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #fff;
+    }
+    .doc-panel { display: none; }
+    .doc-panel.active { display: block; }
+
     .faq-list {
       display: grid;
       gap: 0.65rem;
@@ -324,24 +363,26 @@
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 0.55rem;
-      padding: 0.9rem 1rem;
+      padding: 0.95rem 1rem;
     }
     summary {
       cursor: pointer;
       font-weight: 700;
       font-family: Sora, sans-serif;
+      color: var(--brand-deep);
     }
     details p {
       margin: 0.7rem 0 0;
       color: var(--muted);
       line-height: 1.65;
     }
+
     .bottom-cta {
       text-align: center;
       padding: 3.5rem 1rem 5.5rem;
       background:
-        radial-gradient(circle at 50% 0%, rgba(232, 163, 23, 0.18), transparent 45%),
-        linear-gradient(180deg, #e7f3f1, #dceceb);
+        radial-gradient(circle at 50% 0%, rgba(255, 191, 0, 0.2), transparent 42%),
+        linear-gradient(180deg, #e7f0f8, #d9e7f3);
     }
     .bottom-cta h2 {
       font-family: Sora, sans-serif;
@@ -356,14 +397,36 @@
       padding: 0.75rem;
       background: rgba(255,255,255,0.96);
       border-top: 1px solid var(--line);
-      z-index: 30;
+      z-index: 45;
     }
     .mobile-cta .btn { width: 100%; }
+    .float-actions {
+      position: fixed;
+      right: 1rem;
+      bottom: 5.5rem;
+      display: grid;
+      gap: 0.55rem;
+      z-index: 46;
+    }
+    .float-actions a {
+      width: 3.2rem;
+      height: 3.2rem;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+    }
+    .float-call { background: var(--brand); }
+    .float-wa { background: #1fa855; }
     footer {
       padding: 1.25rem;
       text-align: center;
       color: var(--muted);
       font-size: 0.9rem;
+      background: #061429;
+      color: rgba(255,255,255,0.75);
     }
     @keyframes rise {
       from { opacity: 0; transform: translateY(18px); }
@@ -373,14 +436,20 @@
       from { opacity: 0.7; }
       to { opacity: 1; }
     }
+    @keyframes drift {
+      from { transform: translate3d(0,0,0); }
+      to { transform: translate3d(-3%, -4%, 0); }
+    }
     @media (max-width: 960px) {
       .hero { grid-template-columns: 1fr; min-height: auto; }
       .process-grid,
       .benefits-grid,
       .types-grid,
-      .quotes { grid-template-columns: 1fr; }
+      .quotes,
+      .licence-grid { grid-template-columns: 1fr; }
       .why-grid { grid-template-columns: repeat(2, 1fr); }
       .mobile-cta { display: block; }
+      .float-actions { bottom: 5.2rem; }
     }
   </style>
   <% if (page.content && page.content.faqs && page.content.faqs.length) { %>
@@ -410,15 +479,22 @@
   <div class="topbar">
     <strong><%= page.brandName %></strong>
     <div class="topbar-actions">
-      <% if (phone) { %><a class="btn btn-ghost" href="tel:<%= phone %>"><%= phone %></a><% } %>
-      <a class="btn btn-primary" href="#lead-form"><%= page.ctaLabel || 'Book a free consultation' %></a>
+      <% if (phone) { %><a class="btn btn-ghost" href="tel:<%= phone %>">Call <%= phone %></a><% } %>
+      <a class="btn btn-gold" href="#lead-form"><%= page.ctaLabel || 'Book a Free Consultation' %></a>
     </div>
   </div>
 
   <header class="hero">
-    <div>
+    <div class="hero-copy">
       <p class="brand"><%= page.brandName %></p>
-      <% if (page.headline) { %><h1 class="headline"><%= page.headline %></h1><% } %>
+      <% if (page.headline) { %>
+        <h1 class="headline">
+          <span class="accent"><%= page.headline %></span>
+          <% if (c.headlineHighlight) { %>
+            <span class="hot"> <%= c.headlineHighlight %></span>
+          <% } %>
+        </h1>
+      <% } %>
       <% if (page.subheadline) { %><p class="sub"><%= page.subheadline %></p><% } %>
 
       <% if (c.trustPoints && c.trustPoints.length) { %>
@@ -431,27 +507,25 @@
 
       <% if (c.offerText || c.offerPrice) { %>
       <div class="offer-chip">
-        <%= c.offerText %><% if (c.offerPrice) { %> — <strong><%= c.offerPrice %></strong><% } %>
+        <%= c.offerText %><% if (c.offerPrice) { %> Only @ <strong><%= c.offerPrice %></strong><% } %>
       </div>
       <% } %>
     </div>
 
     <% if (c.formEnabled !== false) { %>
     <aside class="lead-panel" id="lead-form">
-      <h2><%= c.formTitle || 'Fill the form now' %></h2>
+      <h2><%= c.formTitle || 'Fill The Form Now!' %></h2>
       <form id="service-lead-form">
         <input type="hidden" name="pageSlug" value="<%= page.slug %>" />
-        <label>Name <input name="name" required autocomplete="name" /></label>
-        <label>Phone <input name="phone" required autocomplete="tel" /></label>
-        <label>Email <input type="email" name="email" autocomplete="email" /></label>
-        <label>City <input name="city" autocomplete="address-level2" /></label>
-        <label>Service interest
-          <input name="service" value="<%= page.title %>" />
-        </label>
-        <label>Message <textarea name="message" rows="3" placeholder="Tell us briefly what you need"></textarea></label>
-        <button class="btn btn-dark" type="submit"><%= c.formSubmitLabel || 'Proceed' %></button>
+        <input name="name" required autocomplete="name" placeholder="Applicant Name" />
+        <input type="email" name="email" autocomplete="email" placeholder="Email" />
+        <input name="phone" required autocomplete="tel" placeholder="Mobile Number" />
+        <input name="city" autocomplete="address-level2" placeholder="City" />
+        <input type="hidden" name="service" value="<%= page.title %>" />
+        <textarea name="message" rows="3" placeholder="Your Message"></textarea>
+        <button class="btn btn-gold" type="submit"><%= c.formSubmitLabel || 'Proceed' %></button>
       </form>
-      <p class="form-note">We respond during business hours. No spam.</p>
+      <p class="form-note">Submit now for a free obligation consultation.</p>
       <p class="form-success" id="lead-success"><%= c.formSuccessMessage || 'Thanks! Our team will contact you shortly.' %></p>
     </aside>
     <% } %>
@@ -459,18 +533,20 @@
 
   <% if (c.offerText || c.offerPrice) { %>
   <div class="offer-banner">
-    <%= c.offerText || 'Limited offer' %>
+    <%= c.offerText || 'Limited Offer' %>
     <% if (c.offerPrice) { %> <span><%= c.offerPrice %></span><% } %>
+    — Hurry, Offer Ends Soon!
   </div>
   <% } %>
 
   <% if (c.process && c.process.length) { %>
   <section class="section">
-    <h2><%= c.processTitle || 'Registration procedure' %></h2>
+    <h2><%= c.processTitle || 'Registration Procedure' %></h2>
+    <div class="section-line"></div>
     <div class="process-grid">
       <% c.process.forEach(function(step, index) { %>
         <article class="step">
-          <div class="step-num">Step <%= index + 1 %></div>
+          <div class="step-num"><%= index + 1 %></div>
           <% if (step.title) { %><h3><%= step.title %></h3><% } %>
           <% if (step.text) { %><p><%= step.text %></p><% } %>
         </article>
@@ -492,9 +568,25 @@
   </div>
   <% } %>
 
+  <% if (c.licences && c.licences.length) { %>
+  <section class="section">
+    <h2><%= c.licencesTitle || 'Types of Legal Metrology Licence' %></h2>
+    <div class="section-line"></div>
+    <div class="licence-grid">
+      <% c.licences.forEach(function(item) { %>
+        <article class="licence-card">
+          <% if (item.title) { %><h3><%= item.title %></h3><% } %>
+          <% if (item.text) { %><p><%= item.text %></p><% } %>
+        </article>
+      <% }) %>
+    </div>
+  </section>
+  <% } %>
+
   <% if (c.types && c.types.length) { %>
   <section class="section">
-    <h2><%= c.typesTitle || 'Types & coverage' %></h2>
+    <h2><%= c.typesTitle || 'Types of Certificates' %></h2>
+    <div class="section-line"></div>
     <div class="types-grid">
       <% c.types.forEach(function(type) { %>
         <article class="type-block">
@@ -513,16 +605,37 @@
 
   <% if (c.documents && c.documents.length) { %>
   <section class="section">
-    <h2><%= c.documentsTitle || 'Documents required' %></h2>
-    <div class="types-grid">
-      <% c.documents.forEach(function(group) { %>
-        <article class="doc-group">
-          <% if (group.title) { %><h3><%= group.title %></h3><% } %>
-          <% if (group.items && group.items.length) { %>
-            <ul>
-              <% group.items.forEach(function(item) { %><li><%= item %></li><% }) %>
-            </ul>
-          <% } %>
+    <h2><%= c.documentsTitle || 'Documents Required for Different Types of License' %></h2>
+    <div class="section-line"></div>
+    <div class="doc-tabs" id="doc-tabs">
+      <% c.documents.forEach(function(group, index) { %>
+        <button type="button" class="doc-tab<%= index === 0 ? ' active' : '' %>" data-tab="<%= index %>">
+          <%= group.title || ('Group ' + (index + 1)) %>
+        </button>
+      <% }) %>
+    </div>
+    <% c.documents.forEach(function(group, index) { %>
+      <article class="doc-group doc-panel<%= index === 0 ? ' active' : '' %>" data-panel="<%= index %>">
+        <% if (group.title) { %><h3><%= group.title %></h3><% } %>
+        <% if (group.items && group.items.length) { %>
+          <ul>
+            <% group.items.forEach(function(item) { %><li><%= item %></li><% }) %>
+          </ul>
+        <% } %>
+      </article>
+    <% }) %>
+  </section>
+  <% } %>
+
+  <% if (c.detailProcess && c.detailProcess.length) { %>
+  <section class="section">
+    <h2><%= c.detailProcessTitle || 'Process for Registration' %></h2>
+    <div class="section-line"></div>
+    <div class="detail-grid">
+      <% c.detailProcess.forEach(function(step, index) { %>
+        <article class="detail-step">
+          <h3><%= index + 1 %>. <%= step.title %></h3>
+          <% if (step.text) { %><p><%= step.text %></p><% } %>
         </article>
       <% }) %>
     </div>
@@ -532,6 +645,7 @@
   <% if (c.benefits && c.benefits.length) { %>
   <section class="section">
     <h2><%= c.benefitsTitle || 'Benefits' %></h2>
+    <div class="section-line"></div>
     <div class="benefits-grid">
       <% c.benefits.forEach(function(item) { %>
         <article class="benefit">
@@ -546,6 +660,7 @@
   <% if (c.testimonials && c.testimonials.length) { %>
   <section class="section">
     <h2><%= c.testimonialsTitle || 'Testimonials' %></h2>
+    <div class="section-line"></div>
     <div class="quotes">
       <% c.testimonials.forEach(function(item) { %>
         <blockquote class="quote">
@@ -559,7 +674,8 @@
 
   <% if (c.whyUs && c.whyUs.length) { %>
   <section class="section">
-    <h2><%= c.whyTitle || 'Why choose us' %></h2>
+    <h2><%= c.whyTitle || 'Why Choose Us?' %></h2>
+    <div class="section-line"></div>
     <div class="why-grid">
       <% c.whyUs.forEach(function(item) { %>
         <div class="why-item">
@@ -573,7 +689,8 @@
 
   <% if (c.faqs && c.faqs.length) { %>
   <section class="section">
-    <h2><%= c.faqsTitle || 'FAQs' %></h2>
+    <h2><%= c.faqsTitle || "FAQ'S" %></h2>
+    <div class="section-line"></div>
     <div class="faq-list">
       <% c.faqs.forEach(function(faq) { %>
         <details>
@@ -590,25 +707,46 @@
   <% } %>
 
   <section class="bottom-cta">
-    <h2><%= c.bottomCtaText || page.ctaLabel || 'Book a free consultation' %></h2>
+    <h2><%= c.bottomCtaText || page.ctaLabel || 'Book a Free Consultation' %></h2>
     <div class="topbar-actions" style="justify-content:center;">
-      <a class="btn btn-primary" href="#lead-form"><%= c.formSubmitLabel || 'Fill the form now' %></a>
+      <a class="btn btn-gold" href="#lead-form"><%= c.formSubmitLabel || 'Fill The Form Now!' %></a>
       <% if (whatsapp) { %>
-        <a class="btn btn-dark" href="https://wa.me/<%= String(whatsapp).replace(/\D/g, '') %>" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="btn btn-blue" href="https://wa.me/<%= String(whatsapp).replace(/\D/g, '') %>" target="_blank" rel="noopener">WhatsApp</a>
       <% } else if (page.ctaUrl) { %>
-        <a class="btn btn-dark" href="<%= page.ctaUrl %>"><%= page.ctaLabel || 'Learn more' %></a>
+        <a class="btn btn-blue" href="<%= page.ctaUrl %>"><%= page.ctaLabel || 'Learn more' %></a>
       <% } %>
     </div>
   </section>
 
-  <footer>© <%= new Date().getFullYear() %> <%= page.brandName %></footer>
+  <footer>© <%= new Date().getFullYear() %> <%= page.brandName %> | All Rights Reserved</footer>
 
   <div class="mobile-cta">
-    <a class="btn btn-primary" href="#lead-form"><%= c.formSubmitLabel || 'Get a free consultation' %></a>
+    <a class="btn btn-gold" href="#lead-form"><%= c.formSubmitLabel || 'Proceed' %></a>
   </div>
+
+  <% if (phone || whatsapp) { %>
+  <div class="float-actions">
+    <% if (phone) { %><a class="float-call" href="tel:<%= phone %>" aria-label="Call">☎</a><% } %>
+    <% if (whatsapp) { %>
+      <a class="float-wa" href="https://wa.me/<%= String(whatsapp).replace(/\D/g, '') %>" target="_blank" rel="noopener" aria-label="WhatsApp">WA</a>
+    <% } %>
+  </div>
+  <% } %>
 
   <script>
     (function () {
+      const tabs = document.querySelectorAll(".doc-tab");
+      const panels = document.querySelectorAll(".doc-panel");
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const index = tab.dataset.tab;
+          tabs.forEach((t) => t.classList.toggle("active", t === tab));
+          panels.forEach((panel) => {
+            panel.classList.toggle("active", panel.dataset.panel === index);
+          });
+        });
+      });
+
       const form = document.getElementById("service-lead-form");
       const success = document.getElementById("lead-success");
       if (!form) return;
@@ -617,7 +755,7 @@
         const params = new URLSearchParams(window.location.search);
         const keys = [
           "utm_source", "utm_medium", "utm_campaign", "utm_content",
-          "utm_term", "gclid", "gad_source", "gad_campaignid"
+          "utm_term", "gclid", "gad_source", "gad_campaignid", "gbraid"
         ];
         const utm = {};
         keys.forEach((key) => {
