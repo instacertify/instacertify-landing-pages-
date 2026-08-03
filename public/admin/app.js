@@ -9,6 +9,8 @@ const state = {
   process: [],
   licences: [],
   types: [],
+  timelines: [],
+  products: [],
   documents: [],
   detailProcess: [],
   benefits: [],
@@ -296,13 +298,13 @@ function renderDetailProcess() {
   );
 }
 
-function renderTypes() {
-  const container = document.getElementById("types-list");
-  if (!state.types.length) {
+function renderTypedGroups(containerId, items, onRemoveRender) {
+  const container = document.getElementById(containerId);
+  if (!items.length) {
     container.innerHTML = '<p class="hint">None yet.</p>';
     return;
   }
-  container.innerHTML = state.types
+  container.innerHTML = items
     .map(
       (item, index) => `
       <div class="section-item" data-index="${index}">
@@ -320,17 +322,38 @@ function renderTypes() {
     input.addEventListener("input", (e) => {
       const index = Number(e.target.closest(".section-item").dataset.index);
       const field = e.target.dataset.field;
-      state.types[index][field] =
+      items[index][field] =
         field === "items" ? linesToArray(e.target.value) : e.target.value;
     });
   });
   container.querySelectorAll(".remove-item").forEach((btn) => {
     btn.addEventListener("click", () => {
       const index = Number(btn.closest(".section-item").dataset.index);
-      state.types.splice(index, 1);
-      renderTypes();
+      items.splice(index, 1);
+      onRemoveRender();
     });
   });
+}
+
+function renderTypes() {
+  renderTypedGroups("types-list", state.types, renderTypes);
+}
+
+function renderProducts() {
+  renderTypedGroups("products-list", state.products, renderProducts);
+}
+
+function renderTimelines() {
+  renderNamedList(
+    "timelines-list",
+    state.timelines,
+    [
+      { key: "title", label: "Scheme title" },
+      { key: "value", label: "Timeline value" },
+      { key: "text", label: "Notes", type: "textarea" },
+    ],
+    renderTimelines
+  );
 }
 
 function renderDocuments() {
@@ -466,6 +489,7 @@ function blankPage() {
       expertNote: "We are available 24/7.",
       trustPoints: [],
       heroStats: [],
+      offerBanner: "",
       offerText: "",
       offerPrice: "",
       formEnabled: true,
@@ -474,6 +498,7 @@ function blankPage() {
       formSubmitLabel: "Get Free Consultation",
       formSuccessMessage: "Thanks! Our team will contact you shortly.",
       formTrustPoints: [],
+      serviceOptions: [],
       scrollCtaText: "",
       processTitle: "How we work",
       process: [],
@@ -481,6 +506,10 @@ function blankPage() {
       licences: [],
       typesTitle: "",
       types: [],
+      timelinesTitle: "",
+      timelines: [],
+      productsTitle: "",
+      products: [],
       documentsTitle: "",
       documents: [],
       detailProcessTitle: "",
@@ -524,6 +553,12 @@ function fillEditor(page) {
   state.types = Array.isArray(content.types)
     ? content.types.map((s) => ({ ...s, items: [...(s.items || [])] }))
     : [];
+  state.timelines = Array.isArray(content.timelines)
+    ? content.timelines.map((s) => ({ ...s }))
+    : [];
+  state.products = Array.isArray(content.products)
+    ? content.products.map((s) => ({ ...s, items: [...(s.items || [])] }))
+    : [];
   state.documents = Array.isArray(content.documents)
     ? content.documents.map((s) => ({ ...s, items: [...(s.items || [])] }))
     : [];
@@ -565,6 +600,7 @@ function fillEditor(page) {
   document.getElementById("heroImage").value = page.heroImage || "";
   document.getElementById("bodyHtml").value = page.bodyHtml || "";
 
+  document.getElementById("offerBanner").value = content.offerBanner || "";
   document.getElementById("badgeText").value = content.badgeText || "";
   document.getElementById("ratingText").value = content.ratingText || "";
   document.getElementById("headlineHighlight").value =
@@ -577,6 +613,9 @@ function fillEditor(page) {
   document.getElementById("offerPrice").value = content.offerPrice || "";
   document.getElementById("trustPoints").value = arrayToLines(
     content.trustPoints || []
+  );
+  document.getElementById("serviceOptions").value = arrayToLines(
+    content.serviceOptions || []
   );
   document.getElementById("formTitle").value = content.formTitle || "";
   document.getElementById("formSubtitle").value = content.formSubtitle || "";
@@ -593,6 +632,8 @@ function fillEditor(page) {
   document.getElementById("processTitle").value = content.processTitle || "";
   document.getElementById("licencesTitle").value = content.licencesTitle || "";
   document.getElementById("typesTitle").value = content.typesTitle || "";
+  document.getElementById("timelinesTitle").value = content.timelinesTitle || "";
+  document.getElementById("productsTitle").value = content.productsTitle || "";
   document.getElementById("documentsTitle").value = content.documentsTitle || "";
   document.getElementById("detailProcessTitle").value =
     content.detailProcessTitle || "";
@@ -618,6 +659,8 @@ function fillEditor(page) {
   renderProcess();
   renderLicences();
   renderTypes();
+  renderTimelines();
+  renderProducts();
   renderDocuments();
   renderDetailProcess();
   renderBenefits();
@@ -653,6 +696,7 @@ function collectPagePayload() {
       expertNote: document.getElementById("expertNote").value.trim(),
       trustPoints: linesToArray(document.getElementById("trustPoints").value),
       heroStats: state.heroStats,
+      offerBanner: document.getElementById("offerBanner").value.trim(),
       offerText: document.getElementById("offerText").value.trim(),
       offerPrice: document.getElementById("offerPrice").value.trim(),
       formEnabled: document.getElementById("formEnabled").checked,
@@ -665,6 +709,9 @@ function collectPagePayload() {
       formTrustPoints: linesToArray(
         document.getElementById("formTrustPoints").value
       ),
+      serviceOptions: linesToArray(
+        document.getElementById("serviceOptions").value
+      ),
       scrollCtaText: document.getElementById("scrollCtaText").value.trim(),
       processTitle: document.getElementById("processTitle").value.trim(),
       process: state.process,
@@ -672,6 +719,10 @@ function collectPagePayload() {
       licences: state.licences,
       typesTitle: document.getElementById("typesTitle").value.trim(),
       types: state.types,
+      timelinesTitle: document.getElementById("timelinesTitle").value.trim(),
+      timelines: state.timelines,
+      productsTitle: document.getElementById("productsTitle").value.trim(),
+      products: state.products,
       documentsTitle: document.getElementById("documentsTitle").value.trim(),
       documents: state.documents,
       detailProcessTitle: document
@@ -805,6 +856,14 @@ document.getElementById("add-licence-btn").addEventListener("click", () => {
 document.getElementById("add-type-btn").addEventListener("click", () => {
   state.types.push({ title: "", text: "", items: [] });
   renderTypes();
+});
+document.getElementById("add-timeline-btn").addEventListener("click", () => {
+  state.timelines.push({ title: "", value: "", text: "" });
+  renderTimelines();
+});
+document.getElementById("add-product-btn").addEventListener("click", () => {
+  state.products.push({ title: "", text: "", items: [] });
+  renderProducts();
 });
 document.getElementById("add-doc-btn").addEventListener("click", () => {
   state.documents.push({ title: "", items: [] });

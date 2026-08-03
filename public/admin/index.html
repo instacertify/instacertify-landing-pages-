@@ -102,6 +102,7 @@
               <legend>Service / lead-gen content</legend>
               <p class="hint">Best with the Service design. Inspired by compliance landing pages: form, trust points, process, docs, FAQs.</p>
               <div class="two-col">
+                <label>Top offer banner <input id="offerBanner" placeholder="Limited Offer — Free Expert Consultation" /></label>
                 <label>Badge text <input id="badgeText" placeholder="Includes free support" /></label>
                 <label>Rating text <input id="ratingText" placeholder="Rated 4.9 by customers" /></label>
                 <label>Headline highlight <input id="headlineHighlight" placeholder="optional accent text" /></label>
@@ -111,6 +112,9 @@
                 <label>Page WhatsApp <input id="contentWhatsapp" placeholder="91..." /></label>
                 <label>Offer text <input id="offerText" placeholder="Optional promo text" /></label>
                 <label>Offer price <input id="offerPrice" placeholder="Optional price text" /></label>
+                <label class="full">Form service options (one per line)
+                  <textarea id="serviceOptions" rows="4" placeholder="BIS CRS Registration&#10;BIS ISI Mark Certification&#10;Not Sure – Need Guidance"></textarea>
+                </label>
                 <label class="full">Trust points (one per line)
                   <textarea id="trustPoints" rows="4" placeholder="Document checklist before filing&#10;Dedicated support through stages"></textarea>
                 </label>
@@ -159,6 +163,24 @@
                 </div>
                 <label>Types section title <input id="typesTitle" /></label>
                 <div id="types-list"></div>
+              </div>
+
+              <div class="repeater-block">
+                <div class="repeater-head">
+                  <h3>Timelines</h3>
+                  <button type="button" id="add-timeline-btn" class="ghost">Add timeline</button>
+                </div>
+                <label>Timelines section title <input id="timelinesTitle" /></label>
+                <div id="timelines-list"></div>
+              </div>
+
+              <div class="repeater-block">
+                <div class="repeater-head">
+                  <h3>Product categories</h3>
+                  <button type="button" id="add-product-btn" class="ghost">Add group</button>
+                </div>
+                <label>Products section title <input id="productsTitle" /></label>
+                <div id="products-list"></div>
               </div>
 
               <div class="repeater-block">

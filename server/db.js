@@ -93,6 +93,7 @@ const EMPTY_CONTENT = {
   expertNote: "We are available 24/7.",
   trustPoints: [],
   heroStats: [],
+  offerBanner: "",
   offerText: "",
   offerPrice: "",
   formEnabled: true,
@@ -101,6 +102,7 @@ const EMPTY_CONTENT = {
   formSubmitLabel: "Get Free Consultation",
   formSuccessMessage: "Thanks! Our team will contact you shortly.",
   formTrustPoints: [],
+  serviceOptions: [],
   scrollCtaText: "",
   processTitle: "How we work",
   process: [],
@@ -108,6 +110,10 @@ const EMPTY_CONTENT = {
   licences: [],
   typesTitle: "",
   types: [],
+  timelinesTitle: "",
+  timelines: [],
+  productsTitle: "",
+  products: [],
   documentsTitle: "",
   documents: [],
   detailProcessTitle: "",
@@ -181,10 +187,13 @@ function normalizeContent(raw, existing = null) {
     ...base,
     trustPoints: asStringArray(base.trustPoints),
     formTrustPoints: asStringArray(base.formTrustPoints),
+    serviceOptions: asStringArray(base.serviceOptions),
     heroStats: asWhyUs(base.heroStats),
     process: asNamedBlocks(base.process),
     licences: asNamedBlocks(base.licences),
     types: asTypeBlocks(base.types),
+    timelines: asTimelines(base.timelines),
+    products: asTypeBlocks(base.products),
     documents: asDocGroups(base.documents),
     detailProcess: asNamedBlocks(base.detailProcess),
     benefits: asNamedBlocks(base.benefits),
@@ -194,6 +203,17 @@ function normalizeContent(raw, existing = null) {
     faqs: asFaqs(base.faqs),
     formEnabled: Boolean(base.formEnabled),
   };
+}
+
+function asTimelines(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => ({
+      title: String(item?.title || "").trim(),
+      value: String(item?.value || "").trim(),
+      text: String(item?.text || "").trim(),
+    }))
+    .filter((item) => item.title || item.value || item.text);
 }
 
 function asStringArray(value) {
