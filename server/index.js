@@ -11,7 +11,7 @@ const { getPageBySlug, getSettings, listPages } = require("./db");
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
 const PUBLIC_BASE_URL =
-  process.env.PUBLIC_BASE_URL || "https://info.instacertify.com";
+  process.env.PUBLIC_BASE_URL || "https://info.certko.com";
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -19,6 +19,8 @@ app.set("views", path.join(__dirname, "views"));
 app.use(
   helmet({
     contentSecurityPolicy: false,
+    // Allow partner sites to iframe /embed/widget (badge SVGs are plain images).
+    frameguard: false,
   })
 );
 app.use(cors({ origin: true, credentials: true }));
@@ -41,21 +43,46 @@ Sitemap: ${PUBLIC_BASE_URL}/sitemap.xml
 });
 
 app.get("/sitemap.xml", (_req, res) => {
-  const pages = listPages().filter((page) => page.status === "published");
-  const urls = pages
-    .map((page) => {
-      const loc = `${PUBLIC_BASE_URL}/${page.slug}`;
-      return `  <url>
-    <loc>${escapeXml(loc)}</loc>
-    <lastmod>${page.updatedAt.slice(0, 10)}</lastmod>
-  </url>`;
-    })
+  const today = new Date().toISOString().slice(0, 10);
+  const staticUrls = [
+    { loc: `${PUBLIC_BASE_URL}/backlink-kit`, lastmod: today },
+    { loc: `${PUBLIC_BASE_URL}/embed/widget`, lastmod: today },
+  ];
+  const pageUrls = listPages()
+    .filter((page) => page.status === "published")
+    .map((page) => ({
+      loc: `${PUBLIC_BASE_URL}/${page.slug}`,
+      lastmod: page.updatedAt.slice(0, 10),
+    }));
+
+  const urls = [...staticUrls, ...pageUrls]
+    .map(
+      (item) => `  <url>
+    <loc>${escapeXml(item.loc)}</loc>
+    <lastmod>${item.lastmod}</lastmod>
+  </url>`
+    )
     .join("\n");
 
   res.type("application/xml").send(`<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls}
 </urlset>`);
+});
+
+app.get("/backlink-kit", (_req, res) => {
+  return res.render("backlink-kit", {
+    baseUrl: PUBLIC_BASE_URL,
+    settings: getSettings(),
+  });
+});
+
+app.get("/embed/widget", (_req, res) => {
+  // Explicitly allow cross-origin iframes for the partner embed.
+  res.set("Content-Security-Policy", "frame-ancestors *");
+  return res.render("embed/widget", {
+    baseUrl: PUBLIC_BASE_URL,
+  });
 });
 
 app.get("/", (_req, res) => {
@@ -79,7 +106,15 @@ app.get("/preview/:slug", (req, res) => {
 });
 
 app.get("/:slug", (req, res) => {
-  const reserved = new Set(["api", "admin", "assets", "robots.txt", "sitemap.xml"]);
+  const reserved = new Set([
+    "api",
+    "admin",
+    "assets",
+    "embed",
+    "backlink-kit",
+    "robots.txt",
+    "sitemap.xml",
+  ]);
   if (reserved.has(req.params.slug)) return res.status(404).end();
 
   if (req.params.slug === "msds-certificate") {
@@ -95,9 +130,14 @@ app.get("/:slug", (req, res) => {
 
 function renderLanding(res, page, isPreview) {
   const settings = getSettings();
-  const design = ["service", "trust", "bold", "minimal", "signal"].includes(
-    page.design
-  )
+  const design = [
+    "certko",
+    "service",
+    "trust",
+    "bold",
+    "minimal",
+    "signal",
+  ].includes(page.design)
     ? page.design
     : "trust";
 
@@ -134,6 +174,6 @@ function escapeXml(value) {
 }
 
 app.listen(PORT, () => {
-  console.log(`Instacertify landing pages running on http://localhost:${PORT}`);
+  console.log(`Landing pages running on http://localhost:${PORT}`);
   console.log(`Admin: http://localhost:${PORT}/admin`);
 });

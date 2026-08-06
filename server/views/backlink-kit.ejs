@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Certko Backlink Kit — Free Embed Badges &amp; BIS Widget</title>
+  <meta name="description" content="Free Certko embed badges and BIS product-check widget for manufacturer sites, blogs and partner pages. Branded attribution to certko.com — useful, optional, removable." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="<%= baseUrl %>/backlink-kit" />
+  <link rel="icon" href="/assets/certko-favicon.png" />
+  <meta property="og:title" content="Certko Backlink Kit — Embed Badges & BIS Widget" />
+  <meta property="og:description" content="Copy-paste Certko badges and a free BIS checker widget that links back to certko.com." />
+  <meta property="og:url" content="<%= baseUrl %>/backlink-kit" />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #16263d;
+      --muted: #4b5563;
+      --cream: #faf6ee;
+      --butter: #f7c453;
+      --panel: #ffffff;
+      --line: rgba(22, 38, 61, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Figtree, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 10% 0%, rgba(247, 196, 83, 0.2), transparent 40%),
+        radial-gradient(ellipse at 90% 10%, rgba(28, 48, 76, 0.1), transparent 35%),
+        linear-gradient(180deg, var(--cream), #f3eee3);
+    }
+    a { color: inherit; }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem clamp(1rem, 4vw, 2.5rem);
+      background: rgba(250, 246, 238, 0.92);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(10px);
+      z-index: 20;
+    }
+    .top img { height: 40px; width: auto; }
+    .top a.cta {
+      text-decoration: none;
+      background: var(--butter);
+      color: var(--ink);
+      font-weight: 700;
+      padding: 0.7rem 1rem;
+      border-radius: 0.65rem;
+    }
+    .hero {
+      width: min(1100px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 3.5rem 0 2rem;
+      animation: rise 700ms ease both;
+    }
+    .hero h1 {
+      font-family: Poppins, sans-serif;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      margin: 0 0 0.85rem;
+      max-width: 12ch;
+    }
+    .hero p {
+      max-width: 48ch;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin: 0 0 1.4rem;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 0.65rem; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-weight: 700;
+      border-radius: 0.65rem;
+      padding: 0.85rem 1.1rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      font: inherit;
+    }
+    .btn-primary { background: var(--butter); color: var(--ink); }
+    .btn-ghost { background: #fff; border-color: var(--line); }
+    section {
+      width: min(1100px, calc(100% - 2rem));
+      margin: 0 auto 2.5rem;
+      animation: rise 700ms ease both;
+    }
+    h2 {
+      font-family: Poppins, sans-serif;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      letter-spacing: -0.03em;
+      margin: 0 0 0.5rem;
+    }
+    .lead { color: var(--muted); max-width: 55ch; margin: 0 0 1.25rem; line-height: 1.55; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 0.9rem;
+      padding: 1.1rem;
+    }
+    .panel.dark { background: var(--ink); color: #faf6ee; }
+    .preview {
+      min-height: 4.5rem;
+      display: grid;
+      place-items: center;
+      margin-bottom: 0.85rem;
+      border-radius: 0.65rem;
+      background: #f3eee3;
+    }
+    .panel.dark .preview { background: #121a2b; }
+    .panel h3 {
+      font-family: Poppins, sans-serif;
+      font-size: 1.05rem;
+      margin: 0 0 0.35rem;
+    }
+    .panel p { margin: 0 0 0.75rem; color: var(--muted); font-size: 0.92rem; }
+    .panel.dark p { color: #c5ccd6; }
+    pre {
+      margin: 0 0 0.75rem;
+      padding: 0.85rem;
+      border-radius: 0.65rem;
+      background: #121a2b;
+      color: #f3eee3;
+      overflow: auto;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .copy {
+      width: 100%;
+      background: var(--butter);
+      color: var(--ink);
+      border: 0;
+      border-radius: 0.55rem;
+      padding: 0.7rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .copied { background: #1c304c !important; color: #faf6ee !important; }
+    .rules {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 1rem;
+    }
+    ul { margin: 0; padding-left: 1.1rem; color: var(--muted); line-height: 1.6; }
+    li + li { margin-top: 0.4rem; }
+    .widget-demo {
+      border: 0;
+      width: 100%;
+      max-width: 420px;
+      height: 290px;
+      border-radius: 0.9rem;
+      background: transparent;
+    }
+    .assets a {
+      display: block;
+      text-decoration: none;
+      padding: 0.9rem 0;
+      border-top: 1px solid var(--line);
+      font-weight: 700;
+    }
+    .assets a span { display: block; font-weight: 400; color: var(--muted); font-size: 0.9rem; margin-top: 0.2rem; }
+    .outreach {
+      display: grid;
+      gap: 0.75rem;
+    }
+    .outreach details {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 0.75rem;
+      padding: 0.85rem 1rem;
+    }
+    .outreach summary {
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .outreach pre { margin-top: 0.75rem; }
+    footer {
+      width: min(1100px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 1.5rem 0 3rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    footer a { font-weight: 700; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 900px) {
+      .grid, .rules { grid-template-columns: 1fr; }
+      .hero h1 { max-width: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <a href="https://certko.com/" aria-label="Certko home">
+      <img src="/assets/certko-logo.png" alt="Certko — Compliance. Assured." width="150" height="42" />
+    </a>
+    <a class="cta" href="https://certko.com/contact?utm_source=backlink_kit&utm_medium=referral">Get expert help</a>
+  </div>
+
+  <header class="hero">
+    <h1>Certko</h1>
+    <p>Free embed badges and a BIS product-check widget partners can place on their sites. Useful for visitors, optional to remove, and attributed with branded “Certko” links back to certko.com.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#badges">Copy a badge</a>
+      <a class="btn btn-ghost" href="#widget">Embed the widget</a>
+      <a class="btn btn-ghost" href="#assets">Linkable assets</a>
+    </div>
+  </header>
+
+  <section id="badges">
+    <h2>Embed badges</h2>
+    <p class="lead">One-line HTML. Links use branded anchor text (Certko) — not keyword-stuffed phrases. Hosts can delete the snippet anytime.</p>
+    <div class="grid">
+      <div class="panel">
+        <div class="preview"><img src="/embed/badge-light.svg" alt="Certko light badge" width="200" height="48" /></div>
+        <h3>Light</h3>
+        <p>Best on cream or white pages.</p>
+        <pre id="snip-light">&lt;a href="https://certko.com/?utm_source=embed&amp;utm_medium=badge&amp;utm_campaign=backlink" target="_blank" rel="noopener noreferrer" title="Certko"&gt;
+  &lt;img src="<%= baseUrl %>/embed/badge-light.svg" alt="Certko" width="200" height="48" loading="lazy" /&gt;
+&lt;/a&gt;</pre>
+        <button class="copy" data-target="snip-light" type="button">Copy HTML</button>
+      </div>
+      <div class="panel dark">
+        <div class="preview"><img src="/embed/badge-dark.svg" alt="Certko dark badge" width="200" height="48" /></div>
+        <h3>Dark</h3>
+        <p>Best on navy or charcoal footers.</p>
+        <pre id="snip-dark">&lt;a href="https://certko.com/?utm_source=embed&amp;utm_medium=badge&amp;utm_campaign=backlink" target="_blank" rel="noopener noreferrer" title="Certko"&gt;
+  &lt;img src="<%= baseUrl %>/embed/badge-dark.svg" alt="Certko" width="200" height="48" loading="lazy" /&gt;
+&lt;/a&gt;</pre>
+        <button class="copy" data-target="snip-dark" type="button">Copy HTML</button>
+      </div>
+      <div class="panel">
+        <div class="preview" style="background:#16263d"><img src="/embed/badge-compact.svg" alt="Powered by Certko" width="148" height="36" /></div>
+        <h3>Compact</h3>
+        <p>Small “Powered by Certko” mark.</p>
+        <pre id="snip-compact">&lt;a href="https://certko.com/?utm_source=embed&amp;utm_medium=badge&amp;utm_campaign=backlink" target="_blank" rel="noopener noreferrer" title="Certko"&gt;
+  &lt;img src="<%= baseUrl %>/embed/badge-compact.svg" alt="Powered by Certko" width="148" height="36" loading="lazy" /&gt;
+&lt;/a&gt;</pre>
+        <button class="copy" data-target="snip-compact" type="button">Copy HTML</button>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:1rem">
+      <h3>Script embed (optional)</h3>
+      <p>Paste before <code>&lt;/body&gt;</code>. Change <code>data-theme</code> to <code>light</code>, <code>dark</code>, or <code>compact</code>.</p>
+      <pre id="snip-js">&lt;script src="<%= baseUrl %>/embed/certko-badge.js" data-theme="light" data-base="<%= baseUrl %>" async&gt;&lt;/script&gt;</pre>
+      <button class="copy" data-target="snip-js" type="button">Copy script</button>
+    </div>
+  </section>
+
+  <section id="widget">
+    <h2>BIS checker widget</h2>
+    <p class="lead">A small iframe your visitors can use to search Certko. Attribution is branded “Certko” only. Remove the iframe whenever you want.</p>
+    <div class="rules">
+      <div class="panel">
+        <iframe class="widget-demo" title="Certko BIS checker widget" src="/embed/widget" loading="lazy"></iframe>
+      </div>
+      <div class="panel">
+        <h3>Iframe snippet</h3>
+        <pre id="snip-widget">&lt;iframe
+  src="<%= baseUrl %>/embed/widget"
+  title="Certko BIS checker"
+  loading="lazy"
+  style="width:100%;max-width:420px;height:290px;border:0;border-radius:12px;"
+&gt;&lt;/iframe&gt;</pre>
+        <button class="copy" data-target="snip-widget" type="button">Copy iframe</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="rules">
+    <h2>Safe link guidelines</h2>
+    <div class="rules">
+      <div class="panel">
+        <h3>Do</h3>
+        <ul>
+          <li>Use branded anchors: <strong>Certko</strong> or <strong>Powered by Certko</strong></li>
+          <li>Place badges where they help users (footer, resources, blog tools)</li>
+          <li>Keep the embed optional and removable</li>
+          <li>Point traffic to <a href="https://certko.com/">certko.com</a> with UTM <code>utm_source=embed</code></li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Don’t</h3>
+        <ul>
+          <li>Don’t force keyword anchors like “BIS certification India”</li>
+          <li>Don’t inject sitewide links without the host’s consent</li>
+          <li>Don’t hide the badge or cloak the destination</li>
+          <li>Don’t sell or automate paid link schemes</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="assets">
+    <h2>Linkable assets</h2>
+    <p class="lead">Citeable pages worth linking from blogs, directories and partner sites — each points readers deeper into Certko.</p>
+    <div class="panel assets">
+      <a href="/resources-bis-statistics">BIS certification statistics<span>1,400+ products · 400+ labs · scheme split — citeable snapshot</span></a>
+      <a href="/resources-qco-deadlines">Upcoming QCO deadlines<span>Next enforcement dates manufacturers watch</span></a>
+      <a href="/bis-certification">BIS certification lander<span>ISI / CRS / FMCS process, costs and quote form</span></a>
+      <a href="https://certko.com/guide?utm_source=backlink_kit&utm_medium=referral">Complete BIS guide on certko.com<span>Long-form process, documents and cost ranges</span></a>
+      <a href="https://certko.com/qco?utm_source=backlink_kit&utm_medium=referral">Live QCO tracker on certko.com<span>Mandatory / upcoming Quality Control Orders</span></a>
+      <a href="https://certko.com/labs?utm_source=backlink_kit&utm_medium=referral">BIS-recognised labs directory<span>Search labs by scope and location</span></a>
+    </div>
+  </section>
+
+  <section id="outreach">
+    <h2>Partner outreach templates</h2>
+    <p class="lead">Short emails you can send to manufacturers, labs, consultants and trade publishers.</p>
+    <div class="outreach">
+      <details open>
+        <summary>Manufacturer / exporter site</summary>
+        <pre id="mail-mfg">Subject: Free BIS checker widget for your site
+
+Hi {{name}},
+
+We built a small free widget that lets visitors check whether a product needs BIS certification (search → Certko database).
+
+If useful for your customers, you can paste this iframe on a resources or FAQ page:
+
+&lt;iframe src="<%= baseUrl %>/embed/widget" title="Certko BIS checker" loading="lazy" style="width:100%;max-width:420px;height:290px;border:0;"&gt;&lt;/iframe&gt;
+
+It’s optional and removable anytime. Happy to help if you want a lighter badge instead.
+
+— Certko team
+info@certko.com</pre>
+        <button class="copy" data-target="mail-mfg" type="button">Copy email</button>
+      </details>
+      <details>
+        <summary>Lab or consultant partner</summary>
+        <pre id="mail-lab">Subject: Add a Certko badge to your resources page?
+
+Hi {{name}},
+
+Certko publishes free BIS product, lab and QCO data used by importers and manufacturers.
+
+If you’d like a simple “Powered by Certko” badge linking to our checker for your clients, here’s a compact snippet:
+
+&lt;a href="https://certko.com/?utm_source=embed&amp;utm_medium=badge&amp;utm_campaign=partner" target="_blank" rel="noopener noreferrer"&gt;
+  &lt;img src="<%= baseUrl %>/embed/badge-compact.svg" alt="Powered by Certko" width="148" height="36" /&gt;
+&lt;/a&gt;
+
+Full kit: <%= baseUrl %>/backlink-kit
+
+Thanks,
+Certko</pre>
+        <button class="copy" data-target="mail-lab" type="button">Copy email</button>
+      </details>
+      <details>
+        <summary>Trade blog / journalist</summary>
+        <pre id="mail-press">Subject: Citeable BIS / QCO stats for your readers
+
+Hi {{name}},
+
+If helpful for an upcoming compliance piece, Certko maintains:
+
+• Product ↔ IS standard mapping (1,400+)
+• Reported lab test price ranges
+• Upcoming QCO enforcement dates
+
+Snapshot page: <%= baseUrl %>/resources-bis-statistics
+Live QCO tracker: https://certko.com/qco
+
+Happy to fact-check figures or share a quote.
+
+— Certko | info@certko.com</pre>
+        <button class="copy" data-target="mail-press" type="button">Copy email</button>
+      </details>
+    </div>
+  </section>
+
+  <footer>
+    <p><strong>Certko</strong> · <a href="mailto:info@certko.com">info@certko.com</a> · <a href="tel:+919999118039">+91 9999118039</a></p>
+    <p>Embeds exist to help visitors check compliance — not as a paid link scheme. Attribution stays branded.</p>
+  </footer>
+
+  <script>
+    document.querySelectorAll(".copy").forEach(function (button) {
+      button.addEventListener("click", async function () {
+        var target = document.getElementById(button.getAttribute("data-target"));
+        if (!target) return;
+        try {
+          await navigator.clipboard.writeText(target.textContent);
+          button.classList.add("copied");
+          button.textContent = "Copied";
+          setTimeout(function () {
+            button.classList.remove("copied");
+            button.textContent = button.textContent.indexOf("email") >= 0 ? "Copy email" : button.getAttribute("data-target") === "snip-js" ? "Copy script" : button.getAttribute("data-target") === "snip-widget" ? "Copy iframe" : "Copy HTML";
+            if (button.getAttribute("data-target").indexOf("mail-") === 0) button.textContent = "Copy email";
+          }, 1600);
+        } catch (error) {
+          alert("Copy failed — select the snippet manually.");
+        }
+      });
+    });
+  </script>
+</body>
+</html>
