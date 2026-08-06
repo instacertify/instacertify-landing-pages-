@@ -1,12 +1,13 @@
 {
   "name": "instacertify-landing-pages",
   "version": "1.0.0",
-  "description": "Small CMS for SEO landing pages on info.instacertify.com",
+  "description": "Small CMS for SEO landing pages on info.certko.com and info.instacertify.com",
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",
     "dev": "node --watch server/index.js",
-    "seed": "node server/seed.js"
+    "seed": "node server/seed.js",
+    "seed:certko": "node server/seed-certko.js"
   },
   "engines": {
     "node": ">=18"

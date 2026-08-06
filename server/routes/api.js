@@ -22,6 +22,12 @@ const router = express.Router();
 
 const DESIGNS = [
   {
+    id: "certko",
+    name: "Certko",
+    description:
+      "Certko-branded lead-gen lander: navy/butter palette, full-bleed hero, enquiry form, FAQs.",
+  },
+  {
     id: "service",
     name: "Service",
     description:
