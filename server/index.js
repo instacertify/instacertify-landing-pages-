@@ -11,7 +11,7 @@ const { getPageBySlug, getSettings, listPages } = require("./db");
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
 const PUBLIC_BASE_URL =
-  process.env.PUBLIC_BASE_URL || "https://info.instacertify.com";
+  process.env.PUBLIC_BASE_URL || "https://info.certko.com";
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -95,9 +95,14 @@ app.get("/:slug", (req, res) => {
 
 function renderLanding(res, page, isPreview) {
   const settings = getSettings();
-  const design = ["service", "trust", "bold", "minimal", "signal"].includes(
-    page.design
-  )
+  const design = [
+    "certko",
+    "service",
+    "trust",
+    "bold",
+    "minimal",
+    "signal",
+  ].includes(page.design)
     ? page.design
     : "trust";
 
@@ -134,6 +139,6 @@ function escapeXml(value) {
 }
 
 app.listen(PORT, () => {
-  console.log(`Instacertify landing pages running on http://localhost:${PORT}`);
+  console.log(`Landing pages running on http://localhost:${PORT}`);
   console.log(`Admin: http://localhost:${PORT}/admin`);
 });

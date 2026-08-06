@@ -470,12 +470,12 @@ function blankPage() {
     title: "",
     slug: "",
     status: "draft",
-    design: "service",
-    brandName: "Instacertify",
+    design: "certko",
+    brandName: "Certko",
     headline: "",
     subheadline: "",
-    ctaLabel: "Get a free consultation",
-    ctaUrl: "https://instacertify.com",
+    ctaLabel: "Get a free quote",
+    ctaUrl: "https://certko.com/contact",
     heroImage: "",
     bodyHtml: "",
     sections: [],
@@ -592,7 +592,7 @@ function fillEditor(page) {
   document.getElementById("slug").value = page.slug || "";
   document.getElementById("status").value = page.status || "draft";
   document.getElementById("design").value = page.design || "service";
-  document.getElementById("brandName").value = page.brandName || "Instacertify";
+  document.getElementById("brandName").value = page.brandName || "Certko";
   document.getElementById("headline").value = page.headline || "";
   document.getElementById("subheadline").value = page.subheadline || "";
   document.getElementById("ctaLabel").value = page.ctaLabel || "";
