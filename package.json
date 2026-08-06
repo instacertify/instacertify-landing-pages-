@@ -7,7 +7,8 @@
     "start": "node server/index.js",
     "dev": "node --watch server/index.js",
     "seed": "node server/seed.js",
-    "seed:certko": "node server/seed-certko.js"
+    "seed:certko": "node server/seed-certko.js",
+    "seed:backlinks": "node server/seed-backlinks.js"
   },
   "engines": {
     "node": ">=18"

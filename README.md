@@ -44,6 +44,24 @@ After `npm run seed:certko`:
 
 Details: [`docs/CERTKO-PAGES.md`](docs/CERTKO-PAGES.md)
 
+## Certko backlink kit
+
+Earn branded links to **certko.com** with useful embeds (not paid link spam):
+
+```bash
+npm run seed:backlinks
+```
+
+| Path | Purpose |
+| --- | --- |
+| `/backlink-kit` | Badge + widget copy kit + outreach emails |
+| `/embed/widget` | Iframe BIS search → certko.com |
+| `/embed/badge-*.svg` | Light / dark / compact badges |
+| `/resources-bis-statistics` | Citeable stats page |
+| `/resources-qco-deadlines` | QCO briefing page |
+
+Playbook: [`docs/CERTKO-BACKLINKS.md`](docs/CERTKO-BACKLINKS.md)
+
 ## Environment
 
 | Variable | Purpose |

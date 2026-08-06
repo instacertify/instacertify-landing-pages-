@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Certko BIS checker widget</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #16263d;
+      --cream: #faf6ee;
+      --butter: #f7c453;
+      --line: rgba(22, 38, 61, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Figtree, sans-serif;
+      color: var(--ink);
+      background: var(--cream);
+    }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 0.85rem;
+      background: #fff;
+      padding: 1rem 1.1rem 0.95rem;
+      box-shadow: 0 10px 28px rgba(22, 38, 61, 0.08);
+    }
+    .eyebrow {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #6b7280;
+      margin: 0 0 0.35rem;
+    }
+    h1 {
+      font-family: Poppins, sans-serif;
+      font-size: 1.15rem;
+      line-height: 1.25;
+      margin: 0 0 0.35rem;
+    }
+    p {
+      margin: 0 0 0.85rem;
+      color: #4b5563;
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+    form { display: grid; gap: 0.55rem; }
+    input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 0.65rem;
+      padding: 0.75rem 0.85rem;
+      font: inherit;
+      background: #fffdf8;
+    }
+    button {
+      border: 0;
+      border-radius: 0.65rem;
+      padding: 0.8rem 1rem;
+      font: inherit;
+      font-weight: 700;
+      background: var(--butter);
+      color: var(--ink);
+      cursor: pointer;
+    }
+    button:hover { background: #f9d06e; }
+    .foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      font-size: 0.78rem;
+      color: #6b7280;
+    }
+    .foot a {
+      color: var(--ink);
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .foot a:hover { color: #1c304c; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <p class="eyebrow">Free tool</p>
+    <h1>Check if your product needs BIS</h1>
+    <p>Search Certko’s database of 1,400+ notified products for standards, labs and costs.</p>
+    <form id="widget-form" action="https://certko.com/search" method="get" target="_blank" rel="noopener">
+      <input type="hidden" name="utm_source" value="embed" />
+      <input type="hidden" name="utm_medium" value="widget" />
+      <input type="hidden" name="utm_campaign" value="backlink" />
+      <input name="q" required placeholder="Product, IS standard or HSN" autocomplete="off" aria-label="Search products" />
+      <button type="submit">Search on Certko</button>
+    </form>
+    <div class="foot">
+      <span>Optional embed — remove anytime</span>
+      <a href="https://certko.com/?utm_source=embed&amp;utm_medium=widget&amp;utm_campaign=backlink" target="_blank" rel="noopener noreferrer">Certko</a>
+    </div>
+  </div>
+  <script>
+    document.getElementById("widget-form").addEventListener("submit", function () {
+      // Keep branded attribution only; hosts can remove the iframe anytime.
+    });
+  </script>
+</body>
+</html>
